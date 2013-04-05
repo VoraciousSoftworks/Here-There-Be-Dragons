@@ -1,0 +1,78 @@
+<project name="Here-There-Be-Dragons" basedir="." default="main" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <property name="src.dir" value="src"/>
+
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir" value="${build.dir}"/>
+    <property name="lib.dir" value="lib"/>
+
+    <property name="client.main-class" value="com.voracious.dragons.client.Main"/>
+    <property name="server.main-class" value="com.voracious.dragons.server.Main"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile" depends="resolve">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false">
+            <classpath>
+                <fileset dir="lib">
+                    <include name="*.jar" />
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="client" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}-client.jar">
+            <zipgroupfileset dir="${lib.dir}">
+                <include name="*.jar"/>
+                <exclude name="*sources*"/>
+                <exclude name="*javadoc*"/>
+            </zipgroupfileset>
+
+            <fileset dir="${classes.dir}" excludes="**/server/" />
+
+            <manifest>
+                <attribute name="Main-Class" value="${client.main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="server" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}-server.jar">
+            <zipgroupfileset dir="${lib.dir}">
+                <include name="*.jar"/>
+                <exclude name="*sources*"/>
+                <exclude name="*javadoc*"/>
+            </zipgroupfileset>
+
+            <fileset dir="${classes.dir}" excludes="**/client/" />
+
+            <manifest>
+                <attribute name="Main-Class" value="${server.main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run client" depends="client">
+        <java jar="${jar.dir}/${ant.project.name}-client.jar" fork="true"/>
+    </target>
+
+    <target name="run server" depends="server">
+        <java jar="${jar.dir}/${ant.project.name}-server.jar" fork="true"/>
+    </target>
+
+    <target name="clean-buildall" depends="clean,client,server"/>
+    <target name="buildall" depends="client,server"/>
+
+    <target name="resolve">
+        <ivy:retrieve/>
+    </target>
+
+    <target name="main" depends="clean,run client"/>
+</project>
