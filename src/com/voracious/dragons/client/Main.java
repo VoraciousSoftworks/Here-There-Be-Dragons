@@ -6,6 +6,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
+
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
@@ -45,6 +47,12 @@ public class Main extends Applet implements WindowListener {
         
         game.init();
         window.add(game);
+        
+        try {
+            window.setIconImage(ImageIO.read(Main.class.getResourceAsStream("/icon.png")));
+        } catch (IOException e) {
+            logger.error("Could not load icon image", e);
+        }
 
         window.setLocationRelativeTo(null);
         window.setResizable(false);

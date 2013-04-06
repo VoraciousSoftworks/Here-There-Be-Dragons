@@ -6,6 +6,7 @@
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="jar.dir" value="${build.dir}"/>
     <property name="lib.dir" value="lib"/>
+    <property name="res.dir" value="res"/>
 
     <property name="client.main-class" value="com.voracious.dragons.client.Main"/>
     <property name="server.main-class" value="com.voracious.dragons.server.Main"/>
@@ -35,6 +36,7 @@
             </zipgroupfileset>
 
             <fileset dir="${classes.dir}" excludes="**/server/" />
+            <fileset dir="${res.dir}" />
 
             <manifest>
                 <attribute name="Main-Class" value="${client.main-class}"/>
