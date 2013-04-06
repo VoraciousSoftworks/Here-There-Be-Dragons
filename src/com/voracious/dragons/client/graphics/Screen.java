@@ -2,17 +2,17 @@ package com.voracious.dragons.client.graphics;
 
 import java.awt.Graphics2D;
 
-public abstract class Screen implements Drawable{
+public abstract class Screen implements Drawable {
     protected int width, height;
     private int offsetx, offsety;
 
-    public Screen(int width, int height){
+    public Screen(int width, int height) {
         this.width = width;
         this.height = height;
         this.offsetx = this.offsety = 0;
     }
     
-    public void draw(Graphics2D g){
+    public void draw(Graphics2D g) {
         g.translate(-offsetx, -offsety);
         render(g);
     }
@@ -33,7 +33,7 @@ public abstract class Screen implements Drawable{
      * @param dx amount to translate in the x direction
      * @param dy amount to translate in the y direction
      */
-    public void translate(int dx, int dy){
+    public void translate(int dx, int dy) {
         offsetx += dx;
         offsety += dy;
     }

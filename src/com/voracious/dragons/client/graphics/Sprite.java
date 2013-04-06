@@ -20,6 +20,10 @@ public class Sprite {
         }
     }
     
+    public Sprite(BufferedImage image){
+        this.image = image;
+    }
+    
     public void draw(Graphics2D g, int x, int y) {
         g.drawImage(image, x, y, null);
     }

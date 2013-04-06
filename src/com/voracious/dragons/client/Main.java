@@ -76,7 +76,7 @@ public class Main extends Applet implements WindowListener {
         try {
             Logger.getRootLogger().addAppender(new FileAppender(new PatternLayout("%-4r [%t] %-5p %c %x - %m%n"), logfile));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Could not write log file", e);
         }
     }
 
