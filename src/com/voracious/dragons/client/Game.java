@@ -31,15 +31,33 @@ public class Game extends Canvas implements Runnable {
 
     @Override
     public void run() {
-        long unprocessedTicks = 0L;
-        long ticksPerNs = 1000000000L/FPS;
+        double unprocessedTicks = 0.0;
+        double nsPerTick = 1000000000.0/FPS;
         long lastTime = System.nanoTime();
+        boolean needsRender = true;
         
         long lastFpsTime = System.currentTimeMillis();
         int frameCount = 0;
         int tickCount = 0;
         
         while(running){
+            long now = System.nanoTime();
+            unprocessedTicks += (now - lastTime) / nsPerTick;
+            lastTime = now;
+            
+            if(unprocessedTicks >= 1.0){
+                tick();
+                unprocessedTicks -= 1.0;
+                needsRender = true;
+                tickCount++;
+            }
+            
+            if(needsRender){
+                render();
+                needsRender = false;
+                frameCount++;
+            }
+            
             if(printFPS && System.currentTimeMillis() - lastFpsTime > 1000){
                 System.out.println(frameCount + " fps; " + tickCount + " tps");
                 frameCount = 0;
