@@ -1,9 +1,15 @@
 package com.voracious.dragons.client;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.image.BufferStrategy;
 
 import org.apache.log4j.Logger;
+
+import com.voracious.dragons.client.graphics.Screen;
+import com.voracious.dragons.client.screens.PlayScreen;
 
 public class Game extends Canvas implements Runnable {
     private static final long serialVersionUID = 1L;
@@ -12,21 +18,37 @@ public class Game extends Canvas implements Runnable {
     public static final int WIDTH = 720;
     public static final int HEIGHT = 480;
     public static final int FPS = 60;
+    public static final Color background = Color.white;
     private static final boolean printFPS = true;
 
     private static Logger logger = Logger.getLogger(Game.class);
     private static Thread thread;
     private static boolean running = false;
+    private static Screen currentScreen;
     
-
     public Game() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
     }
 
     public void render() {
+        BufferStrategy bs = this.getBufferStrategy();
+        if(bs == null){
+            this.createBufferStrategy(2);
+            return;
+        }
+        
+        Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+        
+        g.clearRect(0, 0, WIDTH, HEIGHT);
+        
+        currentScreen.draw(g);
+        
+        g.dispose();
+        bs.show();
     }
 
     public void tick() {
+        currentScreen.tick();
     }
 
     @Override
@@ -66,9 +88,15 @@ public class Game extends Canvas implements Runnable {
             }
         }
     }
+    
+    public void setCurrentScreen(Screen s){
+        this.currentScreen = s;
+    }
 
     public void init() {
         logger.debug("init");
+        this.setBackground(background);
+        this.setCurrentScreen(new PlayScreen());
         thread = new Thread(this);
     }
 

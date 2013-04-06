@@ -37,8 +37,8 @@ public class Main extends Applet implements WindowListener {
 
         window.addWindowListener(new Main());
         window.setLocationRelativeTo(null);
-        window.pack();
         window.setResizable(false);
+        window.pack();
         window.setVisible(true);
 
         game.start();
