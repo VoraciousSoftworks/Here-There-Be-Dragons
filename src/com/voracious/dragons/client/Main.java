@@ -12,6 +12,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+import com.voracious.dragons.client.utils.InputHandler;
+
 public class Main extends Applet implements WindowListener {
     private static final long serialVersionUID = 1L;
 
@@ -34,8 +36,14 @@ public class Main extends Applet implements WindowListener {
         game = new Game();
         game.init();
         window.add(game);
-
+        
+        InputHandler ih = new InputHandler();
+        
+        window.addKeyListener(ih);
+        window.addMouseListener(ih);
+        window.addMouseMotionListener(ih);
         window.addWindowListener(new Main());
+        
         window.setLocationRelativeTo(null);
         window.setResizable(false);
         window.pack();
@@ -54,6 +62,12 @@ public class Main extends Applet implements WindowListener {
     public void init() {
         initLog4J();
         logger.setLevel(Level.ALL);
+    
+        InputHandler ih = new InputHandler();
+        this.addKeyListener(ih);
+        this.addMouseListener(ih);
+        this.addMouseMotionListener(ih);
+        
         game = new Game();
         this.add(game);
         game.init();
