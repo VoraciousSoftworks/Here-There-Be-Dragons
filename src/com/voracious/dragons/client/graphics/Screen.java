@@ -26,6 +26,17 @@ public abstract class Screen implements Drawable{
      * Called periodically, do calculations updates here
      */
     public abstract void tick();
+    
+    /**
+     * Translates the screen so that when it is drawn the entire thing will be translated
+     * 
+     * @param dx amount to translate in the x direction
+     * @param dy amount to translate in the y direction
+     */
+    public void translate(int dx, int dy){
+        offsetx += dx;
+        offsety += dy;
+    }
 
     /**
      * @return the width

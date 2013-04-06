@@ -89,8 +89,13 @@ public class Game extends Canvas implements Runnable {
         }
     }
     
+    /**
+     * Sets the screen to draw
+     * 
+     * @param s the screen to draw
+     */
     public void setCurrentScreen(Screen s){
-        this.currentScreen = s;
+        currentScreen = s;
     }
 
     public void init() {
