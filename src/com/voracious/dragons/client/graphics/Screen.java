@@ -1,6 +1,10 @@
 package com.voracious.dragons.client.graphics;
 
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+
+import com.voracious.dragons.client.utils.Vec2D;
 
 public abstract class Screen implements Drawable {
     protected int width, height;
@@ -36,6 +40,16 @@ public abstract class Screen implements Drawable {
     public void translate(int dx, int dy) {
         offsetx += dx;
         offsety += dy;
+    }
+    
+    /**
+     * Translates the screen so that when it is drawn the entire thing will be translated
+     * 
+     * @param t vector to move along
+     */
+    public void translate(Vec2D t) {
+        offsetx += t.x;
+        offsety += t.y;
     }
 
     /**
@@ -78,5 +92,29 @@ public abstract class Screen implements Drawable {
      */
     protected void setOffsety(int offsety) {
         this.offsety = offsety;
+    }
+    
+    /**
+     * Unlike the normal keyPressed method, this is guaranteed to be called only once per key press
+     */
+    public void keyPressed(KeyEvent e) {
+    }
+    
+    public void keyReleased(KeyEvent e) {
+    }
+    
+    public void keyTyped(KeyEvent e) {
+    }
+    
+    public void mouseClicked(MouseEvent e) {
+    }
+    
+    public void mousePressed(MouseEvent e) {
+    }
+
+    public void mouseReleased(MouseEvent e) {
+    }
+    
+    public void mouseMoved(MouseEvent e) {
     }
 }

@@ -33,17 +33,19 @@ public class Main extends Applet implements WindowListener {
             }
         }
 
-        game = new Game();
-        game.init();
-        window.add(game);
         
-        InputHandler ih = new InputHandler();
-        
-        window.addKeyListener(ih);
-        window.addMouseListener(ih);
-        window.addMouseMotionListener(ih);
         window.addWindowListener(new Main());
         
+        game = new Game();
+        
+        InputHandler ih = new InputHandler();
+        game.addKeyListener(ih);
+        game.addMouseListener(ih);
+        game.addMouseMotionListener(ih);
+        
+        game.init();
+        window.add(game);
+
         window.setLocationRelativeTo(null);
         window.setResizable(false);
         window.pack();
@@ -62,15 +64,18 @@ public class Main extends Applet implements WindowListener {
     public void init() {
         initLog4J();
         logger.setLevel(Level.ALL);
-    
-        InputHandler ih = new InputHandler();
-        this.addKeyListener(ih);
-        this.addMouseListener(ih);
-        this.addMouseMotionListener(ih);
-        
+
         game = new Game();
+        
+        InputHandler ih = new InputHandler();
+        game.addKeyListener(ih);
+        game.addMouseListener(ih);
+        game.addMouseMotionListener(ih);
+        
         this.add(game);
         game.init();
+        
+        this.requestFocus();
     }
 
     @Override
