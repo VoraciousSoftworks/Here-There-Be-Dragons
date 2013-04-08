@@ -29,7 +29,7 @@
     <target name="client" depends="compile">
         <mkdir dir="${jar.dir}"/>
         <jar destfile="${jar.dir}/${ant.project.name}-client.jar">
-            <zipgroupfileset dir="${lib.dir}">
+            <zipgroupfileset dir="${lib.dir}/client">
                 <include name="*.jar"/>
                 <exclude name="*sources*"/>
                 <exclude name="*javadoc*"/>
@@ -47,7 +47,7 @@
     <target name="server" depends="compile">
         <mkdir dir="${jar.dir}"/>
         <jar destfile="${jar.dir}/${ant.project.name}-server.jar">
-            <zipgroupfileset dir="${lib.dir}">
+            <zipgroupfileset dir="${lib.dir}/server">
                 <include name="*.jar"/>
                 <exclude name="*sources*"/>
                 <exclude name="*javadoc*"/>
@@ -73,7 +73,7 @@
     <target name="buildall" depends="client,server"/>
 
     <target name="resolve">
-        <ivy:retrieve/>
+        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[type].[ext]" />
     </target>
 
     <target name="main" depends="clean,run client"/>

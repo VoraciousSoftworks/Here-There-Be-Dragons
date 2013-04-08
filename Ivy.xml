@@ -1,6 +1,11 @@
 <ivy-module version="2.0">
     <info organisation="Voracious Softworks" module="Here-There-Be-Dragons" />
+    <configurations>
+        <conf name="client" description="Only provide libs required in the client" />
+        <conf name="server" description="Only provide libs required in the server" />
+    </configurations>
     <dependencies>
         <dependency org="log4j" name="log4j" rev="1.2.17" />
+        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.7.2" conf="server->default" />
     </dependencies>
 </ivy-module>
