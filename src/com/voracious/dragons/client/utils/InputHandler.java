@@ -14,6 +14,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.graphics.Screen;
+import com.voracious.dragons.common.Vec2D;
 
 public class InputHandler implements KeyListener, MouseListener, MouseMotionListener {
 
@@ -86,11 +87,11 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
     }
 
     public static Vec2D getChangeInMouse() {
-        return new Vec2D(dx, dy);
+        return new Vec2D.Double(dx, dy);
     }
 
     public static Vec2D getMousePos() {
-        return new Vec2D(mousex, mousey);
+        return new Vec2D.Double(mousex, mousey);
     }
 
     private void handleMouseMotion(MouseEvent arg0) {

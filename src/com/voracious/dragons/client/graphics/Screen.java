@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import com.voracious.dragons.client.utils.Vec2D;
+import com.voracious.dragons.common.Vec2D;
 
 public abstract class Screen implements Drawable {
     protected int width, height;

@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
-import com.voracious.dragons.client.utils.Vec2D;
+import com.voracious.dragons.common.Vec2D;
 
 public class Entity implements Drawable {
 
@@ -20,7 +20,7 @@ public class Entity implements Drawable {
     private int currentAnimation;
 
     /**
-     * Construct a new Enity object
+     * Construct a new Entity object
      * 
      * @param filename path to the sprite sheet
      * @param numFrames number of frames in each animation row in the sprite sheet
@@ -107,6 +107,6 @@ public class Entity implements Drawable {
     }
 
     public Vec2D getVelocity() {
-        return new Vec2D(dx, dy);
+        return new Vec2D.Double(dx, dy);
     }
 }
