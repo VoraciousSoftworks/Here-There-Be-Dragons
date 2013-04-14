@@ -167,7 +167,16 @@ public class Turn {
         }
         
         { //put the nodes data
-            
+            Set<Map.Entry<Byte, List<Vec2D.Short>>> entrySet= nodes.entrySet();
+            Iterator<Map.Entry<Byte, List<Vec2D.Short>>> it= entrySet.iterator();
+            while(it.hasNext()){
+            	Map.Entry<Byte, List<Vec2D.Short>> entry =(Map.Entry<Byte, List<Vec2D.Short>>) it.next();
+            	
+            	buffer.put(entry.getKey().byteValue());
+            	
+            	buffer.asShortBuffer().put((ShortBuffer)entry.getValue());//cast b/c same reason as above
+            	//buffer.position(buffer.position()+ (Vec2D.Short.SIZE/8));//the vect2d.short didn't have a size and wasn't sure about it
+            }
         }
         return buffer.array();
     }
