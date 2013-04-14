@@ -1,6 +1,7 @@
 package com.voracious.dragons.common;
 
 import java.nio.ByteBuffer;
+import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -152,7 +153,17 @@ public class Turn {
         }
         
         { //put the towers data
-            
+        	//Aaron wrote this b/c it wasn't done and looked like it would be an exact copy of the towers
+            Set<Map.Entry<Byte, List<Vec2D.Short>>> entrySet= towersCreated.entrySet();
+            Iterator<Map.Entry<Byte, List<Vec2D.Short>>> it= entrySet.iterator();
+            while(it.hasNext()){
+            	Map.Entry<Byte, List<Vec2D.Short>> entry = (Map.Entry<Byte, List<Vec2D.Short>>) it.next();
+            	
+            	buffer.put(entry.getKey().byteValue());
+            	
+            	buffer.asShortBuffer().put((ShortBuffer) entry.getValue());//had to cast it b/c not sure how to get the Vec2D.shortValue()
+            	//buffer.position(buffer.position()+ (Vec2D.Short.SIZE/8));//the vect2d.short didn't have a size and wasn't sure about it
+            }
         }
         
         { //put the nodes data

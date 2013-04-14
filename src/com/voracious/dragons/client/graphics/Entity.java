@@ -42,8 +42,8 @@ public class Entity implements Drawable {
             Logger.getLogger(Entity.class).error("Failed to load image", e);
         }
         
-        this.width = width;
-        this.height = height;
+        this.setWidth(width);
+        this.setHeight(height);
         
         x = y = 0;
         dx = dy = 0;
@@ -109,4 +109,32 @@ public class Entity implements Drawable {
     public Vec2D getVelocity() {
         return new Vec2D.Double(dx, dy);
     }
+
+	/**
+	 * @return the width
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * @param width the width to set
+	 */
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	/**
+	 * @return the height
+	 */
+	public int getHeight() {
+		return height;
+	}
+
+	/**
+	 * @param height the height to set
+	 */
+	public void setHeight(int height) {
+		this.height = height;
+	}
 }
