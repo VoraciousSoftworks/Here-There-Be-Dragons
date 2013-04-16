@@ -1,6 +1,5 @@
 package com.voracious.dragons.client.screens;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -31,15 +30,14 @@ public class PlayScreen extends Screen {
         
         this.setBackground(new Sprite("/backgroundLarge.png"));
         
-        int i[]={1};
         
-        this.setP1Cast(new Castle("/castleFull.png", i, 300, 300));
+        this.setP1Cast(new Castle());
         this.getP1Cast().setX(0);
-        this.getP1Cast().setY(1140);
+        this.getP1Cast().setY(background.getHeight() - Castle.height);
         
-        this.setP2Cast(new Castle("/castleFull.png", i, 300, 300));
-        this.getP2Cast().setX(1860);
-        this.getP2Cast().setY(300);
+        this.setP2Cast(new Castle());
+        this.getP2Cast().setX(background.getWidth() - Castle.width);
+        this.getP2Cast().setY(0);
     }
 
     @Override
