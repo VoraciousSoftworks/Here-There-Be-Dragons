@@ -31,6 +31,8 @@ public class Turn {
         nodes = new TreeMap<Byte, List<Vec2D.Short>>();
     }
     
+    //TODO: public Turn(byte[] turnData), parses the byte array and fills the data members with the correct data
+    
     public void createUnit(byte unitId, short numUnits) {
         if(unitsCreated.containsKey(unitId)){
             unitsCreated.put(unitId, (short) (unitsCreated.get(unitId) + numUnits));
