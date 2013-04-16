@@ -5,6 +5,9 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import org.apache.log4j.Logger;
+
+import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.utils.InputHandler;
 
@@ -12,6 +15,7 @@ public class PlayScreen extends Screen {
 
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 1000;
+    private static Logger logger = Logger.getLogger(Game.class);
     
     public PlayScreen() {
         super(HEIGHT, WIDTH);
