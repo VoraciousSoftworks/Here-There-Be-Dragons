@@ -45,8 +45,9 @@ public class DBHandler {
 				connection = DriverManager.getConnection("jdbc:sqlite:" + dbfile);
 				createDatabase(connection);
 			}
-
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException e) {
+			logger.error("Could not load database", e);
+		} catch (SQLException e) {
 			logger.error("Could not load database", e);
 		}
 	}
