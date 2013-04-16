@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class Turn {
-
     //This should probably be somewhere else eventually, I'm just not sure where yet
     public static final String versionString = "0.01a";
     public static final byte versionCode = 1;
@@ -110,7 +109,7 @@ public class Turn {
                 numberOfTowers += it.next().size();
             }
             
-            bufferSize += numberOfTowers * (Byte.SIZE/8 + 2*(Short.SIZE/8));
+            bufferSize += numberOfTowers * (Byte.SIZE/8 + 2*(Short.SIZE/8)); //Bytes from the tower data
         }
         
         byte numberOfNodes = 0;
@@ -121,7 +120,7 @@ public class Turn {
                 numberOfNodes += it.next().size();
             }
             
-            bufferSize += numberOfNodes * (2*(Byte.SIZE/8) + 2*(Short.SIZE/8));
+            bufferSize += numberOfNodes * (2*(Byte.SIZE/8) + 2*(Short.SIZE/8)); //Bytes form the node data
         }
         
         ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
@@ -190,6 +189,7 @@ public class Turn {
             	}
             }
         }
+        
         return buffer.array();
     }
 }
