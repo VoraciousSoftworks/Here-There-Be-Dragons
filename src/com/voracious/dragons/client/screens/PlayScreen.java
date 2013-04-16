@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
+import com.voracious.dragons.client.towers.Castle;
 import com.voracious.dragons.client.utils.InputHandler;
 
 public class PlayScreen extends Screen {
@@ -18,6 +19,7 @@ public class PlayScreen extends Screen {
     public static final int HEIGHT = 144;
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
+    private Castle p1Cast,p2Cast;
     public PlayScreen() {
         super(HEIGHT, WIDTH);
         
@@ -27,12 +29,25 @@ public class PlayScreen extends Screen {
         InputHandler.registerButton(KeyEvent.VK_D);
         InputHandler.registerScreen(this);
         
-        this.setBackground(new Sprite("/background.png"));
+        this.setBackground(new Sprite("/backgroundLarge.png"));
+        
+        int i[]={1};
+        
+        this.setP1Cast(new Castle("/castleFull.png", i, 300, 300));
+        this.getP1Cast().setX(0);
+        this.getP1Cast().setY(1140);
+        
+        this.setP2Cast(new Castle("/castleFull.png", i, 300, 300));
+        this.getP2Cast().setX(1860);
+        this.getP2Cast().setY(300);
     }
 
     @Override
     public void render(Graphics2D g) {
     	this.getBackground().draw(g, 0, 0);
+    	
+    	this.getP1Cast().draw(g);
+    	this.getP2Cast().draw(g);
     	
     }
 
@@ -98,5 +113,33 @@ public class PlayScreen extends Screen {
 	 */
 	public static void setLogger(Logger logger) {
 		PlayScreen.logger = logger;
+	}
+
+	/**
+	 * @return the p1Cast
+	 */
+	public Castle getP1Cast() {
+		return p1Cast;
+	}
+
+	/**
+	 * @param p1Cast the p1Cast to set
+	 */
+	public void setP1Cast(Castle p1Cast) {
+		this.p1Cast = p1Cast;
+	}
+
+	/**
+	 * @return the p2Cast
+	 */
+	public Castle getP2Cast() {
+		return p2Cast;
+	}
+
+	/**
+	 * @param p2Cast the p2Cast to set
+	 */
+	public void setP2Cast(Castle p2Cast) {
+		this.p2Cast = p2Cast;
 	}
 }
