@@ -19,7 +19,7 @@ import com.voracious.dragons.client.utils.InputHandler;
 public class Main extends Applet implements WindowListener {
     private static final long serialVersionUID = 1L;
 
-    public static final String logfile = "output.log";
+    public static final String logfile = "client.log";
 
     private static Logger logger;
     private static Game game;
