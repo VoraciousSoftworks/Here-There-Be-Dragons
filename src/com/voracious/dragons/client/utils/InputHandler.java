@@ -131,7 +131,6 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 
     @Override
     public void mousePressed(MouseEvent arg0) {
-        System.out.println("mouse pressed" + arg0.getButton() + " " + MouseEvent.BUTTON2);
         switch (arg0.getButton()) {
         case MouseEvent.BUTTON1:
             keymap.put(VK_MOUSE_1, true);

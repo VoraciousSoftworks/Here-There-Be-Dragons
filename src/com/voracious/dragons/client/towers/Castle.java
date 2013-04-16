@@ -15,7 +15,6 @@ public class Castle extends Entity {
 	public static int width = 300;
 	public static int height = 300;
 	
-	
 	public Castle() {
 		super(filename, numFrames, width, height);
 	}
