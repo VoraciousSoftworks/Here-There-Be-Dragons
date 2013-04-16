@@ -65,4 +65,8 @@ public abstract class Vec2D {
     public double dot(Vec2D b) {
         return this.x * b.x + this.y * b.y;
     }
+    
+    public String toString(){
+    	return "(" + x + ", " + y + ")";
+    }
 }
