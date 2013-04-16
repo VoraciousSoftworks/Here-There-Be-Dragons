@@ -14,6 +14,7 @@ public class Main {
 	public static final String logfile = "server.log";
 	
 	private static Logger logger = Logger.getLogger(Main.class);
+	private static DBHandler database = new DBHandler();
 	
     public static void main(String[] args){
     	initLog4J();
@@ -25,6 +26,7 @@ public class Main {
         }
     	
     	logger.info("Server version " + Turn.versionString + " started");
+    	database.init();
     }
     
     public static void initLog4J() {
