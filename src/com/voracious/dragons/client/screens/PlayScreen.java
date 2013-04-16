@@ -9,14 +9,15 @@ import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
+import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.utils.InputHandler;
 
 public class PlayScreen extends Screen {
 
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 1000;
+    public static final int WIDTH = 216;
+    public static final int HEIGHT = 144;
     private static Logger logger = Logger.getLogger(Game.class);
-    
+    private Sprite background;
     public PlayScreen() {
         super(HEIGHT, WIDTH);
         
@@ -25,15 +26,14 @@ public class PlayScreen extends Screen {
         InputHandler.registerButton(KeyEvent.VK_S);
         InputHandler.registerButton(KeyEvent.VK_D);
         InputHandler.registerScreen(this);
+        
+        this.setBackground(new Sprite("/background.png"));
     }
 
     @Override
     public void render(Graphics2D g) {
-        g.setColor(Color.CYAN);
-        g.fillRect(0, 0, width, height);
-        g.setColor(Color.BLACK);
-        g.drawLine(0, 0, width, height);
-        g.drawRect(750, 15, 25, 25);
+    	this.getBackground().draw(g, 0, 0);
+    	
     }
 
     @Override
@@ -71,4 +71,32 @@ public class PlayScreen extends Screen {
             InputHandler.setMouseMoveable(true);
         }
     }
+
+	/**
+	 * @return the background
+	 */
+	public Sprite getBackground() {
+		return background;
+	}
+
+	/**
+	 * @param background the background to set
+	 */
+	public void setBackground(Sprite background) {
+		this.background = background;
+	}
+
+	/**
+	 * @return the logger
+	 */
+	public static Logger getLogger() {
+		return logger;
+	}
+
+	/**
+	 * @param logger the logger to set
+	 */
+	public static void setLogger(Logger logger) {
+		PlayScreen.logger = logger;
+	}
 }
