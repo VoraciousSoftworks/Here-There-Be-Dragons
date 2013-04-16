@@ -12,17 +12,20 @@ import java.util.TreeMap;
 public class Turn {
     //This should probably be somewhere else eventually, I'm just not sure where yet
     public static final String versionString = "0.01a";
-    public static final byte versionCode = 1;
+    public static final byte versionCode = 2;
     
-    private boolean isPlayer1;
+    //Both of these are gotten from the server at auth time
+    private int gameId;
+    private long sessionId;
     
     private Map<Byte, Short> unitsCreated;
     private Map<Byte, List<Vec2D.Short>> towersCreated;
     private Map<Byte, List<Vec2D.Short>> nodes;
     
-    public Turn(boolean isPlayer1){
-        this.isPlayer1 = isPlayer1;
-        
+    public Turn(int gameId, long sessionId){
+    	this.sessionId = sessionId;
+    	this.gameId = gameId;
+    	
         unitsCreated = new HashMap<Byte, Short>();
         towersCreated = new TreeMap<Byte, List<Vec2D.Short>>();
         nodes = new TreeMap<Byte, List<Vec2D.Short>>();
@@ -60,7 +63,7 @@ public class Turn {
     
     public String toString() {
         String result = "";
-        byte[] dataBytes = this.toBytes();
+        byte[] dataBytes = this.toBytes().array();
         
         for(int i=0; i<dataBytes.length; i++){
             result += Byte.toString(dataBytes[i]) + " ";
@@ -71,7 +74,8 @@ public class Turn {
     
     /*
      * byte versionCode
-     * byte playerId
+     * int  gameId
+     * long sessId
      * 
      * byte numberOfUnits
      * byte numberOfTowers
@@ -97,8 +101,8 @@ public class Turn {
      * 
      */
     
-    public byte[] toBytes() {
-        int bufferSize = 5; //size of header info (everything through numberOfPathNodes)
+    public ByteBuffer toBytes() {
+        int bufferSize = Byte.SIZE + Integer.SIZE + Long.SIZE; //size of header info (everything through numberOfPathNodes)
         bufferSize += unitsCreated.size() * (Byte.SIZE/8 + Short.SIZE/8); //Bytes from the unit data
 
         byte numberOfTowers = 0;
@@ -129,8 +133,11 @@ public class Turn {
         //put the version code
         buffer.put(versionCode);
         
-        //put the player id
-        buffer.put((byte) (isPlayer1 ? 1 : 0));
+        //put the game id
+        buffer.putInt(gameId);
+        
+        //put the session id
+        buffer.putLong(sessionId);
         
         //Put the array sizes
         buffer.put((byte) unitsCreated.size());
@@ -145,8 +152,7 @@ public class Turn {
                 
                 buffer.put(entry.getKey().byteValue());
                 
-                buffer.asShortBuffer().put(entry.getValue().shortValue());
-                buffer.position(buffer.position() + (Short.SIZE/8));
+                buffer.putShort(entry.getValue().shortValue());
             }
         }
         
@@ -162,9 +168,8 @@ public class Turn {
             		
 	            	buffer.put(entry.getKey().byteValue());
 	            	
-	            	buffer.asShortBuffer().put(pos.getx());
-	            	buffer.asShortBuffer().put(pos.gety());
-	            	buffer.position(buffer.position() + (Short.SIZE/8)*2);	
+	            	buffer.putShort(pos.getx());
+	            	buffer.putShort(pos.gety());
             	}
             }
         }
@@ -183,13 +188,12 @@ public class Turn {
 	            	buffer.put(nodeNum);
 	            	nodeNum++;
 	            	
-	            	buffer.asShortBuffer().put(pos.getx());
-	            	buffer.asShortBuffer().put(pos.gety());
-	            	buffer.position(buffer.position()+ (Short.SIZE/8)*2);
+	            	buffer.putShort(pos.getx());
+	            	buffer.putShort(pos.gety());
             	}
             }
         }
         
-        return buffer.array();
+        return buffer;
     }
 }
