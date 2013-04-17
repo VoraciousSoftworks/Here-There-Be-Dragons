@@ -214,4 +214,18 @@ public class Turn {
     	}
     	return ret;
     }
+    
+    synchronized
+    public List<List<Vec2D.Short>> getTowers(){
+    	List<List<Vec2D.Short>> ret= new ArrayList<List<Vec2D.Short>>(towersCreated.size());
+    	
+    	Iterator<Map.Entry<Byte, List<Vec2D.Short>>> it = towersCreated.entrySet().iterator();
+    	while(it.hasNext()){
+    		Map.Entry<Byte, List<Vec2D.Short>> tmp=it.next();
+    		Byte loc =tmp.getKey();
+    		List<Vec2D.Short> val=new LinkedList<Vec2D.Short>(tmp.getValue());
+    		ret.add(loc, val);
+    	}
+    	return ret;
+    }
 }

@@ -25,6 +25,7 @@ public class PlayScreen extends Screen {
     private Sprite background;
     private Castle p1Cast,p2Cast;
     boolean inPathMode=false;
+    boolean inTowerMode=false;
     
     Turn player,other;
     
@@ -100,6 +101,10 @@ public class PlayScreen extends Screen {
     		this.inPathMode=!this.inPathMode;
     		//System.out.println(inPathMode);
     	}
+    	else if(e.getKeyCode()==KeyEvent.VK_T){
+    		this.inTowerMode=!this.inTowerMode;
+    		
+    	}
 	}
     
 
@@ -124,7 +129,7 @@ public class PlayScreen extends Screen {
         if(InputHandler.isDown(InputHandler.VK_MOUSE_1)
         		&&this.inPathMode){//TODO add another button to cycle through the different units
         	temp=new Vec2D.Short((short)(InputHandler.getMousePos().x+this.getOffsetx()),(short)(InputHandler.getMousePos().y+this.getOffsety()));
-        	System.out.println((short)(InputHandler.getMousePos().x+this.getOffsetx())+", "+(short)(InputHandler.getMousePos().y+this.getOffsety()));
+        	//System.out.println((short)(InputHandler.getMousePos().x+this.getOffsetx())+", "+(short)(InputHandler.getMousePos().y+this.getOffsety()));
         	
         	if(temp.x<=2160&&temp.x>=0){//demensions of back img x=2160, y=1440
         		if(temp.y<=1440&&temp.y>=0){
@@ -132,6 +137,17 @@ public class PlayScreen extends Screen {
         		}
         	}
         	
+        }
+        else if(InputHandler.isDown(InputHandler.VK_MOUSE_1)
+        		&&this.inTowerMode){//TODO add buttons to cycle through towers
+        	temp=new Vec2D.Short((short)(InputHandler.getMousePos().x+this.getOffsetx()),(short)(InputHandler.getMousePos().y+this.getOffsety()));
+        	System.out.println((short)(InputHandler.getMousePos().x+this.getOffsetx())+", "+(short)(InputHandler.getMousePos().y+this.getOffsety()));
+        	
+        	if(temp.x<=2160&&temp.x>=0){//demensions of back img x=2160, y=1440
+        		if(temp.y<=1440&&temp.y>=0){
+        			//player add tower
+        		}
+        	}
         }
     }
     
