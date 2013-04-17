@@ -58,21 +58,38 @@ public class PlayScreen extends Screen {
     public void render(Graphics2D g) {
     	this.getBackground().draw(g, 0, 0);
     	
-    	List<List<Vec2D.Short>>outer=player.getPaths();
-    	Iterator<List<Vec2D.Short>>outIt=outer.iterator();
-    	Vec2D.Short last=null;
-    	while(outIt.hasNext()){
-    		List<Vec2D.Short>inner=outIt.next();
-    		Iterator<Vec2D.Short>inIt=inner.iterator();
-    		while(inIt.hasNext()){
-    			Vec2D.Short tmp=inIt.next();
-    			g.drawOval(tmp.getx()-8, tmp.gety()-8, 16, 16);
-    			if(last!=null){
-    				g.drawLine(last.getx(), last.gety(), tmp.getx(), tmp.gety());
+    	{
+    		List<List<Vec2D.Short>>outer=player.getPaths();
+    		Iterator<List<Vec2D.Short>>outIt=outer.iterator();
+    		Vec2D.Short last=null;
+    		while(outIt.hasNext()){
+    			List<Vec2D.Short>inner=outIt.next();
+    			Iterator<Vec2D.Short>inIt=inner.iterator();
+    			while(inIt.hasNext()){
+    				Vec2D.Short tmp=inIt.next();
+    				g.drawOval(tmp.getx()-8, tmp.gety()-8, 16, 16);
+    				if(last!=null){
+    					g.drawLine(last.getx(), last.gety(), tmp.getx(), tmp.gety());
+    				}
+    				last=tmp;
     			}
-    			last=tmp;
     		}
     	}
+    	
+    	{
+    		List<List<Vec2D.Short>>outer=player.getTowers();
+    		Iterator<List<Vec2D.Short>>outIt=outer.iterator();
+    		while(outIt.hasNext()){
+    			List<Vec2D.Short>inner=outIt.next();
+    			Iterator<Vec2D.Short>inIt=inner.iterator();
+    			while(inIt.hasNext()){
+    				Vec2D.Short tmp=inIt.next();
+    				g.drawRect(tmp.getx()-8, tmp.gety()-8, 16, 16);
+    			}
+    		}
+    	}
+    	
+    	
     	
     	this.getP1Cast().draw(g);
     	this.getP2Cast().draw(g);
@@ -145,7 +162,7 @@ public class PlayScreen extends Screen {
         	
         	if(temp.x<=2160&&temp.x>=0){//demensions of back img x=2160, y=1440
         		if(temp.y<=1440&&temp.y>=0){
-        			//player add tower
+        			player.createTower((byte)0, temp);
         		}
         	}
         }
