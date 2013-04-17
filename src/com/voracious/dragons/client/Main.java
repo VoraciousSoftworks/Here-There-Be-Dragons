@@ -30,7 +30,7 @@ public class Main extends Applet implements WindowListener {
         initLog4J();
         logger.setLevel(Level.INFO);
         if (args.length > 0) {
-            if (args[0] == "--debug") {
+            if (args[0].equals("--debug")) {
                 logger.setLevel(Level.ALL);
             }
         }

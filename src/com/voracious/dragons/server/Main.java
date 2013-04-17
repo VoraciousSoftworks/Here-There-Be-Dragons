@@ -20,12 +20,13 @@ public class Main {
     	initLog4J();
         logger.setLevel(Level.INFO);
         if (args.length > 0) {
-            if (args[0] == "--debug") {
+            if (args[0].equals("--debug")) {
                 logger.setLevel(Level.ALL);
             }
         }
     	
     	logger.info("Server version " + Turn.versionString + " started");
+    	logger.debug("Debug mode active");
     	database.init();
     	
     	new Thread(new ServerConnectionManager()).start();
