@@ -5,8 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
-import org.apache.log4j.Logger;
-
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
@@ -14,15 +12,12 @@ import com.voracious.dragons.client.graphics.ui.Button;
 import com.voracious.dragons.client.utils.InputHandler;
 
 public class MainMenuScreen extends Screen {
-	public static final int WIDTH = 2160/3;
-    public static final int HEIGHT = 1440/3;
-    private static Logger logger = Logger.getLogger(Game.class);
     private Button playTurn,playNew,spectate,stats;
     private Sprite background;
     
     
 	public MainMenuScreen() {
-		super(WIDTH, HEIGHT);
+		super(Game.WIDTH, Game.HEIGHT);
 		
 		
 		this.playTurn=new Button("Play Existing Game",235,120);
@@ -55,13 +50,13 @@ public class MainMenuScreen extends Screen {
 		});
 		
 		
-		this.setBackground(new Sprite("/mainMenuBackground.png"));
+		background = new Sprite("/mainMenuBackground.png");
 		InputHandler.registerScreen(this);
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		this.getBackground().draw(g, 0, 0);
+		background.draw(g, 0, 0);
 		this.playTurn.draw(g);
 		this.playNew.draw(g);
 		this.spectate.draw(g);
@@ -71,8 +66,6 @@ public class MainMenuScreen extends Screen {
 
 	@Override
 	public void tick() {
-		// TODO Auto-generated method stub
-
 	}
 
 	 @Override
@@ -85,34 +78,4 @@ public class MainMenuScreen extends Screen {
 		 this.stats.mouseClicked(ex, ey);
 		 
 	 }
-	
-	
-	/**
-	 * @return the logger
-	 */
-	public static Logger getLogger() {
-		return logger;
-	}
-
-	/**
-	 * @param logger the logger to set
-	 */
-	public static void setLogger(Logger logger) {
-		MainMenuScreen.logger = logger;
-	}
-
-	/**
-	 * @return the background
-	 */
-	public Sprite getBackground() {
-		return background;
-	}
-
-	/**
-	 * @param background the background to set
-	 */
-	public void setBackground(Sprite background) {
-		this.background = background;
-	}
-
 }
