@@ -1,5 +1,6 @@
 package com.voracious.dragons.client.screens;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
+import com.voracious.dragons.client.graphics.ui.Text;
 import com.voracious.dragons.client.towers.Castle;
 import com.voracious.dragons.client.utils.InputHandler;
 import com.voracious.dragons.common.Turn;
@@ -23,7 +25,9 @@ public class PlayScreen extends Screen {
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
     private Castle p1Cast,p2Cast;
+    boolean inMenu=false;
     boolean inPathMode=false;
+    boolean inUnitMode=false;
     boolean inTowerMode=false;
     
     Turn player,other;
@@ -60,7 +64,7 @@ public class PlayScreen extends Screen {
     	this.getP1Cast().draw(g);
     	this.getP2Cast().draw(g);
     	
-    	
+    	//Block used for Paths
     	{
     		List<List<Vec2D.Short>>outer=player.getPaths();
     		Iterator<List<Vec2D.Short>>outIt=outer.iterator();
@@ -78,7 +82,7 @@ public class PlayScreen extends Screen {
     			}
     		}
     	}
-    	
+    	//Block used for Towers
     	{
     		List<List<Vec2D.Short>>outer=player.getTowers();
     		Iterator<List<Vec2D.Short>>outIt=outer.iterator();
@@ -92,6 +96,20 @@ public class PlayScreen extends Screen {
     		}
     	}
     	
+    	if(inMenu){
+    		g.setColor(Color.BLACK);
+    		g.fillRect(0, Game.HEIGHT-15, Game.WIDTH, 15);
+    		Text t = new Text();
+    		t.setLocation(5, Game.HEIGHT-2);//5 and 2 are magic constants to separate the text from the window borders. Looks better
+    		t.setColor(Color.WHITE);
+    		if(inPathMode)
+    			t.setText("You are in path mode");
+    		else if(inTowerMode)
+    			t.setText("You are in tower mode");
+    		else if(inUnitMode)
+    			t.setText("You are in unit mode");
+    		t.draw(g);
+    	}
     	
     }
 
@@ -115,18 +133,28 @@ public class PlayScreen extends Screen {
 	public void keyPressed(KeyEvent e) {
     	if(e.getKeyCode()==KeyEvent.VK_P){
     		this.inPathMode=!this.inPathMode;
+    		this.inMenu=!this.inMenu;
     		this.inTowerMode=false;
+    		this.inUnitMode=false;
     	}
     	else if(e.getKeyCode()==KeyEvent.VK_T){
     		this.inTowerMode=!this.inTowerMode;
+    		this.inMenu=!this.inMenu;
     		this.inPathMode=false;
-    		
+    		this.inUnitMode=false;
     	}
     	else if(e.getKeyCode()==KeyEvent.VK_N){
+    		this.inMenu=false;
+    		this.inPathMode=false;
+    		this.inTowerMode=false;
+    		this.inUnitMode=false;
+    	}
+    	else if(e.getKeyCode()==KeyEvent.VK_U){
+    		this.inUnitMode=!this.inUnitMode;
+    		this.inMenu=!this.inMenu;
     		this.inPathMode=false;
     		this.inTowerMode=false;
     	}
-    	
 	}
     
 

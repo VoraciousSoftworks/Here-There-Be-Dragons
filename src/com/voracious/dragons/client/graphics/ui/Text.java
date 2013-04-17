@@ -11,6 +11,7 @@ import com.voracious.dragons.client.graphics.Drawable;
 public class Text implements Drawable {
 
 	private int x, y;
+	private Color color;
 	private String text;
 	private BufferedImage image;
 	private boolean needsRefresh;
@@ -42,7 +43,7 @@ public class Text implements Drawable {
 			ig.setFont(f);
 		}
 		
-		ig.setColor(Color.black);
+		ig.setColor(color);
 		
 		ig.drawString(text, 0, 0);
 
@@ -74,5 +75,13 @@ public class Text implements Drawable {
 
 	public int getHeight() {
 		return image.getHeight();
+	}
+	
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 }
