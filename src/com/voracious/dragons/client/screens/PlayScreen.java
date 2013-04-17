@@ -152,13 +152,13 @@ public class PlayScreen extends Screen {
 	public void keyPressed(KeyEvent e) {
     	if(e.getKeyCode()==KeyEvent.VK_P){
     		this.inPathMode=!this.inPathMode;
-    		this.inMenu=!this.inMenu;
+    		this.inMenu=true;
     		this.inTowerMode=false;
     		this.inUnitMode=false;
     	}
     	else if(e.getKeyCode()==KeyEvent.VK_T){
     		this.inTowerMode=!this.inTowerMode;
-    		this.inMenu=!this.inMenu;
+    		this.inMenu=true;
     		this.inPathMode=false;
     		this.inUnitMode=false;
     	}
@@ -170,7 +170,7 @@ public class PlayScreen extends Screen {
     	}
     	else if(e.getKeyCode()==KeyEvent.VK_U){
     		this.inUnitMode=!this.inUnitMode;
-    		this.inMenu=!this.inMenu;
+    		this.inMenu=true;
     		this.inPathMode=false;
     		this.inTowerMode=false;
     	}
