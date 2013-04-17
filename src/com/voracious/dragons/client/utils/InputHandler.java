@@ -68,7 +68,7 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
     }
 
     public static void deregisterScreen(Screen screen) {
-        screens.add(screen);
+        screens.remove(screen);
     }
 
     public static boolean isDown(int keyCode) {
@@ -183,15 +183,13 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 
     @Override
     public void keyPressed(KeyEvent arg0) {
-        if (!keymap.containsKey(arg0.getKeyCode()) || keymap.get(arg0.getKeyCode()).booleanValue()) {
+        if (keymap.containsKey(arg0.getKeyCode())) {
             keymap.put(arg0.getKeyCode(), true);
-            
-            Iterator<Screen> it = screens.iterator();
-            while (it.hasNext()) {
-                it.next().keyPressed(arg0);
-            }
-        }else if (keymap.containsKey(arg0.getKeyCode())) {
-            keymap.put(arg0.getKeyCode(), true);
+        }
+        
+        Iterator<Screen> it = screens.iterator();
+        while (it.hasNext()) {
+            it.next().keyPressed(arg0);
         }
     }
 

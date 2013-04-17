@@ -19,6 +19,8 @@ public class PlayScreen extends Screen {
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
     private Castle p1Cast,p2Cast;
+    boolean inPathMode=false;
+    
     public PlayScreen() {
         super(HEIGHT, WIDTH);
         
@@ -64,7 +66,20 @@ public class PlayScreen extends Screen {
         }
     }
     
+    
     @Override
+	public void keyPressed(KeyEvent e) {
+    	if(e.getKeyCode()==KeyEvent.VK_P){
+    		this.inPathMode=!this.inPathMode;
+    		System.out.println(inPathMode);
+    	}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
+
+	@Override
     public void mouseMoved(MouseEvent e) {
         if(InputHandler.isDown(InputHandler.VK_MOUSE_2)){
             this.translate(InputHandler.getChangeInMouse());
