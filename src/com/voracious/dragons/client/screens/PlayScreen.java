@@ -57,16 +57,21 @@ public class PlayScreen extends Screen {
     public void render(Graphics2D g) {
     	this.getBackground().draw(g, 0, 0);
     	
-    	/*List<Short> tmp=player.getPaths().get(0);
-    	Iterator<Short> it=tmp.iterator();
-    	while(it.hasNext()){
-    		temp=it.next();
-    		g.fillOval((int)temp.x, (int)temp.y, 10, 10);
-    		draw(g);
-    	}*/
-    	
-    	List<List<Short>>outer=player.getPaths();
-    	Iterator<List<Short>>outIt=outer.iterator();
+    	List<List<Vec2D.Short>>outer=player.getPaths();
+    	Iterator<List<Vec2D.Short>>outIt=outer.iterator();
+    	Vec2D.Short last=null;
+    	while(outIt.hasNext()){
+    		List<Vec2D.Short>inner=outIt.next();
+    		Iterator<Vec2D.Short>inIt=inner.iterator();
+    		while(inIt.hasNext()){
+    			Vec2D.Short tmp=inIt.next();
+    			g.drawOval(tmp.getx()-8, tmp.gety()-8, 16, 16);
+    			if(last!=null){
+    				g.drawLine(last.getx(), last.gety(), tmp.getx(), tmp.gety());
+    			}
+    			last=tmp;
+    		}
+    	}
     	
     	this.getP1Cast().draw(g);
     	this.getP2Cast().draw(g);
@@ -117,8 +122,8 @@ public class PlayScreen extends Screen {
         }
         
         if(InputHandler.isDown(InputHandler.VK_MOUSE_1)
-        		&&this.inPathMode){
-        	temp=new Vec2D.Short((short)InputHandler.getMousePos().x,(short)InputHandler.getMousePos().y);
+        		&&this.inPathMode){//TODO add another button to cycle through the different units
+        	temp=new Vec2D.Short((short)(InputHandler.getMousePos().x+this.getOffsetx()),(short)(InputHandler.getMousePos().y+this.getOffsety()));
         	//System.out.println(temp.getx()+", "+temp.gety());
         	player.addNode((byte) 0, temp);
         }

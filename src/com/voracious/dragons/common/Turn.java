@@ -53,6 +53,7 @@ public class Turn {
         }
     }
     
+    synchronized
     public void addNode(byte pathId, Vec2D.Short location) {
         if(nodes.containsKey(pathId)){
             nodes.get(pathId).add(location);
@@ -200,6 +201,7 @@ public class Turn {
         return buffer;
     }
     
+    synchronized
     public List<List<Vec2D.Short>> getPaths(){
     	List<List<Vec2D.Short>> ret = new ArrayList<List<Vec2D.Short>>(nodes.size());
     	
@@ -207,7 +209,7 @@ public class Turn {
     	while(it.hasNext()){
     		Map.Entry<Byte, List<Vec2D.Short>> tmp=it.next();
     		Byte loc = tmp.getKey();
-    		List<Vec2D.Short> val = tmp.getValue();
+    		List<Vec2D.Short> val = new LinkedList<Vec2D.Short>(tmp.getValue());
     		ret.add(loc, val);
     	}
     	return ret;
