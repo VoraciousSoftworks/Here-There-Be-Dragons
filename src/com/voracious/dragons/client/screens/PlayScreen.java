@@ -14,6 +14,8 @@ import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.graphics.ui.Text;
 import com.voracious.dragons.client.towers.Castle;
+import com.voracious.dragons.client.towers.Tower;
+import com.voracious.dragons.client.units.Unit;
 import com.voracious.dragons.client.utils.InputHandler;
 import com.voracious.dragons.common.Turn;
 import com.voracious.dragons.common.Vec2D;
@@ -25,6 +27,8 @@ public class PlayScreen extends Screen {
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
     private Castle p1Cast,p2Cast;
+    private List<Tower> towers;
+    private List<Unit> units;
     boolean inMenu=false;
     boolean inPathMode=false;
     boolean inUnitMode=false;
@@ -83,6 +87,8 @@ public class PlayScreen extends Screen {
     		}
     	}
     	//Block used for Towers
+    	//NOTE:Entire block should be replaced with drawing towers from the tower list when turn
+    	//execution is implemented. I will comment out that code below this block.
     	{
     		List<List<Vec2D.Short>>outer=player.getTowers();
     		Iterator<List<Vec2D.Short>>outIt=outer.iterator();
@@ -95,6 +101,17 @@ public class PlayScreen extends Screen {
     			}
     		}
     	}
+    	/* This is the proper future code for drawing the towers.
+    	for(Tower t : towers){
+    		t.draw(g);
+    	}
+    	*/
+    	
+    	/*Future code for drawing units
+    	for(Unit u : units){
+    		u.draw(g);
+    	}
+    	*/
     	
     	if(inMenu){
     		g.setColor(Color.BLACK);
@@ -112,6 +129,7 @@ public class PlayScreen extends Screen {
     	}
     	
     }
+    
 
     @Override
     public void tick() {
