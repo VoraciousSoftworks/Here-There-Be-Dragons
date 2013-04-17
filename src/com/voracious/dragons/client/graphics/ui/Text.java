@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import com.voracious.dragons.client.graphics.Drawable;
@@ -16,6 +15,7 @@ public class Text implements Drawable {
 	private String text;
 	private BufferedImage image;
 	private boolean needsRefresh;
+	private FontMetrics fontMetrics;
 
 	public Text(String text, int x, int y) {
 		this.x = x;
@@ -42,10 +42,18 @@ public class Text implements Drawable {
 			f = image.getGraphics().getFont();
 		}
 		
-		FontMetrics metrics = image.getGraphics().getFontMetrics(f);
+		fontMetrics = image.getGraphics().getFontMetrics(f);
 
-		int height = metrics.getHeight();
-		int width = metrics.stringWidth(text);
+		int height = fontMetrics.getHeight();
+		int width = fontMetrics.stringWidth(text);
+		
+		if(width == 0){
+			width = 1;
+		}
+		
+		if(height == 0){
+			height = 1;
+		}
 
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
@@ -56,7 +64,7 @@ public class Text implements Drawable {
 		
 		ig.setColor(color);
 		
-		ig.drawString(text, 0, metrics.getAscent());
+		ig.drawString(text, 0, fontMetrics.getAscent());
 
 		needsRefresh = false;
 	}
@@ -94,5 +102,13 @@ public class Text implements Drawable {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+	
+	public String getText(){
+		return text;
+	}
+	
+	public FontMetrics getFontMetrics(){
+		return fontMetrics;
 	}
 }
