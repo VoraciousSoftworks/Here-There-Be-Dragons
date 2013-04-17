@@ -1,6 +1,9 @@
 package com.voracious.dragons.client.screens;
 
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
 import org.apache.log4j.Logger;
 
@@ -21,10 +24,36 @@ public class MainMenuScreen extends Screen {
 	public MainMenuScreen() {
 		super(WIDTH, HEIGHT);
 		
+		
 		this.playTurn=new Button("Play Existing Game",235,120);
+		this.playTurn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
 		this.playNew=new Button("Play New Game",410,120);
+		this.playTurn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				//TODO go to a screen to choose new game
+			}
+		});
 		this.spectate=new Button("Spectate a Game",250,220);
+		this.playTurn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				//TODO go to a screen to choose the existing game to watch
+			}
+		});
 		this.stats=new Button("See Stats",425,220);
+		this.playTurn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				//TODO go to a screen to see the stats
+			}
+		});
+		
 		
 		this.setBackground(new Sprite("/mainMenuBackground.png"));
 		InputHandler.registerScreen(this);
@@ -46,6 +75,18 @@ public class MainMenuScreen extends Screen {
 
 	}
 
+	 @Override
+	 public void mouseClicked(MouseEvent e){
+		 int ex=e.getX();
+		 int ey=e.getY();
+		 this.playTurn.mouseClicked(ex, ey);
+		 this.playNew.mouseClicked(ex, ey);
+		 this.spectate.mouseClicked(ex, ex);
+		 this.stats.mouseClicked(ex, ey);
+		 
+	 }
+	
+	
 	/**
 	 * @return the logger
 	 */
