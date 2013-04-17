@@ -54,7 +54,7 @@ public class Button implements Drawable {
 	}
 	
 	public void mouseClicked(int x, int y){
-		if(x > this.x && x < this.width && y > this.y && y < this.height){
+		if(x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height){
 			Iterator<ActionListener> it = listeners.iterator();
 			while(it.hasNext()){
 				it.next().actionPerformed(new ActionEvent(this, ACTION_BUTTON_PRESSED, "pressed"));
