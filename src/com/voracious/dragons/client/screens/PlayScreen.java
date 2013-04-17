@@ -15,7 +15,6 @@ import com.voracious.dragons.client.towers.Castle;
 import com.voracious.dragons.client.utils.InputHandler;
 import com.voracious.dragons.common.Turn;
 import com.voracious.dragons.common.Vec2D;
-import com.voracious.dragons.common.Vec2D.Short;
 
 public class PlayScreen extends Screen {
 
@@ -117,7 +116,6 @@ public class PlayScreen extends Screen {
     	if(e.getKeyCode()==KeyEvent.VK_P){
     		this.inPathMode=!this.inPathMode;
     		this.inTowerMode=false;
-    		//System.out.println(inPathMode);
     	}
     	else if(e.getKeyCode()==KeyEvent.VK_T){
     		this.inTowerMode=!this.inTowerMode;
@@ -150,25 +148,23 @@ public class PlayScreen extends Screen {
             InputHandler.setMouseMoveable(false);
         }
         
-        if(InputHandler.isDown(InputHandler.VK_MOUSE_1)
-        		&&this.inPathMode){//TODO add another button to cycle through the different units
-        	temp=new Vec2D.Short((short)(InputHandler.getMousePos().x+this.getOffsetx()),(short)(InputHandler.getMousePos().y+this.getOffsety()));
-        	//System.out.println((short)(InputHandler.getMousePos().x+this.getOffsetx())+", "+(short)(InputHandler.getMousePos().y+this.getOffsety()));
+        if(InputHandler.isDown(InputHandler.VK_MOUSE_1) &&this.inPathMode){
+        	//TODO add another button to cycle through the different units
+        	temp = new Vec2D.Short((short)(InputHandler.getMousePos().x + this.getOffsetx()),
+        			               (short)(InputHandler.getMousePos().y + this.getOffsety()));
         	
-        	if(temp.x<=2160&&temp.x>=0){//demensions of back img x=2160, y=1440
-        		if(temp.y<=1440&&temp.y>=0){
-        			player.addNode((byte) 0, temp);
-        		}
+        	if(temp.x <= PlayScreen.WIDTH && temp.x >= 0 && temp.y <= PlayScreen.HEIGHT && temp.y >= 0){
+        		player.addNode((byte) 0, temp);
         	}
         	
         }
         else if(InputHandler.isDown(InputHandler.VK_MOUSE_1) && this.inTowerMode ){
         	//TODO add buttons to cycle through towers
-        	temp=new Vec2D.Short((short) (InputHandler.getMousePos().x + this.getOffsetx()),
-        			             (short) (InputHandler.getMousePos().y + this.getOffsety()));
+        	temp = new Vec2D.Short((short) (InputHandler.getMousePos().x + this.getOffsetx()),
+        			               (short) (InputHandler.getMousePos().y + this.getOffsety()));
         	
         	if(temp.x <= PlayScreen.WIDTH && temp.x >= 0 && temp.y <= PlayScreen.HEIGHT && temp.y >= 0){
-        			player.createTower((byte)0, temp);
+        		player.createTower((byte)0, temp);
         	}
         }
     }
