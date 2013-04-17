@@ -24,7 +24,7 @@ public class MainMenuScreen extends Screen {
 		this.playTurn.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+				Game.setCurrentScreen(new PlayScreen());
 			}
 		});
 		this.playNew=new Button("Play New Game",410,120);
@@ -34,18 +34,18 @@ public class MainMenuScreen extends Screen {
 				//TODO go to a screen to choose new game
 			}
 		});
-		this.spectate=new Button("Spectate a Game",250,220);
+		this.spectate=new Button("Spectate a Game",235,220);
 		this.playTurn.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//TODO go to a screen to choose the existing game to watch
 			}
 		});
-		this.stats=new Button("See Stats",425,220);
+		this.stats=new Button("See Stats",410,220);
 		this.playTurn.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//TODO go to a screen to see the stats
+				Game.setCurrentScreen(new StatScreen());
 			}
 		});
 		
