@@ -2,8 +2,12 @@ package com.voracious.dragons.client.screens;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+
+import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
@@ -20,11 +24,12 @@ public class LoginScreen extends Screen {
 	private Text userLabel, passLabel;
 	private boolean usernameHasFocus = true;
 	
+	private Logger logger = Logger.getLogger(LoginScreen.class);
+	
 	public LoginScreen() {
 		super(Game.WIDTH, Game.HEIGHT);
 		
 		background = new Sprite("/mainMenuBackground.png");
-		InputHandler.registerScreen(this);
 		
 		userLabel = new Text("Username: ", 10, Game.HEIGHT - 70);
 		passLabel = new Text("Password: ", 10, Game.HEIGHT - 45);
@@ -36,9 +41,51 @@ public class LoginScreen extends Screen {
 		password.setDrawCaret(false);
 		
 		login = new Button("Login", username.getWidth() + username.getX() + 5, username.getY());
+		login.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				authenticate();
+			}
+		});
+		
 		register = new Button("register", password.getWidth() + password.getX() + 5, password.getY());
+		register.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				register();
+			}
+		});
+	}
+	
+	@Override
+	public void start(){
+		InputHandler.registerScreen(this);
+	}
+	
+	@Override
+	public void stop(){
+		InputHandler.deregisterScreen(this);
 	}
 
+	
+	private boolean authenticate() {
+		//TODO: Ask the server if the username and pass is good
+		onSuccess();
+		logger.info("Logged in");
+		return true;
+	}
+	
+	private boolean register() {
+		//TODO: Send the server registration info
+		onSuccess();
+		logger.info("Registered");
+		return true;
+	}
+
+	private void onSuccess() {
+		Game.setCurrentScreen(new MainMenuScreen());
+	}
+	
 	@Override
 	public void render(Graphics2D g) {
 		background.draw(g, 0, 0);

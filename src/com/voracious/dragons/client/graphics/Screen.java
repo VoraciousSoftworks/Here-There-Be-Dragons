@@ -31,6 +31,9 @@ public abstract class Screen implements Drawable {
      */
     public abstract void tick();
     
+    public void start(){}
+    public void stop(){}
+    
     /**
      * Translates the screen so that when it is drawn the entire thing will be translated
      * 

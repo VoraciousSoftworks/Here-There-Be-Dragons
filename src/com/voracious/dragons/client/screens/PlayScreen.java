@@ -41,16 +41,9 @@ public class PlayScreen extends Screen {
     public PlayScreen() {
         super(HEIGHT, WIDTH);
         
-        InputHandler.registerButton(KeyEvent.VK_W);
-        InputHandler.registerButton(KeyEvent.VK_A);
-        InputHandler.registerButton(KeyEvent.VK_S);
-        InputHandler.registerButton(KeyEvent.VK_D);
-        InputHandler.registerScreen(this);
-        
         this.setBackground(new Sprite("/backgroundLarge.png"));
         
-        
-        player=new Turn(0,0);
+        player=new Turn(0, 0);
         
         this.setP1Cast(new Castle());
         this.getP1Cast().setX(0);
@@ -60,6 +53,25 @@ public class PlayScreen extends Screen {
         this.getP2Cast().setX(background.getWidth() - Castle.width);
         this.getP2Cast().setY(0);
     }
+    
+    @Override
+	public void start(){
+    	InputHandler.registerButton(KeyEvent.VK_W);
+        InputHandler.registerButton(KeyEvent.VK_A);
+        InputHandler.registerButton(KeyEvent.VK_S);
+        InputHandler.registerButton(KeyEvent.VK_D);
+        InputHandler.registerScreen(this);
+	}
+	
+	@Override
+	public void stop(){
+		InputHandler.deregisterButton(KeyEvent.VK_W);
+        InputHandler.deregisterButton(KeyEvent.VK_A);
+        InputHandler.deregisterButton(KeyEvent.VK_S);
+        InputHandler.deregisterButton(KeyEvent.VK_D);
+        InputHandler.deregisterScreen(this);
+	}
+
 
     @Override
     public void render(Graphics2D g) {

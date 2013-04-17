@@ -25,6 +25,7 @@ public class Game extends Canvas implements Runnable {
     private static Thread thread;
     private static boolean running = false;
     private static Screen currentScreen;
+    private static Object lock = new Object();
     
     public Game() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -41,14 +42,18 @@ public class Game extends Canvas implements Runnable {
         
         g.clearRect(0, 0, WIDTH, HEIGHT);
         
-        currentScreen.draw(g);
+        synchronized(lock) {
+        	currentScreen.draw(g);
+        }
         
         g.dispose();
         bs.show();
     }
 
     public void tick() {
-        currentScreen.tick();
+    	synchronized(lock) {
+    		currentScreen.tick();
+    	}
     }
 
     @Override
@@ -95,7 +100,13 @@ public class Game extends Canvas implements Runnable {
      * @param s the screen to draw
      */
     public static void setCurrentScreen(Screen s){
-        currentScreen = s;
+    	synchronized(lock){
+    		if(currentScreen != null){
+    			currentScreen.stop();
+    		}
+    		currentScreen = s;
+    		s.start();
+    	}
     }
 
     public void init() {

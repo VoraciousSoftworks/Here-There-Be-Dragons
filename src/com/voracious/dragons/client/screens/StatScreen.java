@@ -5,8 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
-import org.apache.log4j.Logger;
-
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
@@ -22,6 +20,7 @@ public class StatScreen extends Screen {
     
 	public StatScreen(/*player's pid to do db searching*/) {
 		super(WIDTH, HEIGHT);
+		background = new Sprite("/mainMenuBackground.png");
 		returnButton=new Button("Back",0,0);
 		returnButton.addActionListener(new ActionListener(){
 			@Override
@@ -29,15 +28,23 @@ public class StatScreen extends Screen {
 				Game.setCurrentScreen(new MainMenuScreen());
 			}
 		});
-		
-		
+	}
 	
+	@Override
+	public void start(){
 		InputHandler.registerScreen(this);
 	}
+	
+	@Override
+	public void stop(){
+		InputHandler.deregisterScreen(this);
+	}
+
 
 	@Override
 	public void render(Graphics2D g) {
 		this.returnButton.draw(g);
+		background.draw(g, 0, 0);
 
 	}
 
@@ -51,20 +58,4 @@ public class StatScreen extends Screen {
 		int ey=e.getY();
 		this.returnButton.mouseClicked(ex, ey);
 	}
-	
-	
-	/**
-	 * @return the background
-	 */
-	public Sprite getBackground() {
-		return background;
-	}
-
-	/**
-	 * @param background the background to set
-	 */
-	public void setBackground(Sprite background) {
-		this.background = background;
-	}
-
 }
