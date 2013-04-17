@@ -24,6 +24,13 @@ public class Text implements Drawable {
 		refresh(null);
 	}
 	
+	public Text(){
+		this.x = 0; this.y = 0;
+		this.text = "No text set";
+		needsRefresh = true;
+		refresh(null);
+	}
+	
 	private void refresh(Font f){
 		image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		FontMetrics metrics;
@@ -45,7 +52,7 @@ public class Text implements Drawable {
 		
 		ig.setColor(color);
 		
-		ig.drawString(text, 0, 0);
+		ig.drawString(text, 0, height);
 
 		needsRefresh = false;
 	}
