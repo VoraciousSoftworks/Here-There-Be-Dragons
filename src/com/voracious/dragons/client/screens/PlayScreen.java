@@ -116,10 +116,12 @@ public class PlayScreen extends Screen {
 	public void keyPressed(KeyEvent e) {
     	if(e.getKeyCode()==KeyEvent.VK_P){
     		this.inPathMode=!this.inPathMode;
+    		this.inTowerMode=false;
     		//System.out.println(inPathMode);
     	}
     	else if(e.getKeyCode()==KeyEvent.VK_T){
     		this.inTowerMode=!this.inTowerMode;
+    		this.inPathMode=false;
     		
     	}
 	}

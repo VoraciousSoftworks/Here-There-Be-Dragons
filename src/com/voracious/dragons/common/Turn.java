@@ -228,4 +228,11 @@ public class Turn {
     	}
     	return ret;
     }
+    
+    synchronized
+    public List<Short> getUnits(){
+    	List<Short> ret= new LinkedList<Short>(unitsCreated.values());
+    	
+    	return ret;
+    }
 }
