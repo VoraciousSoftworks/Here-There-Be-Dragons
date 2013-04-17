@@ -113,11 +113,13 @@ public class PlayScreen extends Screen {
     	}
     	*/
     	
+    	g.translate(this.getOffsetx(), this.getOffsety());
+    	
     	if(inMenu){
     		g.setColor(Color.BLACK);
     		g.fillRect(0, Game.HEIGHT-15, Game.WIDTH, 15);
-    		Text t = new Text();
-    		t.setLocation(0, Game.HEIGHT-15);//5 and 15 are magic constants to separate the text from the window borders. Looks better
+    		Text t = new Text("t");
+    		t.setLocation(0, Game.HEIGHT-t.getHeight());
     		t.setColor(Color.WHITE);
     		if(inPathMode)
     			t.setText("You are in path mode");
@@ -127,7 +129,6 @@ public class PlayScreen extends Screen {
     			t.setText("You are in unit mode");
     		t.draw(g);
     	}
-    	
     }
     
 
