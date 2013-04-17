@@ -27,6 +27,8 @@ public class Main {
     	
     	logger.info("Server version " + Turn.versionString + " started");
     	database.init();
+    	
+    	new Thread(new ServerConnectionManager()).start();
     }
     
     public static void initLog4J() {
