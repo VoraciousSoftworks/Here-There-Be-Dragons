@@ -58,6 +58,10 @@ public class PlayScreen extends Screen {
     public void render(Graphics2D g) {
     	this.getBackground().draw(g, 0, 0);
     	
+    	this.getP1Cast().draw(g);
+    	this.getP2Cast().draw(g);
+    	
+    	
     	{
     		List<List<Vec2D.Short>>outer=player.getPaths();
     		Iterator<List<Vec2D.Short>>outIt=outer.iterator();
@@ -90,10 +94,6 @@ public class PlayScreen extends Screen {
     	}
     	
     	
-    	
-    	this.getP1Cast().draw(g);
-    	this.getP2Cast().draw(g);
-    	
     }
 
     @Override
@@ -124,6 +124,11 @@ public class PlayScreen extends Screen {
     		this.inPathMode=false;
     		
     	}
+    	else if(e.getKeyCode()==KeyEvent.VK_N){
+    		this.inPathMode=false;
+    		this.inTowerMode=false;
+    	}
+    	
 	}
     
 
