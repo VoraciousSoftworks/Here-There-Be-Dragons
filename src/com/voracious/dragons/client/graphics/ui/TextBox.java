@@ -10,7 +10,7 @@ import com.voracious.dragons.client.graphics.Drawable;
 public class TextBox implements Drawable {
 	public static final int padding = 3;
 	public static final int blinkDelay = 400;
-	public static final char passchar = '\u2022';
+	public static final char passchar = '\u25CF';
 	
 	private Text text;
 	private Text passText;
@@ -19,6 +19,7 @@ public class TextBox implements Drawable {
 	private int width, height;
 	
 	private boolean isPassword;
+	private boolean drawCaret = true;
 	private boolean caretBlink = true;
 	private long lastBlinkTime;
 	
@@ -28,6 +29,19 @@ public class TextBox implements Drawable {
 		caretPos = 0;
 		x = 0;
 		y = 0;
+		width = 100;
+		height = 21;
+		
+		lastBlinkTime = System.currentTimeMillis();
+		isPassword = false;
+	}
+	
+	public TextBox(int x, int y){
+		text = new Text("");
+		passText = new Text("");
+		caretPos = 0;
+		this.x = x;
+		this.y = y;
 		width = 100;
 		height = 21;
 		
@@ -47,6 +61,56 @@ public class TextBox implements Drawable {
 		lastBlinkTime = System.currentTimeMillis();
 		this.isPassword = isPassword;
 	}
+	
+	public TextBox(int x, int y, boolean isPassword) {
+		text = new Text("");
+		passText = new Text("");
+		caretPos = 0;
+		this.x = x;
+		this.y = y;
+		width = 100;
+		height = 21;
+		
+		lastBlinkTime = System.currentTimeMillis();
+		this.isPassword = isPassword;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setLocation(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public boolean isDrawingCaret() {
+		return drawCaret;
+	}
+
+	public void setDrawCaret(boolean drawCaret) {
+		this.drawCaret = drawCaret;
+	}
 
 	@Override
 	public void draw(Graphics2D g) {
@@ -65,7 +129,7 @@ public class TextBox implements Drawable {
 			text.draw(g);
 		}
 		
-		if(caretBlink){
+		if(caretBlink && drawCaret){
 			int caretx;
 			if(isPassword){
 				caretx = x + padding + g.getFontMetrics().stringWidth(passText.getText().substring(0, caretPos));
@@ -73,7 +137,11 @@ public class TextBox implements Drawable {
 				caretx = x + padding + g.getFontMetrics().stringWidth(text.getText().substring(0, caretPos));
 			}
 			g.drawLine(caretx, y + padding, caretx, y + height - padding);
-			
+		}
+	}
+	
+	public void tick() {
+		if(caretBlink){
 			if(System.currentTimeMillis() - lastBlinkTime > blinkDelay){
 				caretBlink = !caretBlink;
 				lastBlinkTime = System.currentTimeMillis();
@@ -86,10 +154,13 @@ public class TextBox implements Drawable {
 		}
 	}
 	
+	public boolean contains(int x, int y) {
+		return (x > this.x && x < this.width + this.x && y > this.y && y < this.height + this.y);
+	}
+	
 	public void mouseClicked(int x, int y) {
-		
-		if(!(x > this.x && x < this.width + this.x && y > this.y && y < this.height + this.y)){
-			return; //The click was outside the text box
+		if(!contains(x, y)){
+			return;
 		}
 		
 		int textLeft = this.x + padding;
@@ -117,16 +188,16 @@ public class TextBox implements Drawable {
 			if(mid > 0){
 				distToLeft = Math.abs(x - mets.stringWidth(currStr.substring(0, mid - 1)));
 			}else{
-				distToLeft = 0xffffffff;
+				distToLeft = Integer.MAX_VALUE;
 			}
 			
 			int distToMid = Math.abs(x - mets.stringWidth(currStr.substring(0, mid)));
 			
 			int distToRight;
-			if(mid <= currStr.length()){
+			if(mid < currStr.length()){
 				distToRight = Math.abs(x - mets.stringWidth(currStr.substring(0, mid + 1)));
 			}else{
-				distToRight = 0xffffffff;
+				distToRight = Integer.MAX_VALUE;
 			}
 			
 			if(distToLeft < distToMid && distToLeft < distToRight){
@@ -134,7 +205,7 @@ public class TextBox implements Drawable {
 				mid = (end + sta)/2;
 			}else if(distToRight < distToMid && distToRight < distToLeft){
 				sta = mid;
-				mid = (end + sta)/2;
+				mid = (int) Math.ceil((end + sta)/2.0);
 			}else{
 				caretPos = mid;
 				break;

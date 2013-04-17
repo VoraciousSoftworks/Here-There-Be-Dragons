@@ -12,44 +12,41 @@ import com.voracious.dragons.client.graphics.ui.Button;
 import com.voracious.dragons.client.utils.InputHandler;
 
 public class MainMenuScreen extends Screen {
-    private Button playTurn,playNew,spectate,stats;
-    private Sprite background;
-    
-    
+	private Button playTurn, playNew, spectate, stats;
+	private Sprite background;
+
 	public MainMenuScreen() {
 		super(Game.WIDTH, Game.HEIGHT);
-		
-		
-		this.playTurn=new Button("Play Existing Game",235,120);
-		this.playTurn.addActionListener(new ActionListener(){
+
+		this.playTurn = new Button("Play Existing Game", 235, 120);
+		this.playTurn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Game.setCurrentScreen(new PlayScreen());
 			}
 		});
-		this.playNew=new Button("Play New Game",410,120);
-		this.playTurn.addActionListener(new ActionListener(){
+		this.playNew = new Button("Play New Game", 410, 120);
+		this.playTurn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//TODO go to a screen to choose new game
+				// TODO go to a screen to choose new game
 			}
 		});
-		this.spectate=new Button("Spectate a Game",235,220);
-		this.playTurn.addActionListener(new ActionListener(){
+		this.spectate = new Button("Spectate a Game", 235, 220);
+		this.playTurn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//TODO go to a screen to choose the existing game to watch
+				// TODO go to a screen to choose the existing game to watch
 			}
 		});
-		this.stats=new Button("See Stats",410,220);
-		this.playTurn.addActionListener(new ActionListener(){
+		this.stats = new Button("See Stats", 410, 220);
+		this.playTurn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Game.setCurrentScreen(new StatScreen());
 			}
 		});
-		
-		
+
 		background = new Sprite("/mainMenuBackground.png");
 		InputHandler.registerScreen(this);
 	}
@@ -61,21 +58,19 @@ public class MainMenuScreen extends Screen {
 		this.playNew.draw(g);
 		this.spectate.draw(g);
 		this.stats.draw(g);
-		
 	}
 
 	@Override
 	public void tick() {
 	}
 
-	 @Override
-	 public void mouseClicked(MouseEvent e){
-		 int ex=e.getX();
-		 int ey=e.getY();
-		 this.playTurn.mouseClicked(ex, ey);
-		 this.playNew.mouseClicked(ex, ey);
-		 this.spectate.mouseClicked(ex, ex);
-		 this.stats.mouseClicked(ex, ey);
-		 
-	 }
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int ex = e.getX();
+		int ey = e.getY();
+		this.playTurn.mouseClicked(ex, ey);
+		this.playNew.mouseClicked(ex, ey);
+		this.spectate.mouseClicked(ex, ex);
+		this.stats.mouseClicked(ex, ey);
+	}
 }

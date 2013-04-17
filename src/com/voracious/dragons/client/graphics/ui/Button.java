@@ -17,7 +17,7 @@ public class Button implements Drawable {
 	
 	public static final Color defaultBackground = new Color(0xDDDDDD);
 	public static final Color defaultBoarder = new Color(0xEEEEEE);
-	public static final int defaultPadding = 5;
+	public static final int defaultPadding = 3;
 	
 	private int x, y;
 	private int width, height;

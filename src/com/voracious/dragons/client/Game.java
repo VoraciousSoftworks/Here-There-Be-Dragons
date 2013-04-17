@@ -9,7 +9,7 @@ import java.awt.image.BufferStrategy;
 import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.graphics.Screen;
-import com.voracious.dragons.client.screens.PlayScreen;
+import com.voracious.dragons.client.screens.LoginScreen;
 
 public class Game extends Canvas implements Runnable {
     private static final long serialVersionUID = 1L;
@@ -94,14 +94,14 @@ public class Game extends Canvas implements Runnable {
      * 
      * @param s the screen to draw
      */
-    public void setCurrentScreen(Screen s){
+    public static void setCurrentScreen(Screen s){
         currentScreen = s;
     }
 
     public void init() {
         logger.debug("init");
         this.setBackground(background);
-        this.setCurrentScreen(new PlayScreen());
+        Game.setCurrentScreen(new LoginScreen());
         thread = new Thread(this);
     }
 
