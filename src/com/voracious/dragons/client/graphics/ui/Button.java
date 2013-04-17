@@ -27,7 +27,7 @@ public class Button implements Drawable {
 	
 	private List<ActionListener> listeners;
 	
-	public Button(String text) {
+	public Button(String text,int x,int y) {
 		listeners = new LinkedList<ActionListener>();
 		
 		this.text = new Text(text, defaultPadding, defaultPadding);
@@ -44,8 +44,8 @@ public class Button implements Drawable {
 		ig.setColor(defaultBoarder);
 		ig.drawRect(0, 0, width, height);
 		
-		this.x = 4;
-		this.y = 4;
+		this.x = x;
+		this.y = y;
 		
 		this.text.draw(ig);
 	}
