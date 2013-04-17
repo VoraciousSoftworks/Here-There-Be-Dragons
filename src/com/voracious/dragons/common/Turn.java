@@ -1,6 +1,7 @@
 package com.voracious.dragons.common;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -53,13 +54,13 @@ public class Turn {
     }
     
     public void addNode(byte pathId, Vec2D.Short location) {
-        if(towersCreated.containsKey(pathId)){
-            towersCreated.get(pathId).add(location);
+        if(nodes.containsKey(pathId)){
+            nodes.get(pathId).add(location);
         }else{
             List<Vec2D.Short> temp = new LinkedList<Vec2D.Short>();
             temp.add(location);
             
-            towersCreated.put(pathId, temp);
+            nodes.put(pathId, temp);
         }
     }
     
@@ -197,5 +198,18 @@ public class Turn {
         }
         
         return buffer;
+    }
+    
+    public List<List<Vec2D.Short>> getPaths(){
+    	List<List<Vec2D.Short>> ret = new ArrayList<List<Vec2D.Short>>(nodes.size());
+    	
+    	Iterator<Map.Entry<Byte, List<Vec2D.Short>>> it = nodes.entrySet().iterator();
+    	while(it.hasNext()){
+    		Map.Entry<Byte, List<Vec2D.Short>> tmp=it.next();
+    		Byte loc = tmp.getKey();
+    		List<Vec2D.Short> val = tmp.getValue();
+    		ret.add(loc, val);
+    	}
+    	return ret;
     }
 }

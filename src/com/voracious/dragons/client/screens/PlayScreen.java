@@ -3,6 +3,8 @@ package com.voracious.dragons.client.screens;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -11,6 +13,9 @@ import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.towers.Castle;
 import com.voracious.dragons.client.utils.InputHandler;
+import com.voracious.dragons.common.Turn;
+import com.voracious.dragons.common.Vec2D;
+import com.voracious.dragons.common.Vec2D.Short;
 
 public class PlayScreen extends Screen {
 
@@ -20,6 +25,10 @@ public class PlayScreen extends Screen {
     private Sprite background;
     private Castle p1Cast,p2Cast;
     boolean inPathMode=false;
+    
+    Turn player,other;
+    
+    Vec2D.Short temp;
     
     public PlayScreen() {
         super(HEIGHT, WIDTH);
@@ -33,6 +42,8 @@ public class PlayScreen extends Screen {
         this.setBackground(new Sprite("/backgroundLarge.png"));
         
         
+        player=new Turn(0,0);
+        
         this.setP1Cast(new Castle());
         this.getP1Cast().setX(0);
         this.getP1Cast().setY(background.getHeight() - Castle.height);
@@ -45,6 +56,17 @@ public class PlayScreen extends Screen {
     @Override
     public void render(Graphics2D g) {
     	this.getBackground().draw(g, 0, 0);
+    	
+    	/*List<Short> tmp=player.getPaths().get(0);
+    	Iterator<Short> it=tmp.iterator();
+    	while(it.hasNext()){
+    		temp=it.next();
+    		g.fillOval((int)temp.x, (int)temp.y, 10, 10);
+    		draw(g);
+    	}*/
+    	
+    	List<List<Short>>outer=player.getPaths();
+    	Iterator<List<Short>>outIt=outer.iterator();
     	
     	this.getP1Cast().draw(g);
     	this.getP2Cast().draw(g);
@@ -71,9 +93,11 @@ public class PlayScreen extends Screen {
 	public void keyPressed(KeyEvent e) {
     	if(e.getKeyCode()==KeyEvent.VK_P){
     		this.inPathMode=!this.inPathMode;
-    		System.out.println(inPathMode);
+    		//System.out.println(inPathMode);
     	}
 	}
+    
+
 
 	@Override
 	public void keyReleased(KeyEvent e) {
@@ -90,6 +114,13 @@ public class PlayScreen extends Screen {
     public void mousePressed(MouseEvent e){
         if(InputHandler.isDown(InputHandler.VK_MOUSE_2)){
             InputHandler.setMouseMoveable(false);
+        }
+        
+        if(InputHandler.isDown(InputHandler.VK_MOUSE_1)
+        		&&this.inPathMode){
+        	temp=new Vec2D.Short((short)InputHandler.getMousePos().x,(short)InputHandler.getMousePos().y);
+        	//System.out.println(temp.getx()+", "+temp.gety());
+        	player.addNode((byte) 0, temp);
         }
     }
     
