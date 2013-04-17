@@ -2,20 +2,19 @@ package com.voracious.dragons.client.screens;
 
 import java.awt.Graphics2D;
 
+import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.graphics.ui.Button;
 import com.voracious.dragons.client.utils.InputHandler;
 
 public class MainMenuScreen extends Screen {
-	public static final int WIDTH = 2160/3;
-    public static final int HEIGHT = 1440/3;
     private Button playTurn,playNew,spectate,stats;
     private Sprite background;
     
     
 	public MainMenuScreen() {
-		super(WIDTH, HEIGHT);
+		super(Game.WIDTH, Game.HEIGHT);
 		
 		this.playTurn=new Button("Play Existing Game",235,120);
 		this.playNew=new Button("Play New Game",410,120);
