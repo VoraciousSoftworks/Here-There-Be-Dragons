@@ -1,9 +1,9 @@
 package com.voracious.dragons.server;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
@@ -28,6 +28,7 @@ public class ServerConnectionManager implements Runnable {
 		users = new ArrayList<User>();
 		bindAddresses(default_hostname, default_port);
 		cm = new ConnectionManager();
+		new Thread(cm).start();
 	}
 	
 	public void bindAddresses(String hostname, int port){
@@ -47,8 +48,13 @@ public class ServerConnectionManager implements Runnable {
 				clientChannel.configureBlocking(false);
 				cm.sendMessage(clientChannel, "Hello!");
 				
+				clientChannel.register(cm.getReadSelector(), SelectionKey.OP_READ, new ByteArrayOutputStream());
+				
 				User newUser = new User(clientChannel);
 				users.add(newUser);
+				
+				logger.info("Client connected: " + clientChannel.getRemoteAddress().toString());
+				
 				authenticate(newUser);
 			}
 		} catch (IOException e) {

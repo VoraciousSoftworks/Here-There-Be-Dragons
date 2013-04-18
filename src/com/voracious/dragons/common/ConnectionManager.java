@@ -1,5 +1,6 @@
 package com.voracious.dragons.common;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -15,9 +16,10 @@ import org.apache.log4j.Logger;
 public class ConnectionManager implements Runnable {
 	public static final int CHANNEL_WRITE_SLEEP = 200;
 	public static final int CHANNEL_READ_SLEEP = 200;
+	
 	private Logger logger = Logger.getLogger(ConnectionManager.class);
 
-	private BlockingQueue<ByteBuffer> messageQueue;
+	private BlockingQueue<Message> messageQueue;
 	private Selector readSelector;
 	private ByteBuffer writeBuffer;
 	private ByteBuffer readBuffer;
@@ -29,17 +31,22 @@ public class ConnectionManager implements Runnable {
 			logger.error("Could not open new connection", e);
 		}
 		
-		writeBuffer = ByteBuffer.allocate(255);
-		messageQueue = new LinkedBlockingQueue<ByteBuffer>();
+		writeBuffer = ByteBuffer.allocateDirect(255);
+		readBuffer = ByteBuffer.allocateDirect(255);
+		messageQueue = new LinkedBlockingQueue<Message>();
 	}
-
+	
 	public void sendMessage(SocketChannel sc, String message) {
-		sendMessage(sc, (message + "\n").getBytes());
+		prepWriteBuffer(Message.format(message));
+		writeBytes(sc);
 	}
 
 	public void sendMessage(SocketChannel sc, byte[] message) {
-		prepWriteBuffer(message);
-
+		prepWriteBuffer(Message.format(message));
+		writeBytes(sc);
+	}
+	
+	private void writeBytes(SocketChannel sc) {
 		long nbytes = 0;
 		long toWrite = writeBuffer.remaining();
 		try {
@@ -64,7 +71,7 @@ public class ConnectionManager implements Runnable {
 	}
 
 	public void readMessages(){
-		/*try {
+		try {
 			readSelector.selectNow();
 			Set<SelectionKey> readKeys = readSelector.selectedKeys();
 			Iterator<SelectionKey> it = readKeys.iterator();
@@ -76,15 +83,56 @@ public class ConnectionManager implements Runnable {
 				readBuffer.clear();
 				long nbytes = channel.read(readBuffer);
 				if(nbytes == -1){
-					logger.info("Disconnect:" + channel.socket().getInetAddress() + " end of stream");
+					logger.info("Disconnect: " + channel.socket().getInetAddress() + " end of stream.");
 					channel.close();
 					
+					Message message = new Message(channel, "eos".getBytes());
+					message.setDisconnecting(true);
+					messageQueue.offer(message);
+				}else{
+					ByteArrayOutputStream bos = (ByteArrayOutputStream) key.attachment();
+					readBuffer.flip();
+					byte[] msg = new byte[(int) nbytes]; 
+					readBuffer.get(msg);
+					readBuffer.clear();
 					
+					bos.write(msg);
+					
+					String result = "binary: ";
+					byte[] bytes = bos.toByteArray();
+					for(int i=0; i<bytes.length; i++){
+						result += Integer.toString(bytes[i], 16) + " ";
+					}
+					System.out.println(result);
+					
+					boolean hasEOT = false;
+					for(int i=0; i<msg.length; i++){
+						if(msg[i] == Message.END_OF_TRANSMISSION) {
+							hasEOT = true;
+							break;
+						}
+					}
+					
+					if(hasEOT){
+						Message message = new Message(channel, bos.toByteArray());
+						bos.reset();
+						logger.debug("Recieved message. From: " + channel.socket().getInetAddress() + " Contents: " + message.toString());
+						
+						if(message.toString() == "quit\n"){
+							logger.info("Disconnect: " + channel.socket().getInetAddress() + " quitting.");
+						}
+						
+						messageQueue.offer(message);
+					}
 				}
 			}
 		} catch (IOException e) {
 			logger.warn("Error during read", e);
-		}*/
+		}
+	}
+	
+	public Selector getReadSelector() {
+		return readSelector;
 	}
 	
 	@Override
