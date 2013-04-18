@@ -78,7 +78,7 @@ public class StatScreen extends Screen {
 		/*Ave time between turns
 		 * (sum of each games's sum of differences in timestamps (
 		 * 		from j=1 to n-1 timestamp[j]-timestamp[j-1])) 
-		 * / (#finished Games+#current games)
+		 * / (#tuples w/ turn pid=PID)
 		 */
 		
 		/*Ave turns a game
