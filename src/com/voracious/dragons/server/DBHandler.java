@@ -76,7 +76,7 @@ public class DBHandler {
 				"SELECT count(gid) AS answer" +
 				"FROM Game" +
 				"WHERE (pid1=? OR pid2=?) AND inProgress=?" +
-				"GROUP BY gid");
+				"GROUP BY gid;");
 		quest.setString(1, PID);
 		quest.setString(2, PID);
 		quest.setString(3,inPlay+"");//does "true" == true+"" ?
@@ -89,10 +89,23 @@ public class DBHandler {
 				"SELECT count(gid) AS answer" +
 				"FROM Winner" +
 				"WHERE pid=?" +
-				"GROUP BY gid");
+				"GROUP BY gid;");
 		quest.setString(1,PID);
 		ResultSet ret=quest.executeQuery();
 		return ret.getInt("answer");
 	}
 	
+	public double aveTurns(Connection conn, String PID,int totalNumGames) throws SQLException{
+		//the totalNumGames = done + current games, so it needs the other qureies to be done first
+		PreparedStatement quest=conn.prepareStatement(
+				"SELECT count(*) AS answer" +
+				"FROM Turn" +
+				"WHERE pid=?" +
+				"GROUP BY gid, tnum;");
+		quest.setString(1, PID);
+		ResultSet ret=quest.executeQuery();
+		int numTurns=ret.getInt("answer");
+		return numTurns/totalNumGames;
+		
+	}
 }
