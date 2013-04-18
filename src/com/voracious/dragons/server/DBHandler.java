@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -67,4 +68,31 @@ public class DBHandler {
 			logger.error("Could not create tables", e);
 		}
 	}
+	
+
+	public int numGames(Connection conn,String PID, boolean inPlay) throws SQLException{
+		//the boolean is to know if the games being counted are over or still occurring
+		PreparedStatement quest=conn.prepareStatement(
+				"SELECT count(gid) AS answer" +
+				"FROM Game" +
+				"WHERE (pid1=? OR pid2=?) AND inProgress=?" +
+				"GROUP BY gid");
+		quest.setString(1, PID);
+		quest.setString(2, PID);
+		quest.setString(3,inPlay+"");//does "true" == true+"" ?
+		ResultSet ret=quest.executeQuery();
+		return ret.getInt("answer");
+	}
+	
+	public int countWins(Connection conn, String PID) throws SQLException{
+		PreparedStatement quest=conn.prepareStatement(
+				"SELECT count(gid) AS answer" +
+				"FROM Winner" +
+				"WHERE pid=?" +
+				"GROUP BY gid");
+		quest.setString(1,PID);
+		ResultSet ret=quest.executeQuery();
+		return ret.getInt("answer");
+	}
+	
 }
