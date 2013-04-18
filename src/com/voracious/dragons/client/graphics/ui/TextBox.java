@@ -74,6 +74,57 @@ public class TextBox implements Drawable {
 		lastBlinkTime = System.currentTimeMillis();
 		this.isPassword = isPassword;
 	}
+	
+	public TextBox(String text){
+		this.text = new Text(text);
+		String passString = "";
+		for(int i = 0; i<text.length(); i++){
+			passString += TextBox.passchar;
+		}
+		passText = new Text(passString);
+		caretPos = 0;
+		x = 0;
+		y = 0;
+		width = 100;
+		height = 21;
+		
+		lastBlinkTime = System.currentTimeMillis();
+		isPassword = false;
+	}
+	
+	public TextBox(String text, int x, int y){
+		this.text = new Text(text);
+		String passString = "";
+		for(int i = 0; i<text.length(); i++){
+			passString += TextBox.passchar;
+		}
+		passText = new Text(passString);
+		caretPos = 0;
+		this.x = x;
+		this.y = y;
+		width = 100;
+		height = 21;
+		
+		lastBlinkTime = System.currentTimeMillis();
+		isPassword = false;
+	}
+	
+	public TextBox(String text, int x, int y, boolean isPassword){
+		this.text = new Text(text);
+		String passString = "";
+		for(int i = 0; i<text.length(); i++){
+			passString += TextBox.passchar;
+		}
+		passText = new Text(passString);
+		caretPos = 0;
+		this.x = x;
+		this.y = y;
+		width = 100;
+		height = 21;
+		
+		lastBlinkTime = System.currentTimeMillis();
+		this.isPassword = isPassword;
+	}
 
 	public int getWidth() {
 		return width;
@@ -102,6 +153,10 @@ public class TextBox implements Drawable {
 	public void setLocation(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+	
+	public String getText() {
+		return text.getText();
 	}
 
 	public boolean isDrawingCaret() {
