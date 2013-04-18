@@ -27,6 +27,8 @@ public class Game extends Canvas implements Runnable {
     private static Screen currentScreen;
     private static Object lock = new Object();
     
+    private static ClientConnectionManager ccm;
+    
     public Game() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
     }
@@ -108,6 +110,17 @@ public class Game extends Canvas implements Runnable {
     		s.start();
     	}
     }
+    
+    public static void connect(String hostname, int port){
+    	ccm = new ClientConnectionManager(hostname, port);
+    }
+    
+    public static ClientConnectionManager getClientConnectionManager(){
+    	if(ccm == null){
+    		throw new RuntimeException("Connection not yet established");
+    	}
+    	return ccm;
+    }
 
     public void init() {
         logger.debug("init");
@@ -124,6 +137,7 @@ public class Game extends Canvas implements Runnable {
 
     public void stop() {
         logger.debug("stop");
+        ccm.close();
         running = false;
     }
 }

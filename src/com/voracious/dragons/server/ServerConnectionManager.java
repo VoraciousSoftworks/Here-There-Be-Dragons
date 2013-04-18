@@ -2,6 +2,7 @@ package com.voracious.dragons.server;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
@@ -35,9 +36,9 @@ public class ServerConnectionManager implements Runnable {
 		try {
 			ssc = ServerSocketChannel.open();
 			ssc.configureBlocking(false);
-			ssc.bind(new InetSocketAddress(hostname, port));
+			ssc.bind(new InetSocketAddress(InetAddress.getByName(hostname), port));
 		} catch (IOException e) {
-			logger.error("Failed to bind ports");
+			logger.error("Failed to bind ports", e);
 		}
 	}
 	

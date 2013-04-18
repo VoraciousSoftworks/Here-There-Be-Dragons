@@ -1,8 +1,6 @@
 package com.voracious.dragons.server;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.channels.SocketChannel;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
@@ -10,7 +8,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-import com.voracious.dragons.common.ConnectionManager;
 import com.voracious.dragons.common.Turn;
 
 public class Main {

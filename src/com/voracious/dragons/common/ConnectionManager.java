@@ -98,13 +98,6 @@ public class ConnectionManager implements Runnable {
 					
 					bos.write(msg);
 					
-					String result = "binary: ";
-					byte[] bytes = bos.toByteArray();
-					for(int i=0; i<bytes.length; i++){
-						result += Integer.toString(bytes[i], 16) + " ";
-					}
-					System.out.println(result);
-					
 					boolean hasEOT = false;
 					for(int i=0; i<msg.length; i++){
 						if(msg[i] == Message.END_OF_TRANSMISSION) {

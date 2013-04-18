@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 
 import org.apache.log4j.Logger;
 
+import com.voracious.dragons.client.ClientConnectionManager;
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
@@ -28,7 +29,6 @@ public class LoginScreen extends Screen {
 	
 	public LoginScreen() {
 		super(Game.WIDTH, Game.HEIGHT);
-		
 		background = new Sprite("/mainMenuBackground.png");
 		
 		userLabel = new Text("Username: ", 10, Game.HEIGHT - 70);
@@ -68,21 +68,15 @@ public class LoginScreen extends Screen {
 	}
 
 	
-	private boolean authenticate() {
-		//TODO: Ask the server if the username and pass is good
-		onSuccess();
-		logger.info("Logged in");
-		return true;
+	private void authenticate() {
+		logger.info("Logging in...");
 	}
 	
-	private boolean register() {
-		//TODO: Send the server registration info
-		onSuccess();
-		logger.info("Registered");
-		return true;
+	private void register() {
+		logger.info("Registering...");
 	}
 
-	private void onSuccess() {
+	private void onSuccess(String response) {
 		Game.setCurrentScreen(new MainMenuScreen());
 	}
 	
