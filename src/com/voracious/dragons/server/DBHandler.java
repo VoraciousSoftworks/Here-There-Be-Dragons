@@ -106,6 +106,49 @@ public class DBHandler {
 		ResultSet ret=quest.executeQuery();
 		int numTurns=ret.getInt("answer");
 		return numTurns/totalNumGames;
+	}
+	
+	public String aveTime(Connection conn, String PID) throws SQLException{
+		PreparedStatement numTuples=conn.prepareStatement(
+				"SELECT count(*) AS answer" +
+				"FROM Turn" +
+				"WHERE pid=?" +
+				"GROUP BY gid,tnum;");//the group by is only there to have an arrogate query
+		numTuples.setString(1, PID);
+		ResultSet tuples=numTuples.executeQuery();
+		int numberTuples=tuples.getInt("answer");
 		
+		PreparedStatement times=conn.prepareStatement(
+				"SELECT gid AS GID, tNUM as TNUM, timeStamp AS TIMESTAMP" +
+				"FROM Turn" +
+				"WHERE pid=?" +
+				"ORDER BY gid ASC,tNum ASC;");
+		times.setString(1, PID);
+		ResultSet timeRes=times.executeQuery();
+		//possible to sort the time stamps also, so each games is in order from top to bottom
+		//g0 t0
+		//g0 t1
+		//g1 t0
+		//g2 t0
+		//g2 t1
+		//g2 t2
+		
+		//date sum
+		{//calculates the total time
+			//temp date
+			while(timeRes.next()){
+				//int turnCounter=readin's turn num
+				
+				//if(turnCounter==0)
+					//set that reading's timestamp as the temp
+				//else 
+					//date current=reading's timestamp
+					//sum+=current-temp
+					//temp=current
+			}
+		}
+		//date answer=sum/numberTuples
+		//return answer.toString();
+		return "";
 	}
 }
