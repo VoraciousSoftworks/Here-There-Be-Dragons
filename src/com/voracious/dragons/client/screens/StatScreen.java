@@ -28,6 +28,18 @@ public class StatScreen extends Screen {
 				Game.setCurrentScreen(new MainMenuScreen());
 			}
 		});
+		/*TODO Stat's to be shown:
+		 *		user's username
+		 *		# of finished games
+		 * 		# of current games
+		 * 		# won
+		 * 		# loss
+		 *		% won
+		 * 		% loss
+		 * 		Ave time between moves
+		 * 		Ave number of turns per game
+		 */
+		
 	}
 	
 	@Override
