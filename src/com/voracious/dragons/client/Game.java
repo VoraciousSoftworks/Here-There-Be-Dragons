@@ -137,7 +137,9 @@ public class Game extends Canvas implements Runnable {
 
     public void stop() {
         logger.debug("stop");
-        ccm.close();
+        if(ccm != null){
+        	ccm.close();
+        }
         running = false;
     }
 }

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import com.voracious.dragons.common.ConnectionManager;
 
 public class ServerConnectionManager implements Runnable {
-	public static final String default_hostname = "127.0.0.1";
+	public static final String default_hostname = "0.0.0.0";
 	public static final int default_port = 35580;
 	public static final int CHANNEL_CONNECT_SLEEP = 300;
 	
