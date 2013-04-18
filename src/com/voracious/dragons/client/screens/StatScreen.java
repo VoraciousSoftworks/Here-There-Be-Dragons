@@ -40,6 +40,53 @@ public class StatScreen extends Screen {
 		 * 		Ave number of turns per game
 		 */
 		
+		//the PID is assumed to be the pid of the person logged in to the game
+		
+		/*# of finished games
+		 * SELECT COUNT(gid)
+		 * FROM GAME
+		 * WHERE (pid1=PID OR pid2=PID) AND inProgress=false
+		 * GROUP BY GAME.gid
+		 */
+		
+		/*# of current games
+		 * SELECT COUNT(gid)
+		 * FROM GAME 
+		 * WHERE (pid1=PID OR pid2=PID) AND inProgress=true
+		 * GROUP BY GAME.gid
+		 */
+		
+		/*#won
+		 * SELECT COUNT(gid)
+		 * FROM WINNER
+		 * WHERE pid=PID
+		 * GROUP BY gid
+		 */
+		
+		/*#loss
+		 * =#finished games - #won
+		 */
+		
+		/*% won
+		 * =#won / #finished games
+		 */
+		
+		/*%loss
+		 * =#loss / #finished games
+		 */
+		
+		/*Ave time between turns
+		 * (sum of each games's sum of differences in timestamps (
+		 * 		from j=1 to n-1 timestamp[j]-timestamp[j-1])) 
+		 * / (#finished Games+#current games)
+		 */
+		
+		/*Ave turns a game
+		 * (SELECT COUNT(*)//all tuples
+		 * FROM TURN
+		 * WHERE pid=PID
+		 * ) / (#finished Games+#current games)
+		 */
 	}
 	
 	@Override
