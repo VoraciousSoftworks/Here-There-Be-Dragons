@@ -43,8 +43,8 @@ public class StatScreen extends Screen {
 
 	@Override
 	public void render(Graphics2D g) {
-		this.returnButton.draw(g);
 		background.draw(g, 0, 0);
+		this.returnButton.draw(g);
 
 	}
 
