@@ -20,6 +20,7 @@ public class DBHandler {
 	private Connection conn;
 
 	private PreparedStatement checkHash;
+	private PreparedStatement registerUser;
 	private PreparedStatement numGames,numWins,aveTurn,numTuples,times;
 	
 	public void init() {
@@ -64,6 +65,8 @@ public class DBHandler {
 			checkHash = conn.prepareStatement("SELECT passhash" +
 					                          "FROM Player" +
 					                          "WHERE pid = ?");
+			
+			registerUser = conn.prepareStatement("INSERT INTO Player VALUES(?, ?)");
 			
 			numGames = conn.prepareStatement(
 					"SELECT count(gid) AS answer" +
@@ -136,6 +139,16 @@ public class DBHandler {
 		} catch (SQLException e) {
 			logger.error("Could not check hash", e);
 			return null;
+		}
+	}
+	
+	public void registerUser(String uid, String passhash){
+		try {
+			registerUser.setString(1, uid);
+			registerUser.setString(2, passhash);
+			registerUser.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("Could not register user", e);
 		}
 	}
 

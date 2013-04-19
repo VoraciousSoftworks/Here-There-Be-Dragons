@@ -71,6 +71,15 @@ public class ServerConnectionManager implements Runnable {
 		}
 	}
 	
+	public void disconnectUser(String userRemAdd){
+		try {
+			users.get(userRemAdd).getConnection().close();
+			users.remove(userRemAdd);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+	}
+	
 	public User getUser(String remoteAddress){
 		return users.get(remoteAddress);
 	}

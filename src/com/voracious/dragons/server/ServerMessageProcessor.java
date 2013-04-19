@@ -34,34 +34,60 @@ public class ServerMessageProcessor extends MessageProcessor {
 				msg = msg.substring(2);
 				int splitLoc = msg.indexOf(":");
 				
-				register(msg.substring(0, splitLoc), msg.substring(splitLoc + 1, msg.length()));
+				register(message.getSender(), msg.substring(0, splitLoc), msg.substring(splitLoc + 1, msg.length()));
 			}
 		}else if(message.isDisconnecting()){
-			
+			try {
+				scm.disconnectUser(message.getSender().getRemoteAddress().toString());
+			} catch (IOException e) {
+				logger.error(e);
+			}
 		}
 	}
 	
 	public void authenticate(SocketChannel sender, String username, String password) {
 		String storedHash = Main.getDB().getPasswordHash(username);
-		if(Crypto.check(password, storedHash)){
-			try {
-				User user = scm.getUser(sender.getRemoteAddress().toString());
-				if(user != null){
-					user.setAuthenticated(true);
-					scm.sendMessage(user, "LS:" + Crypto.getSessionId());
-				}else{
-					scm.sendMessage(user, "E:User not found");
+		if(storedHash != null){
+			if(Crypto.check(password, storedHash)){
+				try {
+					User user = scm.getUser(sender.getRemoteAddress().toString());
+					if(user != null){
+						String session = Crypto.getSessionId();
+						user.setSessionId(session);
+						user.setUsername(username);
+						user.setAuthenticated(true);
+						scm.sendMessage(user, "LS:" + session);
+					}else{
+						scm.sendMessage(user, "E:Connection error");
+					}
+				} catch (IOException e) {
+					logger.error("Couldn't authenticate", e);
+					scm.sendMessage(sender, "E:Server error");
 				}
-			} catch (IOException e) {
-				logger.error("Could authenticate", e);
-				scm.sendMessage(sender, "E:Server Error");
+			}else{
+				scm.sendMessage(sender, "E:Invalid password");
 			}
 		}else{
-			scm.sendMessage(sender, "E:Invalid Password");
+			scm.sendMessage(sender, "E:Invalid username");
 		}
 	}
 	
-	public void register(String username, String password) {
-		
+	public void register(SocketChannel sender, String username, String password) {
+		if(Main.getDB().getPasswordHash(username) != null){
+			Main.getDB().registerUser(username, Crypto.getSaltedHash(password));
+			try {
+				User user = scm.getUser(sender.getRemoteAddress().toString());
+				String session = Crypto.getSessionId(); 
+				user.setUsername(username);
+				user.setSessionId(session);
+				user.setAuthenticated(true);
+				scm.sendMessage(user, "RS:" + session);
+			} catch (IOException e) {
+				logger.error("Couldn't authenticate", e);
+				scm.sendMessage(sender, "E:Server error");
+			}
+		}else{
+			scm.sendMessage(sender, "E:Username already registered");
+		}
 	}
 }
