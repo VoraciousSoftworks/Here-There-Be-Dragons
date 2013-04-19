@@ -249,6 +249,8 @@ public class DBHandler {
 	
 	public double aveTurns(String PID,int totalNumGames) {
 		//the totalNumGames = done + current games, so it needs the other qureies to be done first
+		if(totalNumGames==0)
+			return 0.0;
 		
 		try {
 			aveTurn.setString(1, PID);
@@ -267,6 +269,9 @@ public class DBHandler {
 			numTuples.setString(1, PID);
 			ResultSet tuples=numTuples.executeQuery();
 			int numberTuples=tuples.getInt("answer");
+			
+			if(numberTuples==0)
+				return 0;
 			
 			times.setString(1, PID);
 			ResultSet timeRes=times.executeQuery();
