@@ -32,6 +32,10 @@ public class Main {
     	new Thread(new ServerConnectionManager()).start();
     }
     
+    public static DBHandler getDB(){
+    	return database;
+    }
+    
     public static void initLog4J() {
         logger = Logger.getLogger(Main.class);
 
