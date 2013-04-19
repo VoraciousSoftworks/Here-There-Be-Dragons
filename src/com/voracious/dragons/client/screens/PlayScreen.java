@@ -27,14 +27,13 @@ public class PlayScreen extends Screen {
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
     private Castle p1Cast,p2Cast;
-    private List<Tower> towers;
-    private List<Unit> units;
+    private boolean executingTurn = false;
     boolean inMenu=false;
     boolean inPathMode=false;
     boolean inUnitMode=false;
     boolean inTowerMode=false;
     
-    Turn player,other;
+    Turn myTurn,oppTurn;
     
     Vec2D.Short temp;
     
@@ -43,7 +42,7 @@ public class PlayScreen extends Screen {
         
         this.setBackground(new Sprite("/backgroundLarge.png"));
         
-        player=new Turn(0, 0);
+        myTurn=new Turn(0, 0);
         
         this.setP1Cast(new Castle());
         this.getP1Cast().setX(0);
@@ -82,7 +81,7 @@ public class PlayScreen extends Screen {
     	
     	//Block used for Paths
     	{
-    		List<List<Vec2D.Short>>outer=player.getPaths();
+    		List<List<Vec2D.Short>>outer=myTurn.getPaths();
     		Iterator<List<Vec2D.Short>>outIt=outer.iterator();
     		Vec2D.Short last=null;
     		while(outIt.hasNext()){
@@ -102,7 +101,7 @@ public class PlayScreen extends Screen {
     	//NOTE:Entire block should be replaced with drawing towers from the tower list when turn
     	//execution is implemented. I will comment out that code below this block.
     	{
-    		List<List<Vec2D.Short>>outer=player.getTowers();
+    		List<List<Vec2D.Short>>outer=myTurn.getTowers();
     		Iterator<List<Vec2D.Short>>outIt=outer.iterator();
     		while(outIt.hasNext()){
     			List<Vec2D.Short>inner=outIt.next();
@@ -113,17 +112,6 @@ public class PlayScreen extends Screen {
     			}
     		}
     	}
-    	/* This is the proper future code for drawing the towers.
-    	for(Tower t : towers){
-    		t.draw(g);
-    	}
-    	*/
-    	
-    	/*Future code for drawing units
-    	for(Unit u : units){
-    		u.draw(g);
-    	}
-    	*/
     	
     	g.translate(this.getOffsetx(), this.getOffsety());
     	
@@ -213,7 +201,7 @@ public class PlayScreen extends Screen {
         			               (short)(InputHandler.getMousePos().y + this.getOffsety()));
         	
         	if(temp.x <= PlayScreen.WIDTH && temp.x >= 0 && temp.y <= PlayScreen.HEIGHT && temp.y >= 0){
-        		player.addNode((byte) 0, temp);
+        		myTurn.addNode((byte) 0, temp);
         	}
         	
         }
@@ -223,7 +211,7 @@ public class PlayScreen extends Screen {
         			               (short) (InputHandler.getMousePos().y + this.getOffsety()));
         	
         	if(temp.x <= PlayScreen.WIDTH && temp.x >= 0 && temp.y <= PlayScreen.HEIGHT && temp.y >= 0){
-        		player.createTower((byte)0, temp);
+        		myTurn.createTower((byte)0, temp);
         	}
         }
     }
@@ -289,5 +277,13 @@ public class PlayScreen extends Screen {
 	 */
 	public void setP2Cast(Castle p2Cast) {
 		this.p2Cast = p2Cast;
+	}
+
+	public boolean isExecutingTurn() {
+		return executingTurn;
+	}
+
+	public void setExecutingTurn(boolean executingTurn) {
+		this.executingTurn = executingTurn;
 	}
 }
