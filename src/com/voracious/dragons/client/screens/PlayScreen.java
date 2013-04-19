@@ -17,6 +17,7 @@ import com.voracious.dragons.client.towers.Castle;
 import com.voracious.dragons.client.towers.Tower;
 import com.voracious.dragons.client.units.Unit;
 import com.voracious.dragons.client.utils.InputHandler;
+import com.voracious.dragons.common.GameState;
 import com.voracious.dragons.common.Turn;
 import com.voracious.dragons.common.Vec2D;
 
@@ -24,9 +25,12 @@ public class PlayScreen extends Screen {
 
     public static final int WIDTH = 2160;
     public static final int HEIGHT = 1440;
+    public static final long ticksPerTurn = 300;
+    public long currentTickCount = 0;
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
     private Castle p1Cast,p2Cast;
+    private GameState gamestate;
     private boolean executingTurn = false;
     boolean inMenu=false;
     boolean inPathMode=false;
@@ -43,6 +47,8 @@ public class PlayScreen extends Screen {
         this.setBackground(new Sprite("/backgroundLarge.png"));
         
         myTurn=new Turn(0, 0);
+        
+        gamestate=new GameState();
         
         this.setP1Cast(new Castle());
         this.getP1Cast().setX(0);
@@ -78,6 +84,8 @@ public class PlayScreen extends Screen {
     	
     	this.getP1Cast().draw(g);
     	this.getP2Cast().draw(g);
+    	
+    	gamestate.draw(g);
     	
     	//Block used for Paths
     	{
@@ -144,6 +152,10 @@ public class PlayScreen extends Screen {
             this.translate(-3, 0);
         }else if(InputHandler.isDown(KeyEvent.VK_D)){
             this.translate(3, 0);
+        }
+        
+        if(isExecutingTurn() && currentTickCount < ticksPerTurn){
+        	gamestate.tick();
         }
     }
     
