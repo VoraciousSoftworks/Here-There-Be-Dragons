@@ -23,6 +23,7 @@ public class DBHandler {
 	private PreparedStatement checkHash;
 	private PreparedStatement registerUser;
 	private PreparedStatement numGames,numWins,aveTurn,numTuples,times;
+	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame;
 	
 	public void init() {
 		try {
@@ -116,6 +117,16 @@ public class DBHandler {
 			//g2 t1
 			//g2 t2
 			
+			storeTurn=conn.prepareStatement(
+					"INSERT INTO Turn VALUES(?,?,?,?,?);");
+			
+			storeSpect=conn.prepareStatement(
+					"INSERT INTO Spectator VALUES(?,?);");
+			storeWinner=conn.prepareStatement(
+					"INSERT INTO Winner VALUES(?,?);");
+			storeGame=conn.prepareStatement(
+					"INSERT INTO Game (pid1,pid2,gameState) VALUES(?,?,?)");
+			//assuming a game inserted will be inprogress
 		} catch (SQLException e) {
 			logger.error("Error preparing statements", e);
 		}
@@ -151,10 +162,58 @@ public class DBHandler {
 		}
 	}
 	
-	public String getPasswordHash(String uid){
+	public void insertGame(String PID1,String PID2,String GAMESTATE){
 		try {
-			System.out.println(uid);
-			checkHash.setString(1, uid);
+			storeGame.setString(1, PID1);
+			storeGame.setString(2, PID2);
+			storeGame.setString(3, GAMESTATE);
+			storeGame.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("Could not add to the game table",e);
+		}
+	}
+	
+	public void insertWinner(int GID,String PID){
+		try {
+			storeWinner.setInt(1, GID);
+			storeWinner.setString(2, PID);
+			storeWinner.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("Coud not add to the winner table",e);
+		}
+		
+		
+	}
+	
+	public void insertSpectator(int GID,String PID){
+		try {
+			storeSpect.setInt(1, GID);
+			storeSpect.setString(2, PID);
+			storeSpect.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("Could not add to teh specatator table",e);
+		}
+		
+		
+	}
+	
+	public void insertTurn(int GID,int TNUM,Timestamp TIME,String PID,String TURNSTRING){
+		try{
+			storeTurn.setInt(1,GID);
+			storeTurn.setInt(2, TNUM);
+			storeTurn.setTimestamp(3, TIME);
+			storeTurn.setString(4, PID);
+			storeTurn.setString(5, TURNSTRING);
+			storeTurn.executeUpdate();
+		}
+		catch(SQLException e){
+			logger.error("Coul not add to the turn table", e);
+		}
+	}
+	
+	public String getPasswordHash(String pid){
+		try {
+			checkHash.setString(1, pid);
 			ResultSet rs = checkHash.executeQuery();
 			if(!rs.next()){
 				return null;
@@ -206,6 +265,8 @@ public class DBHandler {
 	
 	public double aveTurns(String PID,int totalNumGames) {
 		//the totalNumGames = done + current games, so it needs the other qureies to be done first
+		if(totalNumGames==0)
+			return 0.0;
 		
 		try {
 			aveTurn.setString(1, PID);
@@ -218,12 +279,15 @@ public class DBHandler {
 		}
 	}
 	
-	public String aveTime(String PID){
+	public long aveTime(String PID){
 		//the group by is only there to have an arrogate query
 		try {
 			numTuples.setString(1, PID);
 			ResultSet tuples=numTuples.executeQuery();
 			int numberTuples=tuples.getInt("answer");
+			
+			if(numberTuples==0)
+				return 0;
 			
 			times.setString(1, PID);
 			ResultSet timeRes=times.executeQuery();
@@ -247,10 +311,10 @@ public class DBHandler {
 			}
 			
 			sum/=numberTuples;
-			return sum+"";
+			return sum;
 		} catch (SQLException e) {
 			logger.error("Could not count the ave time between turns", e);
-			return "ERROR in ave time of turns";
+			return -1;
 		}
 	}
 }

@@ -18,6 +18,11 @@ public class StatScreen extends Screen {
     private Button returnButton;
     private Sprite background;
     
+    private String username;
+    private int finished,current,win,loss;
+    private double winPer,lossPer,aveTurns;
+    private long timeBetween;
+    
 	public StatScreen(/*player's pid to do db searching*/) {
 		super(WIDTH, HEIGHT);
 		background = new Sprite("/mainMenuBackground.png");
@@ -28,17 +33,7 @@ public class StatScreen extends Screen {
 				Game.setCurrentScreen(new MainMenuScreen());
 			}
 		});
-		/*TODO Stat's to be shown:
-		 *		user's username
-		 *		# of finished games
-		 * 		# of current games
-		 * 		# won
-		 * 		# loss
-		 *		% won
-		 * 		% loss
-		 * 		Ave time between moves
-		 * 		Ave number of turns per game
-		 */
+		
 		
 		//the PID is assumed to be the pid of the person logged in to the game
 		
