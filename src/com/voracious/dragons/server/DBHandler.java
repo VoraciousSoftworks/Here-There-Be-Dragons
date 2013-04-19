@@ -63,7 +63,7 @@ public class DBHandler {
 			query.executeUpdate("CREATE TABLE Winner (gid INTEGER PRIMARY KEY NOT NULL REFERENCES Game(gid), pid VARCHAR(15) NOT NULL REFERENCES Player(pid))");
 			query.executeUpdate("CREATE TABLE Spectator (gid INTEGER PRIMARY KEY NOT NULL REFERENCES Game(gid), pid VARCHAR(15) NOT NULL REFERENCES Player(pid))");
 			query.executeUpdate("CREATE TABLE Turn (gid INTEGER NOT NULL REFERENCES Game(gid), tnum INTEGER NOT NULL, timeStamp DATETIME NOT NULL DEFAULT CURRENT_TIME," +
-					            "turnString VARCHAR(60) NOT NULL, pid VARCHAR(15) NOT NULL REFERENCES Player(pid), PRIMARY KEY(gid, pid, tnum))");
+					            "pid VARCHAR(15) NOT NULL REFERENCES Player(pid), turnString VARCHAR(60) NOT NULL, PRIMARY KEY(gid, pid, tnum))");
 		} catch (SQLException e) {
 			logger.error("Could not create tables", e);
 		}
