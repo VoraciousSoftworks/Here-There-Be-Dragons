@@ -2,8 +2,6 @@ package com.voracious.dragons.client;
 
 import java.util.concurrent.BlockingQueue;
 
-import javax.resource.spi.endpoint.MessageEndpoint;
-
 import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.screens.LoginScreen;

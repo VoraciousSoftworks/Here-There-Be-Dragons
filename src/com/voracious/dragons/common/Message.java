@@ -56,7 +56,7 @@ public class Message {
 	}
 
 	public static byte[] format(String message) {
-		byte[] strbytes = (message + "\n").getBytes();
+		byte[] strbytes = (message).getBytes();
 		byte[] mbytes = new byte[2 + strbytes.length]; //*2 because java chars are 2 bytes to support unicode
 		mbytes[0] = Message.START_OF_TEXT;
 		

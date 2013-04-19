@@ -57,6 +57,7 @@ public class ServerMessageProcessor extends MessageProcessor {
 						user.setUsername(username);
 						user.setAuthenticated(true);
 						scm.sendMessage(user, "LS:" + session);
+						logger.info("User logged in:" + username);
 					}else{
 						scm.sendMessage(user, "E:Connection error");
 					}
@@ -66,15 +67,18 @@ public class ServerMessageProcessor extends MessageProcessor {
 				}
 			}else{
 				scm.sendMessage(sender, "E:Invalid password");
+				logger.debug("Invalid password tried");
 			}
 		}else{
 			scm.sendMessage(sender, "E:Invalid username");
+			logger.debug("Invalid username tried: " + username);
 		}
 	}
 	
 	public void register(SocketChannel sender, String username, String password) {
-		if(Main.getDB().getPasswordHash(username) != null){
+		if(Main.getDB().getPasswordHash(username) == null){
 			Main.getDB().registerUser(username, Crypto.getSaltedHash(password));
+			logger.info("User registered: " + username);
 			try {
 				User user = scm.getUser(sender.getRemoteAddress().toString());
 				String session = Crypto.getSessionId(); 
@@ -88,6 +92,7 @@ public class ServerMessageProcessor extends MessageProcessor {
 			}
 		}else{
 			scm.sendMessage(sender, "E:Username already registered");
+			logger.debug("Attempted to register taken username: " + username);
 		}
 	}
 }

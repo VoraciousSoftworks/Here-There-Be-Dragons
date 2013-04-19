@@ -41,11 +41,24 @@ public class DBHandler {
 			
 			String[] tablesInDb = {null};
 			tablesInDb = tables.toArray(tablesInDb);
-
+			//TODO: There are extra tables that happen to come after ours in the sort get rid of those
+			
 			Arrays.sort(tablesInDb);
 			Arrays.sort(tableNames);
+
+			boolean equal = true;
+			for(int i=0; i<tableNames.length; i++){
+				if(tablesInDb[i] == null){
+					equal = false;
+					break;
+				}
+				
+				if(!tablesInDb[i].equals(tableNames[i])){
+					equal = false;
+				}
+			}
 			
-			if (!tablesInDb.equals(tableNames)) {
+			if (!equal) {
 				conn.close();
 				new File(dbfile).delete();
 				conn = DriverManager.getConnection("jdbc:sqlite:" + dbfile);
@@ -62,40 +75,39 @@ public class DBHandler {
 	
 	private void prepareStatements(){
 		try {
-			
-			checkHash = conn.prepareStatement("SELECT passhash" +
-					                          "FROM Player" +
+			checkHash = conn.prepareStatement("SELECT passhash " +
+					                          "FROM Player " +
 					                          "WHERE pid = ?");
 			
 			registerUser = conn.prepareStatement("INSERT INTO Player VALUES(?, ?)");
 			
 			numGames = conn.prepareStatement(
-					"SELECT count(gid) AS answer" +
-					"FROM Game" +
-					"WHERE (pid1=? OR pid2=?) AND inProgress=?" +
+					"SELECT count(gid) AS answer " +
+					"FROM Game " +
+					"WHERE (pid1=? OR pid2=?) AND inProgress=? " +
 					"GROUP BY gid;");
 			
 			numWins=conn.prepareStatement(
-					"SELECT count(gid) AS answer" +
-					"FROM Winner" +
-					"WHERE pid=?" +
+					"SELECT count(gid) AS answer " +
+					"FROM Winner " +
+					"WHERE pid=? " +
 					"GROUP BY gid;");
 			
 			aveTurn=conn.prepareStatement(
-					"SELECT count(*) AS answer" +
-					"FROM Turn" +
-					"WHERE pid=?" +
+					"SELECT count(*) AS answer " +
+					"FROM Turn " +
+					"WHERE pid=? " +
 					"GROUP BY gid, tnum;");
 			numTuples=conn.prepareStatement(
-					"SELECT count(*) AS answer" +
-					"FROM Turn" +
-					"WHERE pid=?" +
+					"SELECT count(*) AS answer " +
+					"FROM Turn " +
+					"WHERE pid=? " +
 					"GROUP BY gid,tnum;");
 			times=conn.prepareStatement(
-					"SELECT gid AS GID, tNUM as TNUM, timeStamp AS TIMESTAMP" +
-					"FROM Turn" +
-					"WHERE pid=?" +
-					"ORDER BY gid ASC,tNum ASC;");
+					"SELECT gid AS GID, tNUM as TNUM, timeStamp AS TIMESTAMP " +
+					"FROM Turn " +
+					"WHERE pid=? " +
+					"ORDER BY gid ASC,tNum ASC; ");
 			//possible to sort the time stamps also, so each games is in order from top to bottom
 			//g0 t0
 			//g0 t1
@@ -141,8 +153,13 @@ public class DBHandler {
 	
 	public String getPasswordHash(String uid){
 		try {
+			System.out.println(uid);
 			checkHash.setString(1, uid);
 			ResultSet rs = checkHash.executeQuery();
+			if(!rs.next()){
+				return null;
+			}
+
 			return rs.getString("passhash");
 		} catch (SQLException e) {
 			logger.error("Could not check hash", e);

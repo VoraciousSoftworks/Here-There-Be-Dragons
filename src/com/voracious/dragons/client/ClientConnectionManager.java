@@ -1,9 +1,11 @@
 package com.voracious.dragons.client;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
 import org.apache.log4j.Logger;
@@ -24,8 +26,10 @@ public class ClientConnectionManager {
 		try {
 			cm = new ConnectionManager();
 			server = SocketChannel.open(new InetSocketAddress(InetAddress.getByName(hostname), port));
-			
+			server.configureBlocking(false);
+			server.register(cm.getReadSelector(), SelectionKey.OP_READ, new ByteArrayOutputStream());
 			new Thread(cm).start();
+			new Thread(new ClientMessageProcessor(this, cm.getMessageQueue())).start();
 		} catch (UnknownHostException e) {
 			logger.error("Unknown host", e);
 		} catch (IOException e) {

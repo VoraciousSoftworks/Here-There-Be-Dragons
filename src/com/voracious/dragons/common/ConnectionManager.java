@@ -36,6 +36,10 @@ public class ConnectionManager implements Runnable {
 		messageQueue = new LinkedBlockingQueue<Message>();
 	}
 	
+	public BlockingQueue<Message> getMessageQueue(){
+		return messageQueue;
+	}
+	
 	public void sendMessage(SocketChannel sc, String message) {
 		prepWriteBuffer(Message.format(message));
 		writeBytes(sc);

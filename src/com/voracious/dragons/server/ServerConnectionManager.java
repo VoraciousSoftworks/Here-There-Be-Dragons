@@ -30,6 +30,7 @@ public class ServerConnectionManager implements Runnable {
 		bindAddresses(default_hostname, default_port);
 		cm = new ConnectionManager();
 		new Thread(cm).start();
+		new Thread(new ServerMessageProcessor(this, cm.getMessageQueue())).start();
 	}
 	
 	public void bindAddresses(String hostname, int port){
@@ -51,6 +52,7 @@ public class ServerConnectionManager implements Runnable {
 
 				cm.sendMessage(clientChannel, "Hello!");
 				
+				clientChannel.configureBlocking(false);
 				clientChannel.register(cm.getReadSelector(), SelectionKey.OP_READ, new ByteArrayOutputStream());
 				
 				User newUser = new User(clientChannel);
