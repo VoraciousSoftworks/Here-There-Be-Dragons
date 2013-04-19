@@ -23,7 +23,7 @@ public class DBHandler {
 	private PreparedStatement checkHash;
 	private PreparedStatement registerUser;
 	private PreparedStatement numGames,numWins,aveTurn,numTuples,times;
-	private PreparedStatement storeTurn,storeSpect;
+	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame;
 	
 	public void init() {
 		try {
@@ -110,7 +110,11 @@ public class DBHandler {
 			
 			storeSpect=conn.prepareStatement(
 					"INSERT INTO Spectator VALUES(?,?);");
-			
+			storeWinner=conn.prepareStatement(
+					"INSERT INTO Winner VALUES(?,?);");
+			storeGame=conn.prepareStatement(
+					"INSERT INTO Game (pid1,pid2,gameState) VALUES(?,?,?)");
+			//assuming a game inserted will be inprogress
 		} catch (SQLException e) {
 			logger.error("Error preparing statements", e);
 		}
@@ -144,6 +148,29 @@ public class DBHandler {
 		} catch (SQLException e) {
 			logger.error("Could not create tables", e);
 		}
+	}
+	
+	public void insertGame(String PID1,String PID2,String GAMESTATE){
+		try {
+			storeGame.setString(1, PID1);
+			storeGame.setString(2, PID2);
+			storeGame.setString(3, GAMESTATE);
+			storeGame.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("Could not add to the game table",e);
+		}
+	}
+	
+	public void insertWinner(int GID,String PID){
+		try {
+			storeWinner.setInt(1, GID);
+			storeWinner.setString(2, PID);
+			storeWinner.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("Coud not add to the winner table",e);
+		}
+		
+		
 	}
 	
 	public void insertSpectator(int GID,String PID){
