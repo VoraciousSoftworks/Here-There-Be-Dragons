@@ -20,7 +20,7 @@ public class DBHandler {
 	private Connection conn;
 
 	private PreparedStatement checkHash;
-	private PreparedStatement numGames;
+	private PreparedStatement numGames,numWins,aveTurn,numTuples,times;
 	
 	public void init() {
 		try {
@@ -70,6 +70,29 @@ public class DBHandler {
 					"FROM Game" +
 					"WHERE (pid1=? OR pid2=?) AND inProgress=?" +
 					"GROUP BY gid;");
+			
+			numWins=conn.prepareStatement(
+					"SELECT count(gid) AS answer" +
+					"FROM Winner" +
+					"WHERE pid=?" +
+					"GROUP BY gid;");
+			
+			aveTurn=conn.prepareStatement(
+					"SELECT count(*) AS answer" +
+					"FROM Turn" +
+					"WHERE pid=?" +
+					"GROUP BY gid, tnum;");
+			numTuples=conn.prepareStatement(
+					"SELECT count(*) AS answer" +
+					"FROM Turn" +
+					"WHERE pid=?" +
+					"GROUP BY gid,tnum;");
+			times=conn.prepareStatement(
+					"SELECT gid AS GID, tNUM as TNUM, timeStamp AS TIMESTAMP" +
+					"FROM Turn" +
+					"WHERE pid=?" +
+					"ORDER BY gid ASC,tNum ASC;");
+			
 		} catch (SQLException e) {
 			logger.error("Error preparing statements", e);
 		}
@@ -116,81 +139,86 @@ public class DBHandler {
 		}
 	}
 
-	public int numGames(String PID, boolean inPlay) throws SQLException{
+	public int numGames(String PID, boolean inPlay){
 		//the boolean is to know if the games being counted are over or still occurring
-		
+		try{
 		numGames.setString(1, PID);
 		numGames.setString(2, PID);
 		numGames.setString(3,inPlay+"");//does "true" == true+"" ?
 		ResultSet ret=numGames.executeQuery();
 		return ret.getInt("answer");
+		}
+		catch(SQLException e){
+			logger.error("Could not count the number of games",e);
+			return -1;
+		}
 	}
 	
-	public int countWins(String PID) throws SQLException{
-		PreparedStatement quest=conn.prepareStatement(
-				"SELECT count(gid) AS answer" +
-				"FROM Winner" +
-				"WHERE pid=?" +
-				"GROUP BY gid;");
-		quest.setString(1,PID);
-		ResultSet ret=quest.executeQuery();
+	public int countWins(String PID){
+		try{
+		numWins.setString(1,PID);
+		ResultSet ret=numWins.executeQuery();
 		return ret.getInt("answer");
+		}
+		catch(SQLException e){
+			logger.error("Could not count the number of wins",e);
+			return -1;
+		}
 	}
 	
-	public double aveTurns(String PID,int totalNumGames) throws SQLException{
+	public double aveTurns(String PID,int totalNumGames) {
 		//the totalNumGames = done + current games, so it needs the other qureies to be done first
-		PreparedStatement quest=conn.prepareStatement(
-				"SELECT count(*) AS answer" +
-				"FROM Turn" +
-				"WHERE pid=?" +
-				"GROUP BY gid, tnum;");
-		quest.setString(1, PID);
-		ResultSet ret=quest.executeQuery();
-		int numTurns=ret.getInt("answer");
-		return numTurns/totalNumGames;
+		
+		try {
+			aveTurn.setString(1, PID);
+			ResultSet ret=aveTurn.executeQuery();
+			int numTurns=ret.getInt("answer");
+			return numTurns/totalNumGames;
+		} catch (SQLException e) {
+			logger.error("Could not count the ave number of turns", e);
+			return -1.0;
+		}
 	}
 	
-	public String aveTime(String PID) throws SQLException{
-		PreparedStatement numTuples=conn.prepareStatement(
-				"SELECT count(*) AS answer" +
-				"FROM Turn" +
-				"WHERE pid=?" +
-				"GROUP BY gid,tnum;");//the group by is only there to have an arrogate query
-		numTuples.setString(1, PID);
-		ResultSet tuples=numTuples.executeQuery();
-		int numberTuples=tuples.getInt("answer");
+	public String aveTime(String PID){
 		
-		PreparedStatement times=conn.prepareStatement(
-				"SELECT gid AS GID, tNUM as TNUM, timeStamp AS TIMESTAMP" +
-				"FROM Turn" +
-				"WHERE pid=?" +
-				"ORDER BY gid ASC,tNum ASC;");
-		times.setString(1, PID);
-		ResultSet timeRes=times.executeQuery();
-		//possible to sort the time stamps also, so each games is in order from top to bottom
-		//g0 t0
-		//g0 t1
-		//g1 t0
-		//g2 t0
-		//g2 t1
-		//g2 t2
-		
-		//date sum
-		{//calculates the total time
-			//temp date
-			while(timeRes.next()){
-				//int turnCounter=readin's turn num
-				
-				//if(turnCounter==0)
+		//the group by is only there to have an arrogate query
+		try {
+			numTuples.setString(1, PID);
+			ResultSet tuples=numTuples.executeQuery();
+			int numberTuples=tuples.getInt("answer");
+			
+			
+			times.setString(1, PID);
+			ResultSet timeRes=times.executeQuery();
+			//possible to sort the time stamps also, so each games is in order from top to bottom
+			//g0 t0
+			//g0 t1
+			//g1 t0
+			//g2 t0
+			//g2 t1
+			//g2 t2
+			
+			//date sum
+			{//calculates the total time
+				//temp date
+				while(timeRes.next()){
+					//int turnCounter=readin's turn num
+					
+					//if(turnCounter==0)
 					//set that reading's timestamp as the temp
-				//else 
+					//else 
 					//date current=reading's timestamp
 					//sum+=current-temp
 					//temp=current
+				}
 			}
+			//date answer=sum/numberTuples
+			//return answer.toString();
+			return "";
+		} catch (SQLException e) {
+			logger.error("Could not count the ave time between turns", e);
+			return "ERROR in ave time of turns";
 		}
-		//date answer=sum/numberTuples
-		//return answer.toString();
-		return "";
 	}
 }
