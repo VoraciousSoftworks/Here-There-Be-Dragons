@@ -8,7 +8,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -23,10 +25,10 @@ public class ServerConnectionManager implements Runnable {
 	
 	private ConnectionManager cm;
 	private ServerSocketChannel ssc;
-	private List<User> users;
+	private Map<String, User> users;
 	
 	public ServerConnectionManager(){
-		users = new ArrayList<User>();
+		users = new HashMap<String, User>();
 		bindAddresses(default_hostname, default_port);
 		cm = new ConnectionManager();
 		new Thread(cm).start();
@@ -47,24 +49,46 @@ public class ServerConnectionManager implements Runnable {
 		try {
 			while((clientChannel = ssc.accept()) != null){
 				clientChannel.configureBlocking(false);
+				logger.info("Client connected: " + clientChannel.getRemoteAddress().toString());
+
 				cm.sendMessage(clientChannel, "Hello!");
 				
 				clientChannel.register(cm.getReadSelector(), SelectionKey.OP_READ, new ByteArrayOutputStream());
 				
 				User newUser = new User(clientChannel);
-				users.add(newUser);
-				
-				logger.info("Client connected: " + clientChannel.getRemoteAddress().toString());
-				
-				authenticate(newUser);
+				users.put(clientChannel.getRemoteAddress().toString(), newUser);
 			}
 		} catch (IOException e) {
 			logger.error("Could not accept connection", e);
 		}
 	}
 	
-	public void authenticate(User user){
-		
+	public void addUser(User user){
+		try {
+			users.put(user.getConnection().getRemoteAddress().toString(), user);
+		} catch (IOException e) {
+			logger.error("Could not get user's remote address", e);
+		}
+	}
+	
+	public User getUser(String remoteAddress){
+		return users.get(remoteAddress);
+	}
+	
+	public void sendMessage(User user, String message){
+		cm.sendMessage(user.getConnection(), message);
+	}
+	
+	public void sendMessage(User user, byte[] message){
+		cm.sendMessage(user.getConnection(), message);
+	}
+	
+	public void sendMessage(SocketChannel chan, String message){
+		cm.sendMessage(chan, message);
+	}
+	
+	public void sendMessage(SocketChannel chan, byte[] message){
+		cm.sendMessage(chan, message);
 	}
 
 	@Override

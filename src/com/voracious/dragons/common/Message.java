@@ -17,10 +17,18 @@ public class Message {
 	public Message(SocketChannel from, byte[] bytes) {
 		this.sender = from;
 		this.bytes = bytes;
+		
+		if(bytes == null || bytes.length < 1){
+			throw new IllegalArgumentException("message data cannot be empty");
+		}
 	}
 
 	public byte[] getBytes() {
 		return bytes;
+	}
+	
+	public boolean isString(){
+		return bytes[0] == START_OF_TEXT || this.isDisconnecting;
 	}
 
 	@Override
