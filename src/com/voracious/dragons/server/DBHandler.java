@@ -23,6 +23,7 @@ public class DBHandler {
 	private PreparedStatement checkHash;
 	private PreparedStatement registerUser;
 	private PreparedStatement numGames,numWins,aveTurn,numTuples,times;
+	private PreparedStatement storeTurn,storeSpect;
 	
 	public void init() {
 		try {
@@ -104,6 +105,12 @@ public class DBHandler {
 			//g2 t1
 			//g2 t2
 			
+			storeTurn=conn.prepareStatement(
+					"INSERT INTO Turn VALUES(?,?,?,?,?);");
+			
+			storeSpect=conn.prepareStatement(
+					"INSERT INTO Spectator VALUES(?,?);");
+			
 		} catch (SQLException e) {
 			logger.error("Error preparing statements", e);
 		}
@@ -139,9 +146,35 @@ public class DBHandler {
 		}
 	}
 	
-	public String getPasswordHash(String uid){
+	public void insertSpectator(int GID,String PID){
 		try {
-			checkHash.setString(1, uid);
+			storeSpect.setInt(1, GID);
+			storeSpect.setString(2, PID);
+			storeSpect.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("Could not add to teh specatator table",e);
+		}
+		
+		
+	}
+	
+	public void insertTurn(int GID,int TNUM,Timestamp TIME,String PID,String TURNSTRING){
+		try{
+			storeTurn.setInt(1,GID);
+			storeTurn.setInt(2, TNUM);
+			storeTurn.setTimestamp(3, TIME);
+			storeTurn.setString(4, PID);
+			storeTurn.setString(5, TURNSTRING);
+			storeTurn.executeUpdate();
+		}
+		catch(SQLException e){
+			logger.error("Coul not add to the turn table", e);
+		}
+	}
+	
+	public String getPasswordHash(String pid){
+		try {
+			checkHash.setString(1, pid);
 			ResultSet rs = checkHash.executeQuery();
 			return rs.getString("passhash");
 		} catch (SQLException e) {
@@ -201,7 +234,7 @@ public class DBHandler {
 		}
 	}
 	
-	public String aveTime(String PID){
+	public long aveTime(String PID){
 		//the group by is only there to have an arrogate query
 		try {
 			numTuples.setString(1, PID);
@@ -230,10 +263,10 @@ public class DBHandler {
 			}
 			
 			sum/=numberTuples;
-			return sum+"";
+			return sum;
 		} catch (SQLException e) {
 			logger.error("Could not count the ave time between turns", e);
-			return "ERROR in ave time of turns";
+			return -1;
 		}
 	}
 }
