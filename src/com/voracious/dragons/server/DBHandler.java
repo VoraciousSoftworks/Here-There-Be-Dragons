@@ -105,15 +105,15 @@ public class DBHandler {
 		}
 	}
 	
-	public boolean checkPasswordHash(String uid, String hash){
+	public String getPasswordHash(String uid){
 		try {
 			checkHash.setString(1, uid);
 			ResultSet rs = checkHash.executeQuery();
-			if(hash.equals(rs.getString("passhash")));
+			return rs.getString("passhash");
 		} catch (SQLException e) {
 			logger.error("Could not check hash", e);
+			return null;
 		}
-		return false;
 	}
 
 	public int numGames(String PID, boolean inPlay) throws SQLException{
