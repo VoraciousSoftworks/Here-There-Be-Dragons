@@ -12,10 +12,15 @@ import com.voracious.dragons.common.ConnectionManager;
 
 public class ClientConnectionManager {
 	private Logger logger = Logger.getLogger(ClientConnectionManager.class);
+	private String hostname;
+	private int port;
 	private SocketChannel server;
 	private ConnectionManager cm;
+	private String sessionId;
 	
 	public ClientConnectionManager(String hostname, int port){
+		this.hostname = hostname;
+		this.port = port;
 		try {
 			cm = new ConnectionManager();
 			server = SocketChannel.open(new InetSocketAddress(InetAddress.getByName(hostname), port));
@@ -28,6 +33,30 @@ public class ClientConnectionManager {
 		}
 	}
 	
+	public void disconnect() {
+		try {
+			server.close();
+		} catch (IOException e) {
+			logger.error(e);
+		}
+	}
+	
+	public void setSessionId(String id) {
+		this.sessionId = id;
+	}
+	
+	public String getSessionId() {
+		return sessionId;
+	}
+	
+	public String getHostname() {
+		return hostname;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
 	public void sendMessage(String message){
 		cm.sendMessage(server, message);
 	}

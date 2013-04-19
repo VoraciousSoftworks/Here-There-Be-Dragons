@@ -112,6 +112,14 @@ public class Game extends Canvas implements Runnable {
     }
     
     public static void connect(String hostname, int port){
+    	if(ccm != null){
+    		if(ccm.getHostname().equals(hostname) && ccm.getPort() == port){
+    			return;
+    		}else{
+    			ccm.disconnect();
+    		}
+    	}
+
     	ccm = new ClientConnectionManager(hostname, port);
     }
     

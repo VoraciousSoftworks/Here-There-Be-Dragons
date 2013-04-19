@@ -20,42 +20,52 @@ import com.voracious.dragons.client.utils.InputHandler;
 public class LoginScreen extends Screen {
 	private Sprite background;
 	private Button login, register;
-	private TextBox username, password, server;
+	private TextBox usernameTextBox, passwordTextBox, server;
 	private Text userLabel, passLabel, serverLabel;
 	private int hasFocus = 0;
 	
-	private Logger logger = Logger.getLogger(LoginScreen.class);
+	private static boolean isLoggingIn;
+	private static boolean hasLoggedIn = false;
+	private static boolean isRegistering;
+	private static String username, password;
+	
+	private static Logger logger = Logger.getLogger(LoginScreen.class);
 	
 	public LoginScreen() {
 		super(Game.WIDTH, Game.HEIGHT);
 		background = new Sprite("/mainMenuBackground.png");
+		isLoggingIn = false;
 		
 		userLabel = new Text("Username: ", 10, Game.HEIGHT - 70);
 		passLabel = new Text("Password: ", 10, Game.HEIGHT - 45);
 		serverLabel = new Text("Server: ", 10, Game.HEIGHT - 95);
 		
-		username = new TextBox(10 + userLabel.getWidth(), Game.HEIGHT - 73);
-		username.setWidth(150);
-		password = new TextBox(10 + userLabel.getWidth(), Game.HEIGHT - 48, true);
-		password.setWidth(150);
-		password.setDrawCaret(false);
+		usernameTextBox = new TextBox(10 + userLabel.getWidth(), Game.HEIGHT - 73);
+		usernameTextBox.setWidth(150);
+		passwordTextBox = new TextBox(10 + userLabel.getWidth(), Game.HEIGHT - 48, true);
+		passwordTextBox.setWidth(150);
+		passwordTextBox.setDrawCaret(false);
 		server = new TextBox("localhost:35580", 10 + userLabel.getWidth(), Game.HEIGHT - 98);
 		server.setWidth(150);
 		server.setDrawCaret(false);
 		
-		login = new Button("Login", username.getWidth() + username.getX() + 5, username.getY());
+		login = new Button("Login", usernameTextBox.getWidth() + usernameTextBox.getX() + 5, usernameTextBox.getY());
 		login.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				logger.info("Logging in...");
+				isRegistering = false;
 				authenticate();
 			}
 		});
 		
-		register = new Button("register", password.getWidth() + password.getX() + 5, password.getY());
+		register = new Button("register", passwordTextBox.getWidth() + passwordTextBox.getX() + 5, passwordTextBox.getY());
 		register.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				register();
+				logger.info("Registering...");
+				isRegistering = true;
+				authenticate();
 			}
 		});
 	}
@@ -71,21 +81,51 @@ public class LoginScreen extends Screen {
 	}
 
 	
+	synchronized
 	private void authenticate() {
-		logger.info("Logging in...");
-		//TODO: better parsing that takes into account incorrect formatting
-		String serverstr = server.getText();
-		int colloc = serverstr.indexOf(':');
-		Game.connect(serverstr.substring(0, colloc), Integer.parseInt(serverstr.substring(colloc + 1)));
-		Game.getClientConnectionManager().sendMessage("Hello!");
+		if(!isLoggingIn){
+			isLoggingIn = true;
+			
+			//TODO: better parsing that takes into account incorrect formatting
+			String serverstr = server.getText();
+			int colloc = serverstr.indexOf(':');
+			Game.connect(serverstr.substring(0, colloc), Integer.parseInt(serverstr.substring(colloc + 1)));
+			
+			username = this.usernameTextBox.getText();
+			password = this.passwordTextBox.getText();
+		}
 	}
 	
-	private void register() {
-		logger.info("Registering...");
+	synchronized
+	public static String getUsername(){
+		String temp = username;
+		username = "";
+		return temp;
 	}
-
-	private void onSuccess(String response) {
+	
+	synchronized
+	public static String getPassword(){
+		String temp = password;
+		username = "";
+		return temp;
+	}
+	
+	public static boolean hasLoggedIn(){
+		return hasLoggedIn;
+	}
+	
+	public static boolean isRegistering(){
+		return isRegistering;
+	}
+	
+	public static void onSuccess() {
+		hasLoggedIn = true;
 		Game.setCurrentScreen(new MainMenuScreen());
+	}
+	
+	public static void onFailure(String message){
+		logger.warn("Login failed: " + message);
+		isLoggingIn = false;
 	}
 	
 	@Override
@@ -96,8 +136,8 @@ public class LoginScreen extends Screen {
 		userLabel.draw(g);
 		passLabel.draw(g);
 		serverLabel.draw(g);
-		username.draw(g);
-		password.draw(g);
+		usernameTextBox.draw(g);
+		passwordTextBox.draw(g);
 		server.draw(g);
 		login.draw(g);
 		register.draw(g);
@@ -107,16 +147,16 @@ public class LoginScreen extends Screen {
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_TAB){
 			hasFocus = (hasFocus + 1)%3;
-			username.setDrawCaret(hasFocus == 0);
-			password.setDrawCaret(hasFocus == 1);
+			usernameTextBox.setDrawCaret(hasFocus == 0);
+			passwordTextBox.setDrawCaret(hasFocus == 1);
 			server.setDrawCaret(hasFocus == 2);
 		}else{
 			switch(hasFocus){
 			case 0:
-				username.keyReleased(e);
+				usernameTextBox.keyReleased(e);
 				break;
 			case 1:
-				password.keyReleased(e);
+				passwordTextBox.keyReleased(e);
 				break;
 			case 2:
 				server.keyReleased(e);
@@ -134,23 +174,23 @@ public class LoginScreen extends Screen {
 		login.mouseClicked(x, y);
 		register.mouseClicked(x, y);
 		
-		if(username.contains(x, y)){
-			username.mouseClicked(x, y);
+		if(usernameTextBox.contains(x, y)){
+			usernameTextBox.mouseClicked(x, y);
 			hasFocus = 0;
-			username.setDrawCaret(true);
-			password.setDrawCaret(false);
+			usernameTextBox.setDrawCaret(true);
+			passwordTextBox.setDrawCaret(false);
 			server.setDrawCaret(false);
-		}else if(password.contains(x, y)){
-			password.mouseClicked(x, y);
+		}else if(passwordTextBox.contains(x, y)){
+			passwordTextBox.mouseClicked(x, y);
 			hasFocus = 1;
-			username.setDrawCaret(false);
-			password.setDrawCaret(true);
+			usernameTextBox.setDrawCaret(false);
+			passwordTextBox.setDrawCaret(true);
 			server.setDrawCaret(false);
 		}else if(server.contains(x, y)){
 			server.mouseClicked(x, y);
 			hasFocus = 2;
-			username.setDrawCaret(false);
-			password.setDrawCaret(false);
+			usernameTextBox.setDrawCaret(false);
+			passwordTextBox.setDrawCaret(false);
 			server.setDrawCaret(true);
 		}
 	}
@@ -159,10 +199,10 @@ public class LoginScreen extends Screen {
 	public void tick() {
 		switch(hasFocus){
 		case 0:
-			username.tick();
+			usernameTextBox.tick();
 			break;
 		case 1:
-			password.tick();
+			passwordTextBox.tick();
 			break;
 		case 2:
 			server.tick();
