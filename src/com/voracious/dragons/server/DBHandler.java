@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -92,6 +93,13 @@ public class DBHandler {
 					"FROM Turn" +
 					"WHERE pid=?" +
 					"ORDER BY gid ASC,tNum ASC;");
+			//possible to sort the time stamps also, so each games is in order from top to bottom
+			//g0 t0
+			//g0 t1
+			//g1 t0
+			//g2 t0
+			//g2 t1
+			//g2 t2
 			
 		} catch (SQLException e) {
 			logger.error("Error preparing statements", e);
@@ -181,41 +189,35 @@ public class DBHandler {
 	}
 	
 	public String aveTime(String PID){
-		
 		//the group by is only there to have an arrogate query
 		try {
 			numTuples.setString(1, PID);
 			ResultSet tuples=numTuples.executeQuery();
 			int numberTuples=tuples.getInt("answer");
 			
-			
 			times.setString(1, PID);
 			ResultSet timeRes=times.executeQuery();
-			//possible to sort the time stamps also, so each games is in order from top to bottom
-			//g0 t0
-			//g0 t1
-			//g1 t0
-			//g2 t0
-			//g2 t1
-			//g2 t2
 			
-			//date sum
-			{//calculates the total time
-				//temp date
-				while(timeRes.next()){
-					//int turnCounter=readin's turn num
-					
-					//if(turnCounter==0)
+			long sum=0;
+			//calculates the total time
+			Timestamp temp=new Timestamp(0),current;
+			while(timeRes.next()){
+				int turnCounter=timeRes.getInt("TNUM");//readin's turn num
+
+				if(turnCounter==0){
 					//set that reading's timestamp as the temp
-					//else 
-					//date current=reading's timestamp
-					//sum+=current-temp
-					//temp=current
+					temp=timeRes.getTimestamp("TIMESTAMP");
+				}
+				else {
+					current=timeRes.getTimestamp("TIMESTAMP");
+					sum+=current.getTime()-temp.getTime();
+					temp=current;
+
 				}
 			}
-			//date answer=sum/numberTuples
-			//return answer.toString();
-			return "";
+			
+			sum/=numberTuples;
+			return sum+"";
 		} catch (SQLException e) {
 			logger.error("Could not count the ave time between turns", e);
 			return "ERROR in ave time of turns";
