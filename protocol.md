@@ -12,3 +12,8 @@ Authentication
  2. Client sends either R: or L: to signify registration and login respectively "{username}:{password}" (: is disallowed) ex: "L:admin:pass"
    - At some point we should find a way encrypt this like https or something
  3. Server sends back "RS:{sessionID}" for registration success, "LS:{sessionID}" for login success, "LRE:{error message}" for an error in either process.
+ 
+Statistics
+==========
+ 1. Client requests stats type with "PS:{type_num}:{session_id}". PS stands for Player Statistics
+ 2. Server sends back "PS:{type_num}:{stats_data}" each stats type may send a different kind of data. If it requires multiple fields separate them with colons.
