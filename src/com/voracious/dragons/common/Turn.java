@@ -13,7 +13,7 @@ import java.util.TreeMap;
 public class Turn {
     //This should probably be somewhere else eventually, I'm just not sure where yet
     public static final String versionString = "0.01a";
-    public static final byte versionCode = 2;
+    public static final byte versionCode = 3;
     
     //Both of these are gotten from the server at auth time
     private int gameId;
@@ -23,16 +23,53 @@ public class Turn {
     private Map<Byte, List<Vec2D.Short>> towersCreated;
     private Map<Byte, List<Vec2D.Short>> nodes;
     
-    public Turn(int gameId, long sessionId){
+    public Turn(int gameId, long sessionId) {
     	this.sessionId = sessionId;
     	this.gameId = gameId;
     	
-        unitsCreated = new HashMap<Byte, Short>();
-        towersCreated = new TreeMap<Byte, List<Vec2D.Short>>();
-        nodes = new TreeMap<Byte, List<Vec2D.Short>>();
+        unitsCreated = new HashMap<>();
+        towersCreated = new TreeMap<>();
+        nodes = new TreeMap<>();
     }
     
-    //TODO: public Turn(byte[] turnData), parses the byte array and fills the data members with the correct data
+    public Turn(byte[] turnData) {
+        if(Turn.versionCode == turnData[0]){
+            ByteBuffer turn = ByteBuffer.wrap(turnData);
+            turn.position(1);
+            
+            gameId = turn.getInt();
+            sessionId = turn.getLong();
+            
+            byte numberOfUnits = turn.get();
+            byte numberOfTowers = turn.get();
+            byte numberOfNodes = turn.get();
+
+            unitsCreated = new HashMap<>();
+            for(int i = 0; i < numberOfUnits; i++){
+                byte unitId = turn.get();
+                short numSpawned = turn.getShort();
+                createUnit(unitId, numSpawned);
+            }
+            
+            towersCreated = new HashMap<>();
+            for(int i = 0; i < numberOfTowers; i++) {
+                byte towerId = turn.get();
+                short x = turn.getShort();
+                short y = turn.getShort();
+                createTower(towerId, new Vec2D.Short(x, y));
+            }
+            
+            nodes = new TreeMap<>();
+            for(int i = 0; i < numberOfNodes; i++) {
+                byte pathNum = turn.get();
+                short x = turn.getShort();
+                short y = turn.getShort();
+                addNode(pathNum, new Vec2D.Short(x, y));
+            }
+        }else{
+            throw new IllegalArgumentException("Client is using a different version: " + Turn.versionCode);
+        }
+    }
     
     public void createUnit(byte unitId, short numUnits) {
         if(unitsCreated.containsKey(unitId)){
@@ -96,9 +133,10 @@ public class Turn {
      *   short y
      * }*numberOfTowers
      * 
+     * Nodes must be in order, you could actually switch pathNums randomly but each sequential entry for the
+     * same pathNum is assumed to be in the order of the nodes
      * {
      *   byte pathNum
-     *   byte nodeNum
      *   short x
      *   short y
      * }*numberOfPathNodes
@@ -185,12 +223,9 @@ public class Turn {
             	Map.Entry<Byte, List<Vec2D.Short>> entry = it.next();
             	
             	Iterator<Vec2D.Short> posIt = entry.getValue().iterator();
-            	byte nodeNum = 0;
             	while(posIt.hasNext()){
             		Vec2D.Short pos = posIt.next();
 	            	buffer.put(entry.getKey().byteValue());
-	            	buffer.put(nodeNum);
-	            	nodeNum++;
 	            	
 	            	buffer.putShort(pos.getx());
 	            	buffer.putShort(pos.gety());

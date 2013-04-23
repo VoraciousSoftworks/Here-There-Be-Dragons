@@ -13,8 +13,7 @@ public class Dragon extends Unit {
 
 	@Override
 	public byte getUnitId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 }

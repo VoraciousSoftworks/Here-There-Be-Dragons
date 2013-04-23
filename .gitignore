@@ -4,6 +4,7 @@ build/
 .*
 *.log
 *.class
+Thumbs.db
 
 # Package Files #
 *.jar
