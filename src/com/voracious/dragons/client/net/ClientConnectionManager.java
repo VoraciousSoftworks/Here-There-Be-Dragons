@@ -1,4 +1,4 @@
-package com.voracious.dragons.client;
+package com.voracious.dragons.client.net;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,24 +12,24 @@ import org.apache.log4j.Logger;
 
 import com.voracious.dragons.common.ConnectionManager;
 
-public class ClientConnectionManager {
+public class ClientConnectionManager extends ConnectionManager {
 	private Logger logger = Logger.getLogger(ClientConnectionManager.class);
 	private String hostname;
 	private int port;
 	private SocketChannel server;
-	private ConnectionManager cm;
 	private String sessionId;
 	
 	public ClientConnectionManager(String hostname, int port){
+	    super();
+	    
 		this.hostname = hostname;
 		this.port = port;
 		try {
-			cm = new ConnectionManager();
 			server = SocketChannel.open(new InetSocketAddress(InetAddress.getByName(hostname), port));
 			server.configureBlocking(false);
-			server.register(cm.getReadSelector(), SelectionKey.OP_READ, new ByteArrayOutputStream());
-			new Thread(cm).start();
-			new Thread(new ClientMessageProcessor(this, cm.getMessageQueue())).start();
+			server.register(getReadSelector(), SelectionKey.OP_READ, new ByteArrayOutputStream());
+			new Thread(this).start();
+			new Thread(new ClientMessageProcessor(this, getMessageQueue())).start();
 		} catch (UnknownHostException e) {
 			logger.error("Unknown host", e);
 		} catch (IOException e) {
@@ -62,11 +62,11 @@ public class ClientConnectionManager {
 	}
 
 	public void sendMessage(String message){
-		cm.sendMessage(server, message);
+		sendMessage(server, message);
 	}
 	
 	public void sendMessage(byte[] message){
-		cm.sendMessage(server, message);
+		sendMessage(server, message);
 	}
 	
 	public void close(){

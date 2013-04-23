@@ -136,6 +136,11 @@ public class ConnectionManager implements Runnable {
 	public void run() {
 		while(true){
 			readMessages();
+			try {
+                Thread.sleep(CHANNEL_READ_SLEEP);
+            } catch (InterruptedException e) {
+                logger.error(e);
+            }
 		}
 	}
 }

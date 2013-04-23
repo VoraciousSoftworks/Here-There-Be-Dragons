@@ -9,6 +9,7 @@ import java.awt.image.BufferStrategy;
 import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.graphics.Screen;
+import com.voracious.dragons.client.net.ClientConnectionManager;
 import com.voracious.dragons.client.screens.LoginScreen;
 
 public class Game extends Canvas implements Runnable {

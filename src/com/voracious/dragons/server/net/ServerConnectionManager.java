@@ -15,23 +15,29 @@ import org.apache.log4j.Logger;
 import com.voracious.dragons.common.ConnectionManager;
 import com.voracious.dragons.server.User;
 
-public class ServerConnectionManager implements Runnable {
+public class ServerConnectionManager extends ConnectionManager {
 	public static final String default_hostname = "0.0.0.0";
 	public static final int default_port = 35580;
 	public static final int CHANNEL_CONNECT_SLEEP = 300;
 	
 	private Logger logger = Logger.getLogger(ServerConnectionManager.class);
 	
-	private ConnectionManager cm;
 	private ServerSocketChannel ssc;
 	private Map<String, User> users;
 	
 	public ServerConnectionManager(){
-		users = new HashMap<String, User>();
+	    super();
+		users = new HashMap<>();
 		bindAddresses(default_hostname, default_port);
-		cm = new ConnectionManager();
-		new Thread(cm).start();
-		new Thread(new ServerMessageProcessor(this, cm.getMessageQueue())).start();
+
+		new Thread(new Runnable(){
+            @Override
+            public void run() {
+                myRun();
+            }
+		}).start();
+		
+		new Thread(new ServerMessageProcessor(this, getMessageQueue())).start();
 	}
 	
 	public void bindAddresses(String hostname, int port){
@@ -51,10 +57,10 @@ public class ServerConnectionManager implements Runnable {
 				clientChannel.configureBlocking(false);
 				logger.info("Client connected: " + clientChannel.getRemoteAddress().toString());
 
-				cm.sendMessage(clientChannel, "Hello!");
+				sendMessage(clientChannel, "Hello!");
 				
 				clientChannel.configureBlocking(false);
-				clientChannel.register(cm.getReadSelector(), SelectionKey.OP_READ, new ByteArrayOutputStream());
+				clientChannel.register(getReadSelector(), SelectionKey.OP_READ, new ByteArrayOutputStream());
 				
 				User newUser = new User(clientChannel);
 				users.put(clientChannel.getRemoteAddress().toString(), newUser);
@@ -86,23 +92,14 @@ public class ServerConnectionManager implements Runnable {
 	}
 	
 	public void sendMessage(User user, String message){
-		cm.sendMessage(user.getConnection(), message);
+		sendMessage(user.getConnection(), message);
 	}
 	
 	public void sendMessage(User user, byte[] message){
-		cm.sendMessage(user.getConnection(), message);
-	}
-	
-	public void sendMessage(SocketChannel chan, String message){
-		cm.sendMessage(chan, message);
-	}
-	
-	public void sendMessage(SocketChannel chan, byte[] message){
-		cm.sendMessage(chan, message);
+		sendMessage(user.getConnection(), message);
 	}
 
-	@Override
-	public void run() {
+	public void myRun() {
 		while(true){
 			acceptNewConnections();
 			try {

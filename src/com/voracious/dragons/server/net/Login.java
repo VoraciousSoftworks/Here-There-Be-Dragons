@@ -2,6 +2,7 @@ package com.voracious.dragons.server.net;
 
 import java.io.IOException;
 
+import com.voracious.dragons.common.ConnectionManager;
 import com.voracious.dragons.common.Message;
 import com.voracious.dragons.common.Packet;
 import com.voracious.dragons.server.Crypto;
@@ -16,7 +17,8 @@ public class Login implements Packet {
     }
 
     @Override
-    public void process(Message message, ServerConnectionManager scm) {
+    public void process(Message message, ConnectionManager cm) {
+        ServerConnectionManager scm = (ServerConnectionManager) cm;
         String msg = message.toString();
         msg = msg.substring(2);
         int splitLoc = msg.indexOf(":");
