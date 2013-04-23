@@ -50,11 +50,11 @@ public class PlayScreen extends Screen {
         
         gamestate=new GameState();
         
-        this.setP1Cast(new Castle());
+        this.setP1Cast(new Castle(true));
         this.getP1Cast().setX(0);
         this.getP1Cast().setY(background.getHeight() - Castle.height);
         
-        this.setP2Cast(new Castle());
+        this.setP2Cast(new Castle(false));
         this.getP2Cast().setX(background.getWidth() - Castle.width);
         this.getP2Cast().setY(0);
     }

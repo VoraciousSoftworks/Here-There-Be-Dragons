@@ -10,37 +10,48 @@ import com.voracious.dragons.client.graphics.Entity;
  */
 public class Castle extends Entity {
 
-	public static String filename = "/castleFull.png";
-	public static int[] numFrames = {1};
+	public static String filename;
+	public static String blueCast= "/castleFramesBlue.png.png";
+	public static String redCast=  "/castleFrames.png";
+	public static int[] numFrames = {4};
 	public static int width = 300;
 	public static int height = 300;
 	private double chp=100;
 	private double fullhp=100;
 	private double def=5;
+	private boolean isRed=false;//true==red, false==blue
 	
-	public Castle() {
-		super(filename, numFrames, width, height);
+	public Castle(boolean isRED) {
+		super(isRED ? redCast : blueCast, numFrames, width, height);
+		if(isRED){
+			isRed=isRED;
+			filename=redCast;
+		}
+		else{
+			filename=blueCast;
+		}
 	}
 	
-	public Castle(String file, int HP) {
-		super(file, numFrames, width, height);
-		chp=HP;
-	}
-	
+	private int levelofDamage=0;
+	//used to prevent unneeded calls of next frame. 
 	public void takeDamage(double attk){
+		//takes damage
 		double damage=def-attk;
 		chp-=damage;
 		double percent=chp/fullhp;
+		//changes the image if needed
 		if(percent<=1.0&&percent>0.7){
 			//nothing, stays at full heatlh
 		}
-		else if(percent<=0.7&&percent>0.4){
-			//change to a semi damaged castle
+		else if(percent<=0.7&&percent>0.4&&levelofDamage==0){
+			this.nextFrame();
+			levelofDamage++;
 		}
-		else if(percent<=0.4&&percent>0.1){
-			//almost gone
+		else if(percent<=0.4&&percent>0.1&&levelofDamage==1){
+			this.nextFrame();
+			levelofDamage++;
 		}
-		else{
+		else if(levelofDamage==2){
 			//rubble
 		}
 	}

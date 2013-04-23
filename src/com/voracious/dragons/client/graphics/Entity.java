@@ -137,4 +137,8 @@ public class Entity implements Drawable {
 	public void setHeight(int height) {
 		this.height = height;
 	}
+	
+	public void nextFrame() {
+		animations.get(currentAnimation).nextFrame();
+	}
 }
