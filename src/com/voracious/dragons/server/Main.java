@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 import com.voracious.dragons.common.Turn;
+import com.voracious.dragons.server.net.ServerConnectionManager;
 
 public class Main {
 	public static final String logfile = "server.log";

@@ -1,4 +1,4 @@
-package com.voracious.dragons.server;
+package com.voracious.dragons.server.net;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.voracious.dragons.common.ConnectionManager;
+import com.voracious.dragons.server.User;
 
 public class ServerConnectionManager implements Runnable {
 	public static final String default_hostname = "0.0.0.0";
