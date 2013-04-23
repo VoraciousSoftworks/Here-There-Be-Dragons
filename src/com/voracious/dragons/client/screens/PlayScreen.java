@@ -82,8 +82,33 @@ public class PlayScreen extends Screen {
     public void render(Graphics2D g) {
     	this.getBackground().draw(g, 0, 0);
     	
-    	this.getP1Cast().draw(g);
-    	this.getP2Cast().draw(g);
+    	{//draw player one's castle and health bar. @ 90% rrrrrrrrrg
+    		this.getP1Cast().draw(g);
+    		int leftStart= (int)(this.getP1Cast().getX());
+    		int rightStart=(int)(this.getP1Cast().getX()+(this.getP1Cast().getWidth()*(this.getP1Cast().getHPRatio())));
+    		int rightEnd=(int)(this.getP1Cast().getX()+this.getP1Cast().getWidth());
+    		g.setColor(Color.RED);
+    		g.drawRect(leftStart, (int)(this.getP1Cast().getY()+this.getP1Cast().getHeight()),(int)(rightStart-leftStart), 30);
+    		if(rightEnd!=rightStart){
+    			g.setColor(Color.DARK_GRAY);
+    			g.drawRect(rightStart, (int)(this.getP1Cast().getY()+this.getP1Cast().getHeight()), (int)(rightEnd-rightStart), 30);
+    		}
+    	}
+    	
+    	{//draws player two's castle and health bar
+    		this.getP2Cast().draw(g);
+    		int leftStart=(int)(this.getP2Cast().getX());
+    		int rightStart=(int)(this.getP2Cast().getX()+(this.getP2Cast().getWidth()*(this.getP2Cast().getHPRatio())));
+    		int rightEnd=(int)(this.getP2Cast().getX()+this.getP2Cast().getWidth());
+    		g.setColor(Color.RED);
+    		g.drawRect(leftStart, (int)(this.getP2Cast().getY()-30), (int)(rightStart-leftStart), 30);
+    		if(rightEnd!=rightStart){
+    			g.setColor(Color.DARK_GRAY);
+    			g.drawRect(rightStart, (int)(this.getP2Cast().getY()-30), (int) (rightEnd-rightStart), 30);
+    		}
+    	}
+    	
+    	
     	
     	gamestate.draw(g);
     	

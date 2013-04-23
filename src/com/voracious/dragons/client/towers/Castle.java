@@ -59,4 +59,8 @@ public class Castle extends Entity {
 	public double getCHP(){
 		return this.chp;
 	}
+	
+	public double getHPRatio(){
+		return this.getCHP()/this.fullhp;
+	}
 }
