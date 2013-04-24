@@ -62,6 +62,14 @@ public class Button implements Drawable {
 		}
 	}
 	
+	public int getWidth(){
+	    return width;
+	}
+	
+	public int getHeight(){
+	    return height;
+	}
+	
 	@Override
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
