@@ -74,7 +74,7 @@ public class StatScreen extends Screen {
 	        break;
 	    case StatisticsPacket.LOSS_RATE_CODE:
 	        this.lossRate = Double.parseDouble(data);
-	        this.lossesT.setText(this.losses+"");
+	        this.lossRateT.setText(this.lossRate+"");
 	        break;
 	    case StatisticsPacket.AVE_TURNS_PER_CODE:
 	        this.aveTurnsPerGame = Double.parseDouble(data);
