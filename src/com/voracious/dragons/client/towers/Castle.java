@@ -11,7 +11,7 @@ import com.voracious.dragons.client.graphics.Entity;
 public class Castle extends Entity {
 
 	public static String filename;
-	public static String blueCast= "/castleFramesBlue.png.png";
+	public static String blueCast= "/castleFramesBlue.png";
 	public static String redCast=  "/castleFrames.png";
 	public static int[] numFrames = {4};
 	public static int width = 300;
@@ -58,6 +58,9 @@ public class Castle extends Entity {
 	
 	public double getCHP(){
 		return this.chp;
+	}
+	public void setCHP(double hp){
+		this.chp=hp;
 	}
 	
 	public double getHPRatio(){
