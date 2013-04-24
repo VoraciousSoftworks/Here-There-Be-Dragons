@@ -87,7 +87,17 @@ public class ServerConnectionManager extends ConnectionManager {
 		}
 	}
 	
-	public User getUser(String remoteAddress){
+	public User getUserByID(String sessionId) {
+	    for(User u : users.values()){
+	        if(u.getSessionId() == sessionId){
+	            return u;
+	        }
+	    }
+	    
+	    return null;
+	}
+	
+	public User getUserByIP(String remoteAddress){
 		return users.get(remoteAddress);
 	}
 	
