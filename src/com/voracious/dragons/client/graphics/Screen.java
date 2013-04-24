@@ -97,6 +97,8 @@ public abstract class Screen implements Drawable {
         this.offsety = offsety;
     }
     
+    public abstract int getId();
+    
     /**
      * Unlike the normal keyPressed method, this is guaranteed to be called only once per key press
      */

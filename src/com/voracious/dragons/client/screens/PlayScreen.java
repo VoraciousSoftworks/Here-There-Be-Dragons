@@ -323,4 +323,9 @@ public class PlayScreen extends Screen {
 	public void setExecutingTurn(boolean executingTurn) {
 		this.executingTurn = executingTurn;
 	}
+
+    @Override
+    public int getId() {
+        return 2;
+    }
 }

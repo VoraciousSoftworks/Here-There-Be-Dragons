@@ -105,4 +105,9 @@ public class StatScreen extends Screen {
 		int ey=e.getY();
 		this.returnButton.mouseClicked(ex, ey);
 	}
+
+    @Override
+    public int getId() {
+        return 3;
+    }
 }

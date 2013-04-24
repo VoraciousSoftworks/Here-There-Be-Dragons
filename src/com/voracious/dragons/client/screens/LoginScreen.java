@@ -212,4 +212,9 @@ public class LoginScreen extends Screen {
 			break;
 		}
 	}
+
+    @Override
+    public int getId() {
+        return 0;
+    }
 }

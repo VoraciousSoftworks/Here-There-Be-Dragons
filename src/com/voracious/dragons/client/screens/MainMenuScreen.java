@@ -89,4 +89,9 @@ public class MainMenuScreen extends Screen {
 		this.spectate.mouseClicked(ex, ey);
 		this.stats.mouseClicked(ex, ey);
 	}
+
+    @Override
+    public int getId() {
+        return 1;
+    }
 }
