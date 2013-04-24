@@ -36,7 +36,7 @@ public class PlayScreen extends Screen {
     boolean inUnitMode=false;
     boolean inTowerMode=false;
     
-    static Turn myTurn,oppTurn;
+    private Turn myTurn,oppTurn;
     
     Vec2D.Short temp;
     
@@ -328,7 +328,7 @@ public class PlayScreen extends Screen {
         return ID;
     }
 	
-	public static void onTurnCalled(Turn turn){
+	public void onTurnCalled(Turn turn){
 		oppTurn = turn;
 	}
 }

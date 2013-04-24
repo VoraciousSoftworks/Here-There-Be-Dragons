@@ -1,4 +1,5 @@
 package com.voracious.dragons.client.net;
+import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.screens.PlayScreen;
 import com.voracious.dragons.common.ConnectionManager;
 import com.voracious.dragons.common.Message;
@@ -16,14 +17,12 @@ public class ClientTurnPacket implements Packet{
 	@Override
 	public void process(Message message, ConnectionManager cm) {
 		ClientConnectionManager ccm = (ClientConnectionManager) cm;
-        Turn neuTurn = new Turn(message.getBytes());
-        PlayScreen.onTurnCalled(neuTurn);
+        Turn newTurn = new Turn(message.getBytes());
+        ((PlayScreen) Game.getScreen(PlayScreen.ID)).onTurnCalled(newTurn);
 	}
 
 	@Override
 	public boolean isString() {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 }

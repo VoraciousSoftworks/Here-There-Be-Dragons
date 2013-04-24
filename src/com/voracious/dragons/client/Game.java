@@ -136,6 +136,10 @@ public class Game extends Canvas implements Runnable {
     	}
     }
     
+    public static Screen getScreen(int screenId){
+        return screens.get(screenId);
+    }
+    
     public static void connect(String hostname, int port){
     	if(ccm != null){
     		if(ccm.getHostname().equals(hostname) && ccm.getPort() == port){

@@ -1,5 +1,6 @@
 package com.voracious.dragons.client.net;
 
+import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.screens.LoginScreen;
 import com.voracious.dragons.common.ConnectionManager;
 import com.voracious.dragons.common.Message;
@@ -18,26 +19,28 @@ public class Authenticate implements Packet {
         ClientConnectionManager ccm = (ClientConnectionManager) cm;
         String msg = message.toString();
         
+        LoginScreen ls = (LoginScreen) Game.getScreen(LoginScreen.ID);
+
         if(msg.equals("Hello!")){
             String m = "";
             
-            if(LoginScreen.isRegistering()){
+            if(ls.isRegistering()){
                 m += "R:";
             }else{
                 m += "L:";
             }
             
-            m += LoginScreen.getUsername() + ":" + LoginScreen.getPassword();
+            m += ls.getUsername() + ":" + ls.getPassword();
             
             ccm.sendMessage(m);
         }else if(msg.startsWith("RS:") || msg.startsWith("LS:")){
-            if(!LoginScreen.hasLoggedIn()){
+            if(!ls.hasLoggedIn()){
                 ccm.setSessionId(msg.substring(2));
-                LoginScreen.onSuccess();
+                ls.onSuccess();
             }
         }else if(msg.startsWith("LRE:")){
-            if(!LoginScreen.hasLoggedIn()){
-                LoginScreen.onFailure(msg.substring(2));
+            if(!ls.hasLoggedIn()){
+                ls.onFailure(msg.substring(2));
             }
         }
     }
@@ -46,5 +49,4 @@ public class Authenticate implements Packet {
     public boolean isString() {
         return true;
     }
-
 }

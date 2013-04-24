@@ -25,10 +25,10 @@ public class LoginScreen extends Screen {
 	private Text userLabel, passLabel, serverLabel;
 	private int hasFocus = 0;
 	
-	private static boolean isLoggingIn;
-	private static boolean hasLoggedIn = false;
-	private static boolean isRegistering;
-	private static String username, password;
+	private boolean isLoggingIn;
+	private boolean hasLoggedIn = false;
+	private boolean isRegistering;
+	private String username, password;
 	
 	private static Logger logger = Logger.getLogger(LoginScreen.class);
 	
@@ -98,33 +98,33 @@ public class LoginScreen extends Screen {
 	}
 	
 	synchronized
-	public static String getUsername(){
+	public String getUsername(){
 		String temp = username;
 		username = "";
 		return temp;
 	}
 	
 	synchronized
-	public static String getPassword(){
+	public String getPassword(){
 		String temp = password;
 		username = "";
 		return temp;
 	}
 	
-	public static boolean hasLoggedIn(){
+	public boolean hasLoggedIn(){
 		return hasLoggedIn;
 	}
 	
-	public static boolean isRegistering(){
+	public boolean isRegistering(){
 		return isRegistering;
 	}
 	
-	public static void onSuccess() {
+	public void onSuccess() {
 		hasLoggedIn = true;
 		Game.setCurrentScreen(MainMenuScreen.ID);
 	}
 	
-	public static void onFailure(String message){
+	public void onFailure(String message){
 		logger.warn("Login failed: " + message);
 		isLoggingIn = false;
 	}
