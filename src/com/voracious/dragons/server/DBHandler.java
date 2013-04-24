@@ -83,16 +83,22 @@ public class DBHandler {
 			registerUser = conn.prepareStatement("INSERT INTO Player VALUES(?, ?)");
 			
 			numGames = conn.prepareStatement(
-					"SELECT count(gid) AS answer " +
-					"FROM Game " +
-					"WHERE (pid1=? OR pid2=?) AND inProgress=? " +
-					"GROUP BY gid;");
+					"SELECT sum(answer) AS numGames" +
+					"FROM 	(SELECT count(pid1) AS answer" +
+					"		FROM Game" +
+					"		WHERE pid1=? AND inProgress=?" +
+					"		GROUP By pid1" +
+					"		UNION" +
+					"		SELECT count(pid2) AS answer" +
+					"		FROM Game" +
+					"		WHERE pid2=? AND inProgress=?" +
+					"		GROUP By pid2);");
 			
 			numWins=conn.prepareStatement(
 					"SELECT count(gid) AS answer " +
 					"FROM Winner " +
 					"WHERE pid=? " +
-					"GROUP BY gid;");
+					"GROUP BY pid;");
 			
 			aveTurn=conn.prepareStatement(
 					"SELECT count(*) AS answer " +
@@ -257,14 +263,17 @@ public class DBHandler {
 		}
 	}
 
-	public int numGames(String PID, boolean inPlay){
-		//the boolean is to know if the games being counted are over or still occurring
+	public int numGames(String PID, int inPlay){
+		//the int is to know if the games being counted are over or still occurring
+		//0 false
+		//1 true
 		try{
 		numGames.setString(1, PID);
-		numGames.setString(2, PID);
-		numGames.setString(3,inPlay+"");//does "true" == true+"" ?
+		numGames.setString(3, PID);
+		numGames.setLong(2, inPlay);
+		numGames.setLong(4, inPlay);
 		ResultSet ret=numGames.executeQuery();
-		return ret.getInt("answer");
+		return ret.getInt("numGames");
 		}
 		catch(SQLException e){
 			logger.error("Could not count the number of games",e);
