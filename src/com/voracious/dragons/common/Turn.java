@@ -96,6 +96,12 @@ public class Turn {
             nodes.get(pathId).add(location);
         }else{
             List<Vec2D.Short> temp = new LinkedList<Vec2D.Short>();
+            //add to the player's castle as a starting point
+            //TODO change var to a condition to know which player they are.
+            //temp.add(var? new Vec2D.Short((short)150, (short)1290)
+            			 //:new Vec2D.Short((short)2010,(short)150));
+            //add the click's
+           
             temp.add(location);
             
             nodes.put(pathId, temp);
