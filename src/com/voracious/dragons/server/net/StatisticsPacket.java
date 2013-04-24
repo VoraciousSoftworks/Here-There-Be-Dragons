@@ -27,6 +27,7 @@ public class StatisticsPacket implements Packet {
         switch(type){
         case Statistics.FINISHED_CODE:
             //TODO: db.getFinishedGames() or the equivalent
+            //scm.sendMessage(user, "PS:" + type + ":" + data); where data is the int or whatever datatype you're looking for in this stats type
             break;
         }
     }
