@@ -4,7 +4,7 @@ import com.voracious.dragons.common.ConnectionManager;
 import com.voracious.dragons.common.Message;
 import com.voracious.dragons.common.Packet;
 
-public class Statistics implements Packet {
+public class StatisticsPacket implements Packet {
 
     public static final char FINISHED_CODE      = 'F';
     public static final char CURRENT_CODE       = 'C';

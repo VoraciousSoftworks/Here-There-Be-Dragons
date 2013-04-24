@@ -6,7 +6,7 @@ import com.voracious.dragons.common.ConnectionManager;
 import com.voracious.dragons.common.Message;
 import com.voracious.dragons.common.Packet;
 
-public class Authenticate implements Packet {
+public class AuthenticatePacket implements Packet {
 
     @Override
     public boolean wasCalled(Message message) {

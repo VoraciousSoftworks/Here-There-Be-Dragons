@@ -9,7 +9,7 @@ import com.voracious.dragons.server.Crypto;
 import com.voracious.dragons.server.Main;
 import com.voracious.dragons.server.User;
 
-public class Login implements Packet {
+public class LoginPacket implements Packet {
     
     @Override
     public boolean wasCalled(Message message) {

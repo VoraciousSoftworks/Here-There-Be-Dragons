@@ -22,7 +22,7 @@ public class ClientMessageProcessor extends MessageProcessor {
 		this.ccm = ccm;
 		
 		stringPackets = new ArrayList<>(1);
-		stringPackets.add(new Authenticate());
+		stringPackets.add(new AuthenticatePacket());
 		
 		binaryPackets = new ArrayList<>(0);
 	}

@@ -23,8 +23,8 @@ public class ServerMessageProcessor extends MessageProcessor {
 		this.scm = scm;
 		
 		stringPackets = new ArrayList<>(2);
-		stringPackets.add(new Login());
-		stringPackets.add(new Register());
+		stringPackets.add(new LoginPacket());
+		stringPackets.add(new RegisterPacket());
 		
 		binaryPackets = new ArrayList<>(0);
 	}
