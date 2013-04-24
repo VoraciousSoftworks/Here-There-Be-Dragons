@@ -28,7 +28,7 @@ public class RegisterPacket implements Packet {
             Main.getDB().registerUser(username, Crypto.getSaltedHash(password));
             ServerMessageProcessor.logger.info("User registered: " + username);
             try {
-                User user = scm.getUser(message.getSender().getRemoteAddress().toString());
+                User user = scm.getUserByIP(message.getSender().getRemoteAddress().toString());
                 String session = Crypto.getSessionId(); 
                 user.setUsername(username);
                 user.setSessionId(session);

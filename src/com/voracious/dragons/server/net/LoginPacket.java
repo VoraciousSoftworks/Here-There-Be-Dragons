@@ -30,7 +30,7 @@ public class LoginPacket implements Packet {
         if(storedHash != null){
             if(Crypto.check(password, storedHash)){
                 try {
-                    User user = scm.getUser(message.getSender().getRemoteAddress().toString());
+                    User user = scm.getUserByIP(message.getSender().getRemoteAddress().toString());
                     if(user != null){
                         String session = Crypto.getSessionId();
                         user.setSessionId(session);

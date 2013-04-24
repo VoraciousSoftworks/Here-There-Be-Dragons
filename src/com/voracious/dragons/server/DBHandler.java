@@ -22,7 +22,7 @@ public class DBHandler {
 
 	private PreparedStatement checkHash;
 	private PreparedStatement registerUser;
-	private PreparedStatement numGames,numWins,aveTurn,numTuples,times;
+	private PreparedStatement numGames,numWins,aveTurn,numTuples,times,latestTurn;
 	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame;
 	
 	public void init() {
@@ -109,6 +109,11 @@ public class DBHandler {
 					"FROM Turn " +
 					"WHERE pid=? " +
 					"ORDER BY gid ASC,tNum ASC; ");
+			latestTurn=conn.prepareStatement(
+					"SELECT pid as id, MAX(tnum) AS answer " +
+					"FROM Turn" +
+					"WHERE gid=?" +
+					"GROUP BY pid;");
 			//possible to sort the time stamps also, so each games is in order from top to bottom
 			//g0 t0
 			//g0 t1
@@ -197,16 +202,33 @@ public class DBHandler {
 		
 	}
 	
-	public void insertTurn(int GID,int TNUM,String PID,String TURNSTRING){
+	public boolean insertTurn(int GID,int TNUM,String PID,String TURNSTRING){
 		try{
 			storeTurn.setInt(1,GID);
 			storeTurn.setInt(2, TNUM);
+			
+			latestTurn.setInt(1, GID);
+			ResultSet ret=latestTurn.executeQuery();
+			if(!ret.next())
+				return false;
+			String p1id = ret.getString("id");
+			int p1turnNum = ret.getInt("answer");			
+			if(!ret.next())
+				return false;
+			String p2id = ret.getString("id");
+			int p2turnNum = ret.getInt("answer");
+			if(PID==p1id && p1turnNum > p2turnNum)
+				return false;
+			if(PID==p2id && p2turnNum > p1turnNum)
+				return false;
 			storeTurn.setString(4, PID);
 			storeTurn.setString(5, TURNSTRING);
 			storeTurn.executeUpdate();
+			return true;
 		}
 		catch(SQLException e){
 			logger.error("Could not add to the turn table", e);
+			return false;
 		}
 	}
 	
