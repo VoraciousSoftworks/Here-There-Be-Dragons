@@ -13,6 +13,7 @@ import com.voracious.dragons.client.graphics.ui.Text;
 import com.voracious.dragons.client.net.ClientConnectionManager;
 import com.voracious.dragons.client.net.StatisticsPacket;
 import com.voracious.dragons.client.utils.InputHandler;
+import com.voracious.dragons.common.Statistics;
 
 public class StatScreen extends Screen {
     public static final int ID = 3;
@@ -52,35 +53,35 @@ public class StatScreen extends Screen {
 	
 	public void onStatRecieved(char type, String data){
 	    switch(type){
-	    case StatisticsPacket.FINISHED_CODE:
+	    case Statistics.FINISHED_CODE:
 	        this.finished = Integer.parseInt(data);
 	        this.finishedT.setText(this.finished+"");
 	        break;
-	    case StatisticsPacket.CURRENT_CODE:
+	    case Statistics.CURRENT_CODE:
 	        this.current = Integer.parseInt(data);
 	        this.currentT.setText(this.current+"");
 	        break;
-	    case StatisticsPacket.WINS_CODE:
+	    case Statistics.WINS_CODE:
 	        this.wins = Integer.parseInt(data);
 	        this.winsT.setText(this.wins+"");
 	        break;
-	    case StatisticsPacket.LOSSES_CODE:
+	    case Statistics.LOSSES_CODE:
 	        this.losses = Integer.parseInt(data);
 	        this.lossesT.setText(this.losses+"");
 	        break;
-	    case StatisticsPacket.WIN_RATE_CODE:
+	    case Statistics.WIN_RATE_CODE:
 	        this.winRate = Double.parseDouble(data);
 	        this.winRateT.setText(this.winRate+"");
 	        break;
-	    case StatisticsPacket.LOSS_RATE_CODE:
+	    case Statistics.LOSS_RATE_CODE:
 	        this.lossRate = Double.parseDouble(data);
 	        this.lossesT.setText(this.losses+"");
 	        break;
-	    case StatisticsPacket.AVE_TURNS_PER_CODE:
+	    case Statistics.AVE_TURNS_PER_CODE:
 	        this.aveTurnsPerGame = Double.parseDouble(data);
 	        this.aveTurnPerGameT.setText(this.aveTurnsPerGame+"");
 	        break;
-	    case StatisticsPacket.TIME_TO_TURN_CODE:
+	    case Statistics.TIME_TO_TURN_CODE:
 	        this.timeToMakeTurn = Long.parseLong(data);
 	        this.timeToMakeTurnT.setText(this.timeToMakeTurn+"");
 	        break;
@@ -89,14 +90,14 @@ public class StatScreen extends Screen {
 	
 	public void requestData(){
 	    ClientConnectionManager ccm = Game.getClientConnectionManager();
-        ccm.sendMessage("PS:" + StatisticsPacket.FINISHED_CODE + ":" + ccm.getSessionId());
-        ccm.sendMessage("PS:" + StatisticsPacket.CURRENT_CODE + ":" + ccm.getSessionId());
-        ccm.sendMessage("PS:" + StatisticsPacket.WINS_CODE + ":" + ccm.getSessionId());
-        ccm.sendMessage("PS:" + StatisticsPacket.LOSSES_CODE + ":" + ccm.getSessionId());
-        ccm.sendMessage("PS:" + StatisticsPacket.WIN_RATE_CODE + ":" + ccm.getSessionId());
-        ccm.sendMessage("PS:" + StatisticsPacket.LOSS_RATE_CODE + ":" + ccm.getSessionId());
-        ccm.sendMessage("PS:" + StatisticsPacket.AVE_TURNS_PER_CODE + ":" + ccm.getSessionId());
-        ccm.sendMessage("PS:" + StatisticsPacket.TIME_TO_TURN_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.FINISHED_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.CURRENT_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.WINS_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.LOSSES_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.WIN_RATE_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.LOSS_RATE_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.AVE_TURNS_PER_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.TIME_TO_TURN_CODE + ":" + ccm.getSessionId());
 	}
 	
 	@Override
