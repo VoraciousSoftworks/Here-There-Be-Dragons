@@ -27,14 +27,14 @@ public class MainMenuScreen extends Screen {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				logger.info("Playing old game");
-				Game.setCurrentScreen(PlayScreen.ID);
+				Game.setCurrentScreen(GameListScreen.ID);
 			}
 		});
 		this.playNew = new Button("Play New Game", 410, 120);
 		this.playNew.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO go to a screen to choose new game
+				Game.setCurrentScreen(GameListScreen.ID);
 				logger.info("Creating new game");
 			}
 		});

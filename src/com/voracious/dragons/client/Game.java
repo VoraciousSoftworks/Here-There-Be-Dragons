@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.net.ClientConnectionManager;
+import com.voracious.dragons.client.screens.GameListScreen;
 import com.voracious.dragons.client.screens.LoginScreen;
 import com.voracious.dragons.client.screens.MainMenuScreen;
 import com.voracious.dragons.client.screens.PlayScreen;
@@ -48,6 +49,7 @@ public class Game extends Canvas implements Runnable {
             putScreen(new MainMenuScreen());
             putScreen(new PlayScreen());
             putScreen(new StatScreen());
+            putScreen(new GameListScreen());
         }
     }
     

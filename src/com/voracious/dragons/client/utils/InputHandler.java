@@ -8,8 +8,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -22,8 +25,8 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
     public static final int VK_MOUSE_2 = 7894562;
     public static final int VK_MOUSE_WHEEL = 7894563;
 
-    public static HashMap<Integer, Boolean> keymap;
-    public static ArrayList<Screen> screens;
+    public static Map<Integer, Boolean> keymap;
+    public static List<Screen> screens;
 
     private static int mousex = 0;
     private static int mousey = 0;
@@ -64,11 +67,15 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
     }
 
     public static void registerScreen(Screen screen) {
-        screens.add(screen);
+        synchronized(screens){
+            screens.add(screen);
+        }
     }
 
     public static void deregisterScreen(Screen screen) {
-        screens.remove(screen);
+        synchronized(screens){
+            screens.remove(screen);
+        }
     }
 
     public static boolean isDown(int keyCode) {
@@ -112,10 +119,12 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
                 letMouseMove = true;
             }
         }
-
-        Iterator<Screen> it = screens.iterator();
-        while (it.hasNext()) {
-            it.next().mouseMoved(arg0);
+        
+        synchronized(screens){
+            Iterator<Screen> it = screens.iterator();
+            while (it.hasNext()) {
+                it.next().mouseMoved(arg0);
+            }
         }
     }
 
@@ -149,9 +158,11 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
             }
         }
 
-        Iterator<Screen> it = screens.iterator();
-        while (it.hasNext()) {
-            it.next().mousePressed(arg0);
+        synchronized(screens){
+            Iterator<Screen> it = screens.iterator();
+            while (it.hasNext()) {
+                it.next().mousePressed(arg0);
+            }
         }
     }
 
@@ -174,10 +185,12 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
                 }
             }
         }
-
-        Iterator<Screen> it = screens.iterator();
-        while (it.hasNext()) {
-            it.next().mouseReleased(arg0);
+        
+        synchronized(screens){
+            Iterator<Screen> it = screens.iterator();
+            while (it.hasNext()) {
+                it.next().mouseReleased(arg0);
+            }
         }
     }
 
@@ -187,9 +200,11 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
             keymap.put(arg0.getKeyCode(), true);
         }
         
-        Iterator<Screen> it = screens.iterator();
-        while (it.hasNext()) {
-            it.next().keyPressed(arg0);
+        synchronized(screens){
+            Iterator<Screen> it = screens.iterator();
+            while (it.hasNext()) {
+                it.next().keyPressed(arg0);
+            }
         }
     }
 
@@ -199,25 +214,31 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
             keymap.put(arg0.getKeyCode(), false);
         }
 
-        Iterator<Screen> it = screens.iterator();
-        while (it.hasNext()) {
-            it.next().keyReleased(arg0);
+        synchronized(screens){
+            Iterator<Screen> it = screens.iterator();
+            while (it.hasNext()) {
+                it.next().keyReleased(arg0);
+            }
         }
     }
 
     @Override
     public void keyTyped(KeyEvent arg0) {
-        Iterator<Screen> it = screens.iterator();
-        while (it.hasNext()) {
-            it.next().keyTyped(arg0);
+        synchronized(screens){
+            Iterator<Screen> it = screens.iterator();
+            while (it.hasNext()) {
+                it.next().keyTyped(arg0);
+            }
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent arg0) {
-        Iterator<Screen> it = screens.iterator();
-        while (it.hasNext()) {
-            it.next().mouseClicked(arg0);
+        synchronized(screens){
+            Iterator<Screen> it = screens.iterator();
+            while (it.hasNext()) {
+                it.next().mouseClicked(arg0);
+            }
         }
     }
 
