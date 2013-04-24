@@ -179,7 +179,7 @@ public class DBHandler {
 			storeWinner.setString(2, PID);
 			storeWinner.executeUpdate();
 		} catch (SQLException e) {
-			logger.error("Coud not add to the winner table",e);
+			logger.error("Could not add to the winner table",e);
 		}
 		
 		
@@ -191,23 +191,22 @@ public class DBHandler {
 			storeSpect.setString(2, PID);
 			storeSpect.executeUpdate();
 		} catch (SQLException e) {
-			logger.error("Could not add to teh specatator table",e);
+			logger.error("Could not add to the specatator table",e);
 		}
 		
 		
 	}
 	
-	public void insertTurn(int GID,int TNUM,Timestamp TIME,String PID,String TURNSTRING){
+	public void insertTurn(int GID,int TNUM,String PID,String TURNSTRING){
 		try{
 			storeTurn.setInt(1,GID);
 			storeTurn.setInt(2, TNUM);
-			storeTurn.setTimestamp(3, TIME);
 			storeTurn.setString(4, PID);
 			storeTurn.setString(5, TURNSTRING);
 			storeTurn.executeUpdate();
 		}
 		catch(SQLException e){
-			logger.error("Coul not add to the turn table", e);
+			logger.error("Could not add to the turn table", e);
 		}
 	}
 	
