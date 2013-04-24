@@ -14,8 +14,6 @@ import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.graphics.ui.Text;
 import com.voracious.dragons.client.towers.Castle;
-import com.voracious.dragons.client.towers.Tower;
-import com.voracious.dragons.client.units.Unit;
 import com.voracious.dragons.client.utils.InputHandler;
 import com.voracious.dragons.common.GameState;
 import com.voracious.dragons.common.Turn;
@@ -23,6 +21,7 @@ import com.voracious.dragons.common.Vec2D;
 
 public class PlayScreen extends Screen {
 
+    public static final int ID = 2;
     public static final int WIDTH = 2160;
     public static final int HEIGHT = 1440;
     public static final long ticksPerTurn = 300;
@@ -323,9 +322,10 @@ public class PlayScreen extends Screen {
 	public void setExecutingTurn(boolean executingTurn) {
 		this.executingTurn = executingTurn;
 	}
+	
     @Override
     public int getId() {
-        return 2;
+        return ID;
     }
 	
 	public static void onTurnCalled(Turn turn){

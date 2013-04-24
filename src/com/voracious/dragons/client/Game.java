@@ -5,12 +5,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.net.ClientConnectionManager;
 import com.voracious.dragons.client.screens.LoginScreen;
+import com.voracious.dragons.client.screens.MainMenuScreen;
+import com.voracious.dragons.client.screens.PlayScreen;
+import com.voracious.dragons.client.screens.StatScreen;
 
 public class Game extends Canvas implements Runnable {
     private static final long serialVersionUID = 1L;
@@ -25,6 +30,7 @@ public class Game extends Canvas implements Runnable {
     private static Logger logger = Logger.getLogger(Game.class);
     private static Thread thread;
     private static boolean running = false;
+    private static Map<Integer, Screen> screens;
     private static Screen currentScreen;
     private static Object lock = new Object();
     
@@ -32,6 +38,21 @@ public class Game extends Canvas implements Runnable {
     
     public Game() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        populateScreens();
+    }
+    
+    private static void populateScreens(){
+        if(screens == null){
+            screens = new HashMap<>();
+            putScreen(new LoginScreen());
+            putScreen(new MainMenuScreen());
+            putScreen(new PlayScreen());
+            putScreen(new StatScreen());
+        }
+    }
+    
+    private static void putScreen(Screen s){
+        screens.put(s.getId(), s);
     }
 
     public void render() {
@@ -102,13 +123,16 @@ public class Game extends Canvas implements Runnable {
      * 
      * @param s the screen to draw
      */
-    public static void setCurrentScreen(Screen s){
+    public static void setCurrentScreen(int screenId){
     	synchronized(lock){
-    		if(currentScreen != null){
-    			currentScreen.stop();
+    	    Screen temp = screens.get(screenId);
+    	    if(temp != null){
+        		if(currentScreen != null){
+        			currentScreen.stop();
+        		}
+    		    currentScreen = temp;
+    		    currentScreen.start();
     		}
-    		currentScreen = s;
-    		s.start();
     	}
     }
     
@@ -134,7 +158,7 @@ public class Game extends Canvas implements Runnable {
     public void init() {
         logger.debug("init");
         this.setBackground(background);
-        Game.setCurrentScreen(new LoginScreen());
+        Game.setCurrentScreen(LoginScreen.ID);
         thread = new Thread(this);
     }
 

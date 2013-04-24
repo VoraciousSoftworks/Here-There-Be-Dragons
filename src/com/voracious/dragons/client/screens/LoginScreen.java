@@ -18,6 +18,7 @@ import com.voracious.dragons.client.graphics.ui.TextBox;
 import com.voracious.dragons.client.utils.InputHandler;
 
 public class LoginScreen extends Screen {
+    public static final int ID = 0;
 	private Sprite background;
 	private Button login, register;
 	private TextBox usernameTextBox, passwordTextBox, server;
@@ -120,7 +121,7 @@ public class LoginScreen extends Screen {
 	
 	public static void onSuccess() {
 		hasLoggedIn = true;
-		Game.setCurrentScreen(new MainMenuScreen());
+		Game.setCurrentScreen(MainMenuScreen.ID);
 	}
 	
 	public static void onFailure(String message){
@@ -215,6 +216,6 @@ public class LoginScreen extends Screen {
 
     @Override
     public int getId() {
-        return 0;
+        return ID;
     }
 }

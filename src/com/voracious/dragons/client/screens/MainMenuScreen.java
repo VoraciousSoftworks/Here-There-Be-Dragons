@@ -14,6 +14,7 @@ import com.voracious.dragons.client.graphics.ui.Button;
 import com.voracious.dragons.client.utils.InputHandler;
 
 public class MainMenuScreen extends Screen {
+    public static final int ID = 1;
 	private Button playTurn, playNew, spectate, stats;
 	private Sprite background;
 	private Logger logger = Logger.getLogger(MainMenuScreen.class);
@@ -26,7 +27,7 @@ public class MainMenuScreen extends Screen {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				logger.info("Playing old game");
-				Game.setCurrentScreen(new PlayScreen());
+				Game.setCurrentScreen(PlayScreen.ID);
 			}
 		});
 		this.playNew = new Button("Play New Game", 410, 120);
@@ -50,7 +51,7 @@ public class MainMenuScreen extends Screen {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				logger.info("Viewing Stats");
-				Game.setCurrentScreen(new StatScreen());
+				Game.setCurrentScreen(StatScreen.ID);
 			}
 		});
 
@@ -92,6 +93,6 @@ public class MainMenuScreen extends Screen {
 
     @Override
     public int getId() {
-        return 1;
+        return ID;
     }
 }

@@ -14,6 +14,7 @@ import com.voracious.dragons.client.net.Statistics;
 import com.voracious.dragons.client.utils.InputHandler;
 
 public class StatScreen extends Screen {
+    public static final int ID = 3;
 	public static final int WIDTH = 720;
     public static final int HEIGHT = 480;
     
@@ -32,7 +33,7 @@ public class StatScreen extends Screen {
 		returnButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Game.setCurrentScreen(new MainMenuScreen());
+				Game.setCurrentScreen(MainMenuScreen.ID);
 			}
 		});
 	}
@@ -108,6 +109,6 @@ public class StatScreen extends Screen {
 
     @Override
     public int getId() {
-        return 3;
+        return ID;
     }
 }
