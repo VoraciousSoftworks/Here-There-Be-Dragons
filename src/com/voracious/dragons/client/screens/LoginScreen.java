@@ -147,9 +147,12 @@ public class LoginScreen extends Screen {
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_TAB){
 			hasFocus = (hasFocus + 1)%3;
+			
 			usernameTextBox.setDrawCaret(hasFocus == 0);
 			passwordTextBox.setDrawCaret(hasFocus == 1);
 			server.setDrawCaret(hasFocus == 2);
+		}else if(e.getKeyCode() == KeyEvent.VK_BACK_QUOTE){
+		    onSuccess(); //TODO: This is a debug login screen pass, delete it for the release
 		}else{
 			switch(hasFocus){
 			case 0:

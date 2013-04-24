@@ -88,10 +88,10 @@ public class PlayScreen extends Screen {
     		int rightStart=(int)(this.getP1Cast().getX()+(this.getP1Cast().getWidth()*(this.getP1Cast().getHPRatio())));
     		int rightEnd=(int)(this.getP1Cast().getX()+this.getP1Cast().getWidth());
     		g.setColor(Color.RED);
-    		g.drawRect(leftStart, (int)(this.getP1Cast().getY()+this.getP1Cast().getHeight()),(int)(rightStart-leftStart), 30);
+    		g.fillRect(leftStart, (int)(this.getP1Cast().getY()+this.getP1Cast().getHeight()),(int)(rightStart-leftStart), 30);
     		if(rightEnd!=rightStart){
     			g.setColor(Color.DARK_GRAY);
-    			g.drawRect(rightStart, (int)(this.getP1Cast().getY()+this.getP1Cast().getHeight()), (int)(rightEnd-rightStart), 30);
+    			g.fillRect(rightStart, (int)(this.getP1Cast().getY()+this.getP1Cast().getHeight()), (int)(rightEnd-rightStart), 30);
     		}
     	}
     	
@@ -101,10 +101,10 @@ public class PlayScreen extends Screen {
     		int rightStart=(int)(this.getP2Cast().getX()+(this.getP2Cast().getWidth()*(this.getP2Cast().getHPRatio())));
     		int rightEnd=(int)(this.getP2Cast().getX()+this.getP2Cast().getWidth());
     		g.setColor(Color.RED);
-    		g.drawRect(leftStart, (int)(this.getP2Cast().getY()-30), (int)(rightStart-leftStart), 30);
+    		g.fillRect(leftStart, (int)(this.getP2Cast().getY()-30), (int)(rightStart-leftStart), 30);
     		if(rightEnd!=rightStart){
     			g.setColor(Color.DARK_GRAY);
-    			g.drawRect(rightStart, (int)(this.getP2Cast().getY()-30), (int) (rightEnd-rightStart), 30);
+    			g.fillRect(rightStart, (int)(this.getP2Cast().getY()-30), (int) (rightEnd-rightStart), 30);
     		}
     	}
     	

@@ -9,22 +9,24 @@ import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.graphics.ui.Button;
+import com.voracious.dragons.client.net.ClientConnectionManager;
+import com.voracious.dragons.client.net.Statistics;
 import com.voracious.dragons.client.utils.InputHandler;
 
 public class StatScreen extends Screen {
-	public static final int WIDTH = 2160/3;
-    public static final int HEIGHT = 1440/3;
-
+	public static final int WIDTH = 720;
+    public static final int HEIGHT = 480;
+    
     private Button returnButton;
     private Sprite background;
     
-    private String username;
-    private int finished,current,win,loss;
-    private double winPer,lossPer,aveTurns;
-    private long timeBetween;
+    private int finished,current,wins,losses;
+    private double winRate,lossRate,aveTurnsPerGame;
+    private long timeToMakeTurn;
     
-	public StatScreen(/*player's pid to do db searching*/) {
+	public StatScreen() {
 		super(WIDTH, HEIGHT);
+		
 		background = new Sprite("/mainMenuBackground.png");
 		returnButton=new Button("Back",0,0);
 		returnButton.addActionListener(new ActionListener(){
@@ -33,55 +35,47 @@ public class StatScreen extends Screen {
 				Game.setCurrentScreen(new MainMenuScreen());
 			}
 		});
-		
-		
-		//the PID is assumed to be the pid of the person logged in to the game
-		
-		/*# of finished games
-		 * SELECT COUNT(gid)
-		 * FROM GAME
-		 * WHERE (pid1=PID OR pid2=PID) AND inProgress=false
-		 * GROUP BY GAME.gid
-		 */
-		
-		/*# of current games
-		 * SELECT COUNT(gid)
-		 * FROM GAME 
-		 * WHERE (pid1=PID OR pid2=PID) AND inProgress=true
-		 * GROUP BY GAME.gid
-		 */
-		
-		/*#won
-		 * SELECT COUNT(gid)
-		 * FROM WINNER
-		 * WHERE pid=PID
-		 * GROUP BY gid
-		 */
-		
-		/*#loss
-		 * =#finished games - #won
-		 */
-		
-		/*% won
-		 * =#won / #finished games
-		 */
-		
-		/*%loss
-		 * =#loss / #finished games
-		 */
-		
-		/*Ave time between turns
-		 * (sum of each games's sum of differences in timestamps (
-		 * 		from j=1 to n-1 timestamp[j]-timestamp[j-1])) 
-		 * / (#tuples w/ turn pid=PID)
-		 */
-		
-		/*Ave turns a game
-		 * (SELECT COUNT(*)//all tuples
-		 * FROM TURN
-		 * WHERE pid=PID
-		 * ) / (#finished Games+#current games)
-		 */
+	}
+	
+	public void onStatRecieved(char type, String data){
+	    switch(type){
+	    case Statistics.FINISHED_CODE:
+	        this.finished = Integer.parseInt(data);
+	        break;
+	    case Statistics.CURRENT_CODE:
+	        this.current = Integer.parseInt(data);
+	        break;
+	    case Statistics.WINS_CODE:
+	        this.wins = Integer.parseInt(data);
+	        break;
+	    case Statistics.LOSSES_CODE:
+	        this.losses = Integer.parseInt(data);
+	        break;
+	    case Statistics.WIN_RATE_CODE:
+	        this.winRate = Double.parseDouble(data);
+	        break;
+	    case Statistics.LOSS_RATE_CODE:
+	        this.lossRate = Double.parseDouble(data);
+	        break;
+	    case Statistics.AVE_TURNS_PER_CODE:
+	        this.aveTurnsPerGame = Double.parseDouble(data);
+	        break;
+	    case Statistics.TIME_TO_TURN_CODE:
+	        this.timeToMakeTurn = Long.parseLong(data);
+	        break;
+	    }
+	}
+	
+	public void requestData(){
+	    ClientConnectionManager ccm = Game.getClientConnectionManager();
+        ccm.sendMessage("PS:" + Statistics.FINISHED_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.CURRENT_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.WINS_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.LOSSES_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.WIN_RATE_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.LOSS_RATE_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.AVE_TURNS_PER_CODE + ":" + ccm.getSessionId());
+        ccm.sendMessage("PS:" + Statistics.TIME_TO_TURN_CODE + ":" + ccm.getSessionId());
 	}
 	
 	@Override
@@ -99,7 +93,6 @@ public class StatScreen extends Screen {
 	public void render(Graphics2D g) {
 		background.draw(g, 0, 0);
 		this.returnButton.draw(g);
-
 	}
 
 	@Override

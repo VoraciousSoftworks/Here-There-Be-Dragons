@@ -1,6 +1,7 @@
 package com.voracious.dragons.common;
 
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.List;
 import com.voracious.dragons.client.graphics.Drawable;
 import com.voracious.dragons.client.towers.Tower;
@@ -13,6 +14,8 @@ public class GameState implements Drawable {
 
     public GameState() {
         super();
+        towers=new ArrayList<>();
+        units=new ArrayList<>();
     }
 
     @Override
