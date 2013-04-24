@@ -17,8 +17,6 @@ import com.voracious.dragons.common.Statistics;
 
 public class StatScreen extends Screen {
     public static final int ID = 3;
-	public static final int WIDTH = 720;
-    public static final int HEIGHT = 480;
     
     private Button returnButton;
     private Sprite background;
@@ -30,7 +28,7 @@ public class StatScreen extends Screen {
     private Text finishedT,currentT,winsT,lossesT,winRateT,lossRateT,aveTurnPerGameT,timeToMakeTurnT;
     
 	public StatScreen() {
-		super(WIDTH, HEIGHT);
+		super(Game.WIDTH, Game.HEIGHT);
 		
 		background = new Sprite("/mainMenuBackground.png");
 		returnButton=new Button("Back",0,0);
