@@ -24,11 +24,50 @@ public class StatisticsPacket implements Packet {
         String sessionId = msg.substring(2);
         User user = scm.getUserByID(sessionId);
         DBHandler db = Main.getDB();
+        //db.getFinishedGames() or the equivalent
+        //scm.sendMessage(user, "PS:" + type + ":" + data); 
+        //where data is the int or whatever datatype you're looking for in this stats type
         switch(type){
-        case Statistics.FINISHED_CODE:
-            //TODO: db.getFinishedGames() or the equivalent
-            //scm.sendMessage(user, "PS:" + type + ":" + data); where data is the int or whatever datatype you're looking for in this stats type
-            break;
+        case Statistics.FINISHED_CODE:{
+        	int games =db.numGames(user.getUsername(), false);
+        	scm.sendMessage(user,"PS:"+type+":"+games);
+        	break;
+        }
+        case Statistics.CURRENT_CODE:{
+        	int games= db.numGames(user.getUsername(), true);
+        	scm.sendMessage(user, "PS:"+type+":"+games);
+        	break;
+        }
+        case Statistics.WINS_CODE:{
+        	int winNum=db.countWins(user.getUsername());
+        	scm.sendMessage(user, "PS:"+type+":"+winNum);
+        	break;
+        }
+        case Statistics.LOSSES_CODE:{
+        	int lossNum=db.numGames(user.getUsername(), false) - db.countWins(user.getUsername());
+        	scm.sendMessage(user, "PS:"+type+":"+lossNum);
+        	break;
+        }
+        case Statistics.WIN_RATE_CODE:{
+        	double winRat=db.countWins(user.getUsername()) / db.numGames(user.getUsername(), false);
+        	scm.sendMessage(user, "PS:"+type+":"+winRat);
+        	break;
+        }
+        case Statistics.LOSS_RATE_CODE:{
+        	double loseRat=1-(db.countWins(user.getUsername()) / db.numGames(user.getUsername(), false));
+        	scm.sendMessage(user, "PS:"+type+":"+loseRat);
+        	break;
+        }
+        case Statistics.AVE_TURNS_PER_CODE:{
+        	double turns=db.aveTurns(user.getUsername(), db.numGames(user.getUsername(), false) + db.numGames(user.getUsername(), true));
+        	scm.sendMessage(user, "PS:"+type+":"+turns);
+        	break;
+        }
+        case Statistics.TIME_TO_TURN_CODE:{
+        	long time=db.aveTime(user.getUsername());
+        	scm.sendMessage(user, "PS:"+type+":"+time);
+        	break;
+        }
         }
     }
 
