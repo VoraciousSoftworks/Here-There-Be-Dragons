@@ -37,7 +37,7 @@ public class PlayScreen extends Screen {
     boolean inUnitMode=false;
     boolean inTowerMode=false;
     
-    Turn myTurn,oppTurn;
+    static Turn myTurn,oppTurn;
     
     Vec2D.Short temp;
     
@@ -323,9 +323,12 @@ public class PlayScreen extends Screen {
 	public void setExecutingTurn(boolean executingTurn) {
 		this.executingTurn = executingTurn;
 	}
-
     @Override
     public int getId() {
         return 2;
     }
+	
+	public static void onTurnCalled(Turn turn){
+		oppTurn = turn;
+	}
 }
