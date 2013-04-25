@@ -69,37 +69,37 @@ public class GameListScreen extends Screen {
             }
         });
         
-        games = new ArrayList<>(4*5);
+        games = new ArrayList<>(4*6);
         
-        games.add(new GameInfo(1, "other_guy", 92, true));
-        games.add(new GameInfo(2, "other_gy", 92, false));
-        games.add(new GameInfo(4, "other_uy", 92, true));
-        games.add(new GameInfo(5, "other_y", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true, true));
+        games.add(new GameInfo(2, "other_gy", 92, false, true));
+        games.add(new GameInfo(4, "other_uy", 92, true, false));
+        games.add(new GameInfo(5, "other_y", 92, false, false));
         
-        games.add(new GameInfo(1, "other_guy", 92, true));
-        games.add(new GameInfo(2, "other_gy", 92, false));
-        games.add(new GameInfo(4, "other_uy", 92, true));
-        games.add(new GameInfo(5, "other_y", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true, true));
+        games.add(new GameInfo(2, "other_gy", 92, false, true));
+        games.add(new GameInfo(4, "other_uy", 92, true, false));
+        games.add(new GameInfo(5, "other_y", 92, false, false));
         
-        games.add(new GameInfo(1, "other_guy", 92, true));
-        games.add(new GameInfo(2, "other_gy", 92, false));
-        games.add(new GameInfo(4, "other_uy", 92, true));
-        games.add(new GameInfo(5, "other_y", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true, true));
+        games.add(new GameInfo(2, "other_gy", 92, false, true));
+        games.add(new GameInfo(4, "other_uy", 92, true, false));
+        games.add(new GameInfo(5, "other_y", 92, false, false));
         
-        games.add(new GameInfo(1, "other_guy", 92, true));
-        games.add(new GameInfo(2, "other_gy", 92, false));
-        games.add(new GameInfo(4, "other_uy", 92, true));
-        games.add(new GameInfo(5, "other_y", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true, true));
+        games.add(new GameInfo(2, "other_gy", 92, false, true));
+        games.add(new GameInfo(4, "other_uy", 92, true, false));
+        games.add(new GameInfo(5, "other_y", 92, false, false));
         
-        games.add(new GameInfo(1, "other_guy", 92, true));
-        games.add(new GameInfo(2, "other_gy", 92, false));
-        games.add(new GameInfo(4, "other_uy", 92, true));
-        games.add(new GameInfo(5, "other_y", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true, true));
+        games.add(new GameInfo(2, "other_gy", 92, false, true));
+        games.add(new GameInfo(4, "other_uy", 92, true, false));
+        games.add(new GameInfo(5, "other_y", 92, false, false));
         
-        games.add(new GameInfo(1, "other_guy", 92, true));
-        games.add(new GameInfo(2, "other_gy", 92, false));
-        games.add(new GameInfo(4, "other_uy", 92, true));
-        games.add(new GameInfo(5, "other_y", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true, true));
+        games.add(new GameInfo(2, "other_gy", 92, false, true));
+        games.add(new GameInfo(4, "other_uy", 92, true, false));
+        games.add(new GameInfo(5, "other_y", 92, false, false));
     }
     
     public void start(){
@@ -153,7 +153,7 @@ public class GameListScreen extends Screen {
             
             for(GameInfo g : games){
                 gameTexts.add(new Text(g.getOtherPlayer() + " id: " + g.getGameId()));
-                gameTexts.add(new Text((g.isLastMoveByMe() ? "me" : g.getOtherPlayer()) + " " + timestampToString(g.getLastMoveTime())));
+                gameTexts.add(new Text((g.wasLastMoveByMe() ? "me" : g.getOtherPlayer()) + " " + timestampToString(g.getLastMoveTime())));
             }
             
             this.areTextsSet = true;

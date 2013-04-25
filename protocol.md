@@ -17,3 +17,8 @@ Statistics
 ==========
  1. Client requests stats type with "PS:{type_num}:{session_id}". PS stands for Player Statistics
  2. Server sends back "PS:{type_num}:{stats_data}" each stats type may send a different kind of data. If it requires multiple fields separate them with colons.
+
+Game list
+=========
+ 1. Client requests list with "GL:{sessionId}"
+ 2. Server sends back either "GLE:{message}" on error or "GLS:{numGameInfos};{GameInfoString1};{GameInfoString2};..."
