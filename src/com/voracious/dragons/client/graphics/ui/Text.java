@@ -111,4 +111,12 @@ public class Text implements Drawable {
 	public FontMetrics getFontMetrics(){
 		return fontMetrics;
 	}
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }
