@@ -130,7 +130,6 @@ public class DBHandler {
 			
 			storeTurn=conn.prepareStatement(
 					"INSERT INTO Turn VALUES(?,?,?,?,?);");
-			
 			storeSpect=conn.prepareStatement(
 					"INSERT INTO Spectator VALUES(?,?);");
 			storeWinner=conn.prepareStatement(

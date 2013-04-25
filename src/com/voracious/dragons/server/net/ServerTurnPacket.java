@@ -16,12 +16,12 @@ public class ServerTurnPacket implements Packet{
 	public void process(Message message, ConnectionManager cm) {
 		ServerConnectionManager scm = (ServerConnectionManager) cm;
 		Turn neuTurn = new Turn(message.getBytes());
+		scm.getUserByID(neuTurn.getSessionId());
 		
 	}
 
 	@Override
 	public boolean isString() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
