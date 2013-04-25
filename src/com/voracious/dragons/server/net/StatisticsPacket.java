@@ -29,33 +29,33 @@ public class StatisticsPacket implements Packet {
         //where data is the int or whatever datatype you're looking for in this stats type
         switch(type){
         case Statistics.FINISHED_CODE:{
-        	int games =db.numGames(user.getUsername(), 0);
+        	int games = db.numGames(user.getUsername(), 0);
         	scm.sendMessage(user,"PS:"+type+":"+games);
         	break;
         }
         case Statistics.CURRENT_CODE:{
-        	int games= db.numGames(user.getUsername(), 1);
+        	int games = db.numGames(user.getUsername(), 1);
         	scm.sendMessage(user, "PS:"+type+":"+games);
         	break;
         }
         case Statistics.WINS_CODE:{
-        	int winNum=db.countWins(user.getUsername());
+        	int winNum = db.countWins(user.getUsername());
         	scm.sendMessage(user, "PS:"+type+":"+winNum);
         	break;
         }
         case Statistics.LOSSES_CODE:{
-        	int lossNum=db.numGames(user.getUsername(), 0) - db.countWins(user.getUsername());
+        	int lossNum = db.numGames(user.getUsername(), 0) - db.countWins(user.getUsername());
         	scm.sendMessage(user, "PS:"+type+":"+lossNum);
         	break;
         }
         case Statistics.WIN_RATE_CODE:{
-        	double winRat=db.countWins(user.getUsername()) / db.numGames(user.getUsername(), 0);
-        	scm.sendMessage(user, "PS:"+type+":"+winRat);
+        	double winRate = db.countWins(user.getUsername()) / db.numGames(user.getUsername(), 0);
+        	scm.sendMessage(user, "PS:"+type+":"+winRate);
         	break;
         }
         case Statistics.LOSS_RATE_CODE:{
-        	double loseRat=1-(db.countWins(user.getUsername()) / db.numGames(user.getUsername(), 0));
-        	scm.sendMessage(user, "PS:"+type+":"+loseRat);
+        	double loseRate = 1-(db.countWins(user.getUsername()) / db.numGames(user.getUsername(), 0));
+        	scm.sendMessage(user, "PS:"+type+":"+loseRate);
         	break;
         }
         case Statistics.AVE_TURNS_PER_CODE:{

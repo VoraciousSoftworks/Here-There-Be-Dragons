@@ -101,6 +101,7 @@ public class StatScreen extends Screen {
 	@Override
 	public void start(){
 		InputHandler.registerScreen(this);
+		requestData();
 	}
 	
 	@Override

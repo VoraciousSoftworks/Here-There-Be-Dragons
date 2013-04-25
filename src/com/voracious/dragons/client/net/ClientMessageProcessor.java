@@ -21,10 +21,12 @@ public class ClientMessageProcessor extends MessageProcessor {
 		super(messageQueue);
 		this.ccm = ccm;
 		
-		stringPackets = new ArrayList<>(1);
+		stringPackets = new ArrayList<>(2);
 		stringPackets.add(new AuthenticatePacket());
+		stringPackets.add(new StatisticsPacket());
 		
-		binaryPackets = new ArrayList<>(0);
+		binaryPackets = new ArrayList<>(1);
+		binaryPackets.add(new ClientTurnPacket());
 	}
 
 	@Override

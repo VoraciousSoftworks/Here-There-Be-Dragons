@@ -89,7 +89,7 @@ public class ServerConnectionManager extends ConnectionManager {
 	
 	public User getUserByID(String sessionId) {
 	    for(User u : users.values()){
-	        if(u.getSessionId() == sessionId){
+	        if(u.getSessionId().equals(sessionId)){
 	            return u;
 	        }
 	    }
