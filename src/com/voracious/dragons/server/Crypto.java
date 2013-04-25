@@ -11,6 +11,8 @@ import java.security.spec.InvalidKeySpecException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 
+import com.voracious.dragons.common.Turn;
+
 public class Crypto {
     // The higher the number of iterations the more 
     // expensive computing the hash is for us
@@ -23,7 +25,7 @@ public class Crypto {
 
     public static String getSessionId(){
     	try {
-			return Base64.encodeBase64String(SecureRandom.getInstance("SHA1PRNG").generateSeed(saltLen));
+			return Base64.encodeBase64String(SecureRandom.getInstance("SHA1PRNG").generateSeed(Turn.sessionLength));
 		} catch (NoSuchAlgorithmException e) {
 			logger.error(e);
 			return null;
