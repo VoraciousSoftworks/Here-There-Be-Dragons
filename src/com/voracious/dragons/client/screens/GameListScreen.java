@@ -71,40 +71,35 @@ public class GameListScreen extends Screen {
         
         games = new ArrayList<>(4*5);
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
-
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
     }
     
     public void start(){
@@ -157,7 +152,7 @@ public class GameListScreen extends Screen {
             gameTexts = new ArrayList<>(gameTexts.size());
             
             for(GameInfo g : games){
-                gameTexts.add(new Text(g.getGameName()));
+                gameTexts.add(new Text(g.getOtherPlayer() + " id: " + g.getGameId()));
                 gameTexts.add(new Text((g.isLastMoveByMe() ? "me" : g.getOtherPlayer()) + " " + timestampToString(g.getLastMoveTime())));
             }
             
