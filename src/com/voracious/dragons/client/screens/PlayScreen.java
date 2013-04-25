@@ -45,8 +45,6 @@ public class PlayScreen extends Screen {
         
         this.setBackground(new Sprite("/backgroundLarge.png"));
         
-        myTurn=new Turn(0, 0);
-        
         gamestate=new GameState();
         
         this.setP1Cast(new Castle(true));
@@ -60,6 +58,10 @@ public class PlayScreen extends Screen {
     
     @Override
 	public void start(){
+        if(myTurn == null){
+            throw new IllegalArgumentException("Play screen started without choosing a game");
+        }
+        
     	InputHandler.registerButton(KeyEvent.VK_W);
         InputHandler.registerButton(KeyEvent.VK_A);
         InputHandler.registerButton(KeyEvent.VK_S);
@@ -75,7 +77,18 @@ public class PlayScreen extends Screen {
         InputHandler.deregisterButton(KeyEvent.VK_D);
         InputHandler.deregisterScreen(this);
 	}
-
+	
+	public void init(int gameId){
+	    myTurn = new Turn(gameId, Game.getClientConnectionManager().getSessionId());
+	}
+	
+	public void init(byte[] turn){
+	    myTurn = new Turn(turn);
+	}
+	
+	public void onOppTurnRecieved(byte[] turn){
+	    oppTurn = new Turn(turn);
+	}
 
     @Override
     public void render(Graphics2D g) {

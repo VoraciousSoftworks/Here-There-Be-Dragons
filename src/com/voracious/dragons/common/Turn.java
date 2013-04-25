@@ -10,20 +10,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.codec.binary.Base64;
+
 public class Turn {
     //This should probably be somewhere else eventually, I'm just not sure where yet
     public static final String versionString = "0.01a";
+    public static final int sessionLength = 32;
     public static final byte versionCode = 3;
     
     //Both of these are gotten from the server at auth time
     private int gameId;
-    private long sessionId;
+    private String sessionId;
     
     private Map<Byte, Short> unitsCreated;
     private Map<Byte, List<Vec2D.Short>> towersCreated;
     private Map<Byte, List<Vec2D.Short>> nodes;
     
-    public Turn(int gameId, long sessionId) {
+    public Turn(int gameId, String sessionId) {
     	this.sessionId = sessionId;
     	this.gameId = gameId;
     	
@@ -38,7 +41,10 @@ public class Turn {
             turn.position(1);
             
             gameId = turn.getInt();
-            sessionId = turn.getLong();
+            
+            byte[] session = new byte[sessionLength];
+            turn.get(session);
+            sessionId = Base64.encodeBase64String(session);
             
             byte numberOfUnits = turn.get();
             byte numberOfTowers = turn.get();
@@ -185,7 +191,7 @@ public class Turn {
         buffer.putInt(gameId);
         
         //put the session id
-        buffer.putLong(sessionId);
+        buffer.put(Base64.decodeBase64(sessionId));
         
         //Put the array sizes
         buffer.put((byte) unitsCreated.size());
@@ -285,11 +291,11 @@ public class Turn {
 		this.gameId = gameId;
 	}
 
-	public long getSessionId() {
+	public String getSessionId() {
 		return sessionId;
 	}
 
-	public void setSessionId(long sessionId) {
+	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 	}
 }

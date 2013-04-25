@@ -323,7 +323,8 @@ public class DBHandler {
 			
 			long sum=0;
 			//calculates the total time
-			Timestamp temp=new Timestamp(0),current;
+			Timestamp temp=new Timestamp(0);
+			Timestamp current;
 			while(timeRes.next()){
 				int turnCounter=timeRes.getInt("TNUM");//readin's turn num
 

@@ -2,10 +2,15 @@ package com.voracious.dragons.client.screens;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
@@ -20,6 +25,8 @@ public class GameListScreen extends Screen {
     public static final int borderPadding = 10;
     public static final int lineSpacing = 2;
     
+    private static final Logger logger = Logger.getLogger(GameListScreen.class);
+    
     private List<GameInfo> games;
     private List<Text> gameTexts;
     private boolean areTextsSet;
@@ -29,6 +36,9 @@ public class GameListScreen extends Screen {
     private int numToDraw;
     private int boxHeight;
     private Sprite background;
+    
+    private Button playBtn;
+    private Button createBtn;
     
     public GameListScreen() {
         super(Game.WIDTH, Game.HEIGHT);
@@ -41,42 +51,55 @@ public class GameListScreen extends Screen {
         areTextsSet = false;
         background = new Sprite("/mainMenuBackground.png");
         
-        games = new ArrayList<>(4);
+        playBtn = new Button("Play", borderPadding, boxHeight + borderPadding*2);
+        playBtn.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO: if(!games.get(selected).wasLastTurnMine()){ ask server for the other guy's turn } ask server for my turn
+                logger.debug("Playing game: " + games.get(selected).getGameId());
+            }
+        });
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        createBtn = new Button("New Game", borderPadding*2 + playBtn.getWidth() , boxHeight + borderPadding*2);
+        createBtn.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO: Make a popup asking for name to challenge; tell server you want to make a new game with $userToChallenge;
+                logger.debug("Creating new game");
+            }
+        });
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games = new ArrayList<>(4*5);
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
-
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
         
-        games.add(new GameInfo(1, "gamename", "other_guy", 92, true));
-        games.add(new GameInfo(2, "gameaname", "other_guy", 92, false));
-        games.add(new GameInfo(4, "gamenfame", "other_guy", 92, true));
-        games.add(new GameInfo(5, "gamenggame", "other_guy", 92, true));
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
+        
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
+        
+        games.add(new GameInfo(1, "other_guy", 92, true));
+        games.add(new GameInfo(2, "other_gy", 92, false));
+        games.add(new GameInfo(4, "other_uy", 92, true));
+        games.add(new GameInfo(5, "other_y", 92, true));
     }
     
     public void start(){
@@ -114,6 +137,9 @@ public class GameListScreen extends Screen {
                 gameTexts.get(getIndex).draw(g);
             }
         }
+        
+        playBtn.draw(g);
+        createBtn.draw(g);
     }
     
     public void onListRecieved(List<GameInfo> games){
@@ -126,7 +152,7 @@ public class GameListScreen extends Screen {
             gameTexts = new ArrayList<>(gameTexts.size());
             
             for(GameInfo g : games){
-                gameTexts.add(new Text(g.getGameName()));
+                gameTexts.add(new Text(g.getOtherPlayer() + " id: " + g.getGameId()));
                 gameTexts.add(new Text((g.isLastMoveByMe() ? "me" : g.getOtherPlayer()) + " " + timestampToString(g.getLastMoveTime())));
             }
             
@@ -167,5 +193,11 @@ public class GameListScreen extends Screen {
                 
             }   
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        playBtn.mouseClicked(e.getX(), e.getY());
+        createBtn.mouseClicked(e.getX(), e.getY());
     }
 }
