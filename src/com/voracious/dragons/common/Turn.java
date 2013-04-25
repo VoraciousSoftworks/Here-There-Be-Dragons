@@ -35,7 +35,15 @@ public class Turn {
         nodes = new TreeMap<>();
     }
     
+    public Turn(String turnData){
+        parseBytes(Base64.decodeBase64(turnData));
+    }
+    
     public Turn(byte[] turnData) {
+        parseBytes(turnData);
+    }
+    
+    private void parseBytes(byte[] turnData){
         if(Turn.versionCode == turnData[0]){
             ByteBuffer turn = ByteBuffer.wrap(turnData);
             turn.position(1);
@@ -115,14 +123,7 @@ public class Turn {
     }
     
     public String toString() {
-        String result = "";
-        byte[] dataBytes = this.toBytes().array();
-        
-        for(int i=0; i<dataBytes.length; i++){
-            result += Byte.toString(dataBytes[i]) + " ";
-        }
-        
-        return result;
+        return Base64.encodeBase64String(this.toBytes().array());
     }
     
     /*
