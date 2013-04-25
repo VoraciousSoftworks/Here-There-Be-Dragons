@@ -22,7 +22,7 @@ public class DBHandler {
 
 	private PreparedStatement checkHash;
 	private PreparedStatement registerUser;
-	private PreparedStatement numGames,numWins,aveTurn,numTuples,times,latestTurn;
+	private PreparedStatement numGames,numWins,turnsPerGame,numTuples,times,latestTurnNum,latestTurnTime;
 	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame;
 	
 	public void init() {
@@ -83,16 +83,9 @@ public class DBHandler {
 			registerUser = conn.prepareStatement("INSERT INTO Player VALUES(?, ?)");
 			
 			numGames = conn.prepareStatement(
-					"SELECT sum(answer) AS numGames " +
-					"FROM 	(SELECT count(pid1) AS answer" +
-					"		FROM Game" +
-					"		WHERE pid1=? AND inProgress=?" +
-					"		GROUP BY pid1" +
-					"		UNION" +
-					"		SELECT count(pid2) AS answer" +
-					"		FROM Game" +
-					"		WHERE pid2=? AND inProgress=?" +
-					"		GROUP BY pid2);");
+					"SELECT count(*) AS answer " +
+					"FROM Game " +
+					"WHERE (pid1 = ? OR pid2 = ?) AND inProgress = ?;");
 			
 			numWins=conn.prepareStatement(
 					"SELECT count(gid) AS answer " +
@@ -100,43 +93,42 @@ public class DBHandler {
 					"WHERE pid=? " +
 					"GROUP BY pid;");
 			
-			aveTurn=conn.prepareStatement(
-					"SELECT count(*) AS answer " +
+			turnsPerGame=conn.prepareStatement(
+					"SELECT gid, count(*) AS answer " +
 					"FROM Turn " +
 					"WHERE pid=? " +
-					"GROUP BY gid, tnum;");
-			numTuples=conn.prepareStatement(
-					"SELECT count(*) AS answer " +
-					"FROM Turn " +
-					"WHERE pid=? " +
-					"GROUP BY gid,tnum;");
+					"GROUP BY gid;");
+			
 			times=conn.prepareStatement(
-					"SELECT gid AS GID, tNUM as TNUM, timeStamp AS TIMESTAMP " +
+					"SELECT gid, tnum, timeStamp " +
 					"FROM Turn " +
 					"WHERE pid=? " +
-					"ORDER BY gid ASC,tNum ASC; ");
-			latestTurn=conn.prepareStatement(
-					"SELECT pid as id, MAX(tnum) AS answer " +
-					"FROM Turn " +
-					"WHERE gid=? " +
-					"GROUP BY pid;");
-			//possible to sort the time stamps also, so each games is in order from top to bottom
-			//g0 t0
-			//g0 t1
-			//g1 t0
-			//g2 t0
-			//g2 t1
-			//g2 t2
+					"ORDER BY gid ASC, timeStamp ASC;");
+			
+			latestTurnNum=conn.prepareStatement(
+			        "SELECT pid, Max(tnum) AS answer " +
+			        "FROM Turn " +
+			        "WHERE gid=? " +
+			        "GROUP BY pid;");
+			
+			latestTurnTime=conn.prepareStatement(
+					"SELECT T.gid, Min(timeStamp) AS answer " +
+					"FROM Game G JOIN Turn T ON T.gid = G.gid " +
+					"WHERE inProgress = 1 AND pid1 = ? OR pid2 = ? " +
+					"GROUP BY T.gid;");
 			
 			storeTurn=conn.prepareStatement(
-					"INSERT INTO Turn VALUES(?,?,?,?,?);");
+					"INSERT INTO Turn(gid, tnum, pid, turnString) VALUES(?,?,?,?);");
+			
 			storeSpect=conn.prepareStatement(
 					"INSERT INTO Spectator VALUES(?,?);");
+			
 			storeWinner=conn.prepareStatement(
 					"INSERT INTO Winner VALUES(?,?);");
-			storeGame=conn.prepareStatement(
-					"INSERT INTO Game (pid1,pid2,gameState) VALUES(?,?,?)");
+			
 			//assuming a game inserted will be inprogress
+			storeGame=conn.prepareStatement(
+					"INSERT INTO Game (pid1,pid2,inProgress,gameState) VALUES(?,?,1,'')");
 		} catch (SQLException e) {
 			logger.error("Error preparing statements", e);
 		}
@@ -172,11 +164,10 @@ public class DBHandler {
 		}
 	}
 	
-	public void insertGame(String PID1,String PID2,String GAMESTATE){
+	public void createGame(String PID1, String PID2, String GAMESTATE){
 		try {
 			storeGame.setString(1, PID1);
 			storeGame.setString(2, PID2);
-			storeGame.setString(3, GAMESTATE);
 			storeGame.executeUpdate();
 		} catch (SQLException e) {
 			logger.error("Could not add to the game table",e);
@@ -211,27 +202,32 @@ public class DBHandler {
 		try{
 			storeTurn.setInt(1,GID);
 			
-			latestTurn.setInt(1, GID);
-			ResultSet ret=latestTurn.executeQuery();
+			latestTurnNum.setInt(1, GID);
+			ResultSet ret=latestTurnNum.executeQuery();
+			
 			if(!ret.next())
 				return false;
-			String p1id = ret.getString("id");
+			
+			String p1id = ret.getString("pid");
 			int p1turnNum = ret.getInt("answer");			
+			
 			if(!ret.next())
 				return false;
-			String p2id = ret.getString("id");
+			
+			String p2id = ret.getString("pid");
 			int p2turnNum = ret.getInt("answer");
+			
 			if(PID==p1id && p1turnNum > p2turnNum)
 				return false;
 			else if(PID==p2id && p2turnNum > p1turnNum)
 				return false;
+			
 			storeTurn.setInt(2, p1turnNum);
-			storeTurn.setString(4, PID);
-			storeTurn.setString(5, TURNSTRING);
+			storeTurn.setString(3, PID);
+			storeTurn.setString(4, TURNSTRING);
 			storeTurn.executeUpdate();
 			return true;
-		}
-		catch(SQLException e){
+		}catch(SQLException e){
 			logger.error("Could not add to the turn table", e);
 			return false;
 		}
@@ -267,14 +263,16 @@ public class DBHandler {
 		//0 false
 		//1 true
 		try{
-		numGames.setString(1, PID);
-		numGames.setString(3, PID);
-		numGames.setLong(2, inPlay);
-		numGames.setLong(4, inPlay);
-		ResultSet ret=numGames.executeQuery();
-		return ret.getInt("numGames");
-		}
-		catch(SQLException e){
+    		numGames.setString(1, PID);
+    		numGames.setString(2, PID);
+    		numGames.setInt(3, inPlay);
+    		ResultSet ret = numGames.executeQuery();
+    		
+    		if(!ret.next())
+    		    return 0;
+    		
+    		return ret.getInt("answer");
+		}catch(SQLException e){
 			logger.error("Could not count the number of games",e);
 			return -1;
 		}
@@ -282,26 +280,35 @@ public class DBHandler {
 	
 	public int countWins(String PID){
 		try{
-		numWins.setString(1,PID);
-		ResultSet ret=numWins.executeQuery();
-		return ret.getInt("answer");
-		}
-		catch(SQLException e){
-			logger.error("Could not count the number of wins",e);
+    		numWins.setString(1, PID);
+    		ResultSet ret = numWins.executeQuery();
+    		
+    		if(!ret.next())
+    		    return 0;
+    		
+    		return ret.getInt("answer");
+		}catch(SQLException e){
+			logger.error("Could not count the number of wins", e);
 			return -1;
 		}
 	}
 	
-	public double aveTurns(String PID,int totalNumGames) {
-		//the totalNumGames = done + current games, so it needs the other qureies to be done first
-		if(totalNumGames==0)
-			return 0.0;
-		
+	public double aveTurns(String PID) {
 		try {
-			aveTurn.setString(1, PID);
-			ResultSet ret=aveTurn.executeQuery();
-			int numTurns=ret.getInt("answer");
-			return numTurns/totalNumGames;
+			turnsPerGame.setString(1, PID);
+			ResultSet ret = turnsPerGame.executeQuery();
+			
+			int totalTurns = 0;
+			int numGames = 0;
+			while(ret.next()){
+			    totalTurns += ret.getInt("answer");
+			    numGames++;
+			}
+			
+			if(numGames == 0)
+			    return 0.0;
+			
+			return totalTurns/numGames;
 		} catch (SQLException e) {
 			logger.error("Could not count the ave number of turns", e);
 			return -1.0;
@@ -309,39 +316,32 @@ public class DBHandler {
 	}
 	
 	public long aveTime(String PID){
-		//the group by is only there to have an arrogate query
 		try {
-			numTuples.setString(1, PID);
-			ResultSet tuples=numTuples.executeQuery();
-			int numberTuples=tuples.getInt("answer");
-			
-			if(numberTuples==0)
-				return 0;
-			
 			times.setString(1, PID);
-			ResultSet timeRes=times.executeQuery();
+			ResultSet timeRes = times.executeQuery();
 			
-			long sum=0;
+			int turnCounter = 0;
+			long sum = 0;
 			//calculates the total time
 			Timestamp temp=new Timestamp(0);
-			Timestamp current;
 			while(timeRes.next()){
-				int turnCounter=timeRes.getInt("TNUM");//readin's turn num
+				int tnum = timeRes.getInt("tnum");
+				Timestamp time = timeRes.getTimestamp("timeStamp");
 
-				if(turnCounter==0){
-					//set that reading's timestamp as the temp
-					temp=timeRes.getTimestamp("TIMESTAMP");
-				}
-				else {
-					current=timeRes.getTimestamp("TIMESTAMP");
-					sum+=current.getTime()-temp.getTime();
-					temp=current;
-
+				if(tnum == 0) {
+				    temp = time;
+				}else{
+				    sum += time.getTime() - temp.getTime();
+				    temp = time;
+				    
+				    turnCounter++;
 				}
 			}
 			
-			sum/=numberTuples;
-			return sum;
+			if(turnCounter == 0)
+			    return 0;
+			
+			return sum/turnCounter;
 		} catch (SQLException e) {
 			logger.error("Could not count the ave time between turns", e);
 			return -1;
