@@ -130,7 +130,6 @@ public class DBHandler {
 			
 			storeTurn=conn.prepareStatement(
 					"INSERT INTO Turn VALUES(?,?,?,?,?);");
-			
 			storeSpect=conn.prepareStatement(
 					"INSERT INTO Spectator VALUES(?,?);");
 			storeWinner=conn.prepareStatement(
@@ -208,10 +207,9 @@ public class DBHandler {
 		
 	}
 	
-	public boolean insertTurn(int GID,int TNUM,String PID,String TURNSTRING){
+	public boolean insertTurn(int GID,String PID,String TURNSTRING){
 		try{
 			storeTurn.setInt(1,GID);
-			storeTurn.setInt(2, TNUM);
 			
 			latestTurn.setInt(1, GID);
 			ResultSet ret=latestTurn.executeQuery();
@@ -225,8 +223,9 @@ public class DBHandler {
 			int p2turnNum = ret.getInt("answer");
 			if(PID==p1id && p1turnNum > p2turnNum)
 				return false;
-			if(PID==p2id && p2turnNum > p1turnNum)
+			else if(PID==p2id && p2turnNum > p1turnNum)
 				return false;
+			storeTurn.setInt(2, p1turnNum);
 			storeTurn.setString(4, PID);
 			storeTurn.setString(5, TURNSTRING);
 			storeTurn.executeUpdate();
