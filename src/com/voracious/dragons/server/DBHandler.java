@@ -83,16 +83,16 @@ public class DBHandler {
 			registerUser = conn.prepareStatement("INSERT INTO Player VALUES(?, ?)");
 			
 			numGames = conn.prepareStatement(
-					"SELECT sum(answer) AS numGames" +
+					"SELECT sum(answer) AS numGames " +
 					"FROM 	(SELECT count(pid1) AS answer" +
 					"		FROM Game" +
 					"		WHERE pid1=? AND inProgress=?" +
-					"		GROUP By pid1" +
+					"		GROUP BY pid1" +
 					"		UNION" +
 					"		SELECT count(pid2) AS answer" +
 					"		FROM Game" +
 					"		WHERE pid2=? AND inProgress=?" +
-					"		GROUP By pid2);");
+					"		GROUP BY pid2);");
 			
 			numWins=conn.prepareStatement(
 					"SELECT count(gid) AS answer " +
@@ -117,8 +117,8 @@ public class DBHandler {
 					"ORDER BY gid ASC,tNum ASC; ");
 			latestTurn=conn.prepareStatement(
 					"SELECT pid as id, MAX(tnum) AS answer " +
-					"FROM Turn" +
-					"WHERE gid=?" +
+					"FROM Turn " +
+					"WHERE gid=? " +
 					"GROUP BY pid;");
 			//possible to sort the time stamps also, so each games is in order from top to bottom
 			//g0 t0
