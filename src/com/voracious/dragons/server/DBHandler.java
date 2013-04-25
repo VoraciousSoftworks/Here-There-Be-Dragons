@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -24,6 +25,7 @@ public class DBHandler {
 	private PreparedStatement registerUser;
 	private PreparedStatement numGames,numWins,aveTurn,numTuples,times,latestTurn;
 	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame;
+	private PreparedStatement gameGetter, clientMaxTurnNum, findOpponetPID, oppMaxTurnNum;
 	
 	public void init() {
 		try {
@@ -137,6 +139,36 @@ public class DBHandler {
 			storeGame=conn.prepareStatement(
 					"INSERT INTO Game (pid1,pid2,gameState) VALUES(?,?,?)");
 			//assuming a game inserted will be inprogress
+			
+			gameGetter=conn.prepareStatement(
+					"SELECT gid AS TMP, gameState GSTATE "+
+					"FROM Game "+
+					"WHERE (pid1=? OR pid2=?) AND inProgress=1 "+
+					"GROUP By gid;");
+			
+			clientMaxTurnNum=conn.prepareStatement(
+					"SELECT max(tnum) P1TNUM "+
+					"FROM TURN T "+
+					"WHERE T.pid=? AND ?=T.gid "+
+					"GROUP By tnum ORDER By tnum DESC;");
+			
+			findOpponetPID=conn.prepareStatement(
+					"SELECT answer as O_PID " +
+					"FROM ( " +
+					"SELECT pid2 as answer " +
+					"FROM Game " +
+					"WHERE pid1=? AND inProgress=1 AND gid=? " +
+							"UNION " +
+					"SELECT pid1 as answer " +
+					"FROM Game " +
+					"WHERE pid2=? AND inProgress=1 AND gid=? " +
+							");");
+			oppMaxTurnNum=conn.prepareStatement(
+					"SELECT max(tnum) P2TNUM " +
+					"FROM TURN T " +
+					"WHERE T.pid=? AND TMP=? " +
+					"GROUP By tnum ORDER By tnum DESC;");
+			
 		} catch (SQLException e) {
 			logger.error("Error preparing statements", e);
 		}
@@ -347,4 +379,58 @@ public class DBHandler {
 			return -1;
 		}
 	}
+	
+	//public list<GameInfo> 
+	public List getClientPlayerMaxTnums(String PID){
+		List tmp=new ArrayList<Integer>();
+		try {
+			gameGetter.setString(1, PID);
+			ResultSet res=gameGetter.executeQuery();
+			
+			ResultSet turns;
+			while(res.next()){//for each gid
+				clientMaxTurnNum.setString(1, PID);
+				clientMaxTurnNum.setLong(2, res.getInt("TMP"));
+				turns=clientMaxTurnNum.executeQuery();
+				tmp.add(turns.getInt("P1NUM"));
+			}
+			
+		} catch (SQLException e) {
+			//TODO logger error report
+		}
+		return tmp;
+	}
+	
+	public List getClientOppMaxTnums(String PID){//pid the client player
+		List tmp=new ArrayList<Integer>();
+		try {
+			gameGetter.setString(1, PID);
+			ResultSet res=gameGetter.executeQuery();
+			
+			ResultSet oppPids;
+			ResultSet oppTnums;
+			while(res.next()){//for each gid
+				findOpponetPID.setString(1, PID);
+				findOpponetPID.setLong(2, res.getInt("TMP"));
+				findOpponetPID.setString(3, PID);
+				findOpponetPID.setLong(4, res.getInt("TMP"));
+				oppPids=findOpponetPID.executeQuery();
+				while(oppPids.next()){
+					oppMaxTurnNum.setString(1,oppPids.getString("O_PID"));
+					oppMaxTurnNum.setLong(2, res.getInt("TMP"));
+					oppTnums=oppMaxTurnNum.executeQuery();
+					while(oppTnums.next()){
+						tmp.add(oppTnums.getInt("P2TNUM"));
+					}
+				}
+			}
+			
+		} catch (SQLException e) {
+			//TODO logger error report
+		}
+		return tmp;
+	}
+	
+	
+	
 }

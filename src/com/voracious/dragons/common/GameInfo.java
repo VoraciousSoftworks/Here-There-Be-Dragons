@@ -5,6 +5,7 @@ public class GameInfo {
     private String otherPlayer;
     private long lastMoveTime;
     private boolean lastMoveByMe;
+    private boolean canMakeTurn;
     
     public GameInfo(int gameId, String otherPlayer, long lastMoveTime, boolean lastMoveByMe){
         this.gameId = gameId;
