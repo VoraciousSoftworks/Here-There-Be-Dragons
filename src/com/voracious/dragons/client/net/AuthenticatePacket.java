@@ -35,7 +35,7 @@ public class AuthenticatePacket implements Packet {
             ccm.sendMessage(m);
         }else if(msg.startsWith("RS:") || msg.startsWith("LS:")){
             if(!ls.hasLoggedIn()){
-                ccm.setSessionId(msg.substring(2));
+                ccm.setSessionId(msg.substring(3));
                 ls.onSuccess();
             }
         }else if(msg.startsWith("LRE:")){
