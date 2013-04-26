@@ -21,7 +21,15 @@ public class ServerChallengePacket implements Packet{
         String playerToChallenge = msg.substring(splitLoc + 1, msg.length());
         
         if(Main.getDB().getPasswordHash(playerToChallenge) != null){
-        	
+        	Main.getDB().insertGame(scm.getUserByID(sessionId).getUsername(),playerToChallenge,"");
+        	scm.sendMessage(message.getSender(), "CRS:");
+        	ServerMessageProcessor.logger.debug("Challenge correctly issued");
+        }
+        
+        else
+        {
+        	scm.sendMessage(message.getSender(), "CRE: User not found");
+        	ServerMessageProcessor.logger.debug("Challenge aborted no user.");
         }
         
 	}

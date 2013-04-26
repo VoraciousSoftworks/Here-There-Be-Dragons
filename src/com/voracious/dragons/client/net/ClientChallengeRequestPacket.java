@@ -14,6 +14,19 @@ public class ClientChallengeRequestPacket implements Packet{
 
 	@Override
 	public void process(Message message, ConnectionManager cm) {
+		ClientConnectionManager ccm = (ClientConnectionManager) cm;
+		String msg = message.toString();
+		int sep = msg.indexOf(":");
+		if(msg.startsWith("CRS:")){
+			ccm.sendMessage("CHALLENGE ACCEPTED! You have begun a game with your requested opponent.");
+		}
+		else if(msg.startsWith("CRE:")){
+			ccm.sendMessage(msg.substring(sep+1, msg.length()));
+		}
+		else {
+			ccm.sendMessage("An error occured, but it did not return an error. Unknown error occured.");
+		}
+		
 	}
 
 	@Override
