@@ -31,10 +31,11 @@ public class PlayScreen extends Screen {
     private Castle p1Cast,p2Cast;
     private GameState gamestate;
     private boolean executingTurn = false;
-    boolean inMenu=false;
-    boolean inPathMode=false;
-    boolean inUnitMode=false;
-    boolean inTowerMode=false;
+    private boolean inMenu=false;
+    private boolean inPathMode=false;
+    private boolean inUnitMode=false;
+    private boolean inTowerMode=false;
+    private boolean isPlayer1;
     
     private Turn myTurn,oppTurn;
     
@@ -78,12 +79,14 @@ public class PlayScreen extends Screen {
         InputHandler.deregisterScreen(this);
 	}
 	
-	public void init(int gameId){
+	public void init(int gameId, boolean isPlayer1){
 	    myTurn = new Turn(gameId, Game.getClientConnectionManager().getSessionId());
+	    this.isPlayer1 = isPlayer1;
 	}
 	
-	public void init(byte[] turn){
+	public void init(byte[] turn, boolean isPlayer1){
 	    myTurn = new Turn(turn);
+	    this.isPlayer1 = isPlayer1;
 	}
 	
 	public void onOppTurnRecieved(byte[] turn){
@@ -272,58 +275,34 @@ public class PlayScreen extends Screen {
         }
     }
 
-	/**
-	 * @return the background
-	 */
 	public Sprite getBackground() {
 		return background;
 	}
 
-	/**
-	 * @param background the background to set
-	 */
 	public void setBackground(Sprite background) {
 		this.background = background;
 	}
 
-	/**
-	 * @return the logger
-	 */
 	public static Logger getLogger() {
 		return logger;
 	}
 
-	/**
-	 * @param logger the logger to set
-	 */
 	public static void setLogger(Logger logger) {
 		PlayScreen.logger = logger;
 	}
 
-	/**
-	 * @return the p1Cast
-	 */
 	public Castle getP1Cast() {
 		return p1Cast;
 	}
 
-	/**
-	 * @param p1Cast the p1Cast to set
-	 */
 	public void setP1Cast(Castle p1Cast) {
 		this.p1Cast = p1Cast;
 	}
 
-	/**
-	 * @return the p2Cast
-	 */
 	public Castle getP2Cast() {
 		return p2Cast;
 	}
 
-	/**
-	 * @param p2Cast the p2Cast to set
-	 */
 	public void setP2Cast(Castle p2Cast) {
 		this.p2Cast = p2Cast;
 	}

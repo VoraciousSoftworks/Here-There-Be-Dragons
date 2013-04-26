@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -410,6 +411,27 @@ public class DBHandler {
             return -1;
         }
     }
+    
+    public Boolean isPlayer1(String pid, int gid){
+        boolean result = false;
+        try {
+            playersInGame.setInt(1, gid);
+        
+            ResultSet prs = playersInGame.executeQuery();
+            while(prs.next()){
+                String pid1 = prs.getString("pid1");
+                if(!pid.equals(pid1)){
+                    result = true;
+                }else{
+                    result = false;
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Could not get other player", e);
+        }
+        
+        return result;
+    }
 	
 	public String getOtherPid(String pid, int gid){
 	    String otherPlayer = "";
@@ -473,7 +495,7 @@ public class DBHandler {
                     }
                 }
                 
-                result.add(new GameInfo(gid, otherPlayer, ts.getTime(), pid.equals(tpid), canMakeTurn));
+                result.add(new GameInfo(gid, otherPlayer, ts.getTime(), pid.equals(tpid), canMakeTurn, isPlayer1(pid, gid)));
             }
         } catch (SQLException e) {
             logger.error("Could not get game list", e);
@@ -487,7 +509,7 @@ public class DBHandler {
                 ResultSet rs = myGames.executeQuery();
                 while(rs.next()){
                     int gid = rs.getInt("gid");
-                    result.add(new GameInfo(gid, this.getOtherPid(pid, gid), 0, false, true));
+                    result.add(new GameInfo(gid, this.getOtherPid(pid, gid), 0, false, true, isPlayer1(pid, gid)));
                 }
             } catch (SQLException e) {
                 logger.error("Could not get game list", e);

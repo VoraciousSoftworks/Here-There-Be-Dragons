@@ -73,7 +73,7 @@ public class GameListScreen extends Screen {
     
     public void playGame(GameInfo gi){
         if(gi.getLastMoveTime() == 0){
-            ((PlayScreen) Game.getScreen(PlayScreen.ID)).init(gi.getGameId());
+            ((PlayScreen) Game.getScreen(PlayScreen.ID)).init(gi.getGameId(), gi.isPlayer1());
         }else{
             if(!gi.wasLastMoveByMe()){
                 //TODO: ask for the other guys turn
