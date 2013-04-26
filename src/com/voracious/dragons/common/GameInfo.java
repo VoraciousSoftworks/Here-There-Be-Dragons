@@ -6,13 +6,15 @@ public class GameInfo {
     private long lastMoveTime;
     private boolean lastMoveByMe;
     private boolean canMakeTurn;
+    private boolean isPlayer1;
     
-    public GameInfo(int gameId, String otherPlayer, long lastMoveTime, boolean lastMoveByMe, boolean canMakeTurn){
+    public GameInfo(int gameId, String otherPlayer, long lastMoveTime, boolean lastMoveByMe, boolean canMakeTurn, boolean isPlayer1){
         this.gameId = gameId;
         this.otherPlayer = otherPlayer;
         this.lastMoveTime = lastMoveTime;
         this.lastMoveByMe = lastMoveByMe;
         this.canMakeTurn = canMakeTurn;
+        this.isPlayer1 = isPlayer1;
     }
     
     public GameInfo(String data){
@@ -22,6 +24,7 @@ public class GameInfo {
         lastMoveTime = Long.parseLong(parts[2]);
         lastMoveByMe = Integer.parseInt(parts[3]) == 1;
         canMakeTurn = Integer.parseInt(parts[4]) == 1;
+        isPlayer1 = Integer.parseInt(parts[5]) == 1;
     }
     
     public String toString(){
@@ -31,7 +34,8 @@ public class GameInfo {
         result += otherPlayer + ":";
         result += lastMoveTime + ":";
         result += (lastMoveByMe ? 1 : 0) + ":";
-        result += (canMakeTurn ? 1 : 0);
+        result += (canMakeTurn ? 1 : 0) + ":";
+        result += (isPlayer1 ? 1 : 0);
         
         return result;
     }
@@ -54,5 +58,9 @@ public class GameInfo {
 
     public boolean canMakeTurn() {
         return canMakeTurn;
+    }
+    
+    public boolean isPlayer1() {
+        return isPlayer1;
     }
 }
