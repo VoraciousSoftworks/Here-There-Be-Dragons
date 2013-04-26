@@ -12,6 +12,8 @@ import java.util.TreeMap;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.voracious.dragons.client.screens.PlayScreen;
+
 public class Turn {
     //This should probably be somewhere else eventually, I'm just not sure where yet
     public static final String versionString = "0.01a";
@@ -21,35 +23,39 @@ public class Turn {
     //Both of these are gotten from the server at auth time
     private int gameId;
     private String sessionId;
+    private boolean isPlayer1;
     
     private Map<Byte, Short> unitsCreated;
     private Map<Byte, List<Vec2D.Short>> towersCreated;
     private Map<Byte, List<Vec2D.Short>> nodes;
     
-    public Turn(int gameId, String sessionId) {
+    public Turn(int gameId, String sessionId, boolean isP1) {
     	this.sessionId = sessionId;
     	this.gameId = gameId;
+    	this.isPlayer1=isP1;
     	
         unitsCreated = new HashMap<>();
         towersCreated = new TreeMap<>();
         nodes = new TreeMap<>();
     }
     
-    public Turn(String turnData){
+    public Turn(String turnData,boolean isP1){
         parseBytes(Base64.decodeBase64(turnData));
+    	this.isPlayer1=isP1;
     }
     
-    public Turn(byte[] turnData) {
+    public Turn(byte[] turnData,boolean isP1) {
         parseBytes(turnData);
+    	this.isPlayer1=isP1;
     }
     
-    private void parseBytes(byte[] turnData){
+	private void parseBytes(byte[] turnData){
         if(Turn.versionCode == turnData[0]){
             ByteBuffer turn = ByteBuffer.wrap(turnData);
             turn.position(1);
             
             gameId = turn.getInt();
-            
+
             byte[] session = new byte[sessionLength];
             turn.get(session);
             sessionId = Base64.encodeBase64String(session);
@@ -107,16 +113,18 @@ public class Turn {
     synchronized
     public void addNode(byte pathId, Vec2D.Short location) {
         if(nodes.containsKey(pathId)){
-            nodes.get(pathId).add(location);
+            nodes.get(pathId).add(nodes.get(pathId).size()-2,location);
         }else{
             List<Vec2D.Short> temp = new LinkedList<Vec2D.Short>();
             //add to the player's castle as a starting point
-            //TODO change var to a condition to know which player they are.
-            //temp.add(var? new Vec2D.Short((short)150, (short)1290)
-            			 //:new Vec2D.Short((short)2010,(short)150));
+            temp.add(this.isPlayer1? PlayScreen.start_node
+            			 :PlayScreen.end_node);
             //add the click's
-           
             temp.add(location);
+            
+            //add the other players castle
+            temp.add(!this.isPlayer1? PlayScreen.start_node
+       			 :PlayScreen.end_node);
             
             nodes.put(pathId, temp);
         }
