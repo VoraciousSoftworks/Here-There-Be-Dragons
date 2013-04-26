@@ -198,7 +198,7 @@ public class DBHandler {
 			
 			query.executeUpdate("CREATE TABLE Turn (gid INTEGER NOT NULL REFERENCES Game(gid)," +
 					            "\n                   tnum INTEGER NOT NULL," +
-					            "\n                   timeStamp DATETIME NOT NULL DEFAULT CURRENT_TIME," +
+					            "\n                   timeStamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					            "\n                   pid VARCHAR(15) NOT NULL REFERENCES Player(pid)," +
 					            "\n                   turnString VARCHAR(60) NOT NULL," +
 					            "\n                   PRIMARY KEY(gid, pid, tnum))");
