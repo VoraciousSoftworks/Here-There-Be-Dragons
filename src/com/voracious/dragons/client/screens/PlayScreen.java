@@ -21,8 +21,8 @@ import com.voracious.dragons.common.Vec2D;
 
 public class PlayScreen extends Screen {
 
-	public static final Vec2D.Short start_node = new Vec2D.Short((short)150,(short) 1290);
-	public static final Vec2D.Short end_node = new Vec2D.Short((short)2010, (short)150);
+	public static final Vec2D.Short start_node = new Vec2D.Short((short)300,(short) 1140);
+	public static final Vec2D.Short end_node = new Vec2D.Short((short)1860, (short)300);
 	
     public static final int ID = 2;
     public static final int WIDTH = 2160;
