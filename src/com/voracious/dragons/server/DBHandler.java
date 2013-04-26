@@ -432,6 +432,10 @@ public class DBHandler {
 		return tmp;
 	}
 	
+	public boolean doesUserExist(String username){
+		
+	}
+	
 	
 	
 }
