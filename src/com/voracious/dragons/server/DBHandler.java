@@ -26,7 +26,7 @@ public class DBHandler {
 	private PreparedStatement checkHash;
 	private PreparedStatement registerUser;
 	private PreparedStatement numGames,numWins,turnsPerGame,numTuples,times,latestTurnByMeNum,gameList;
-	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame,playersInGame;
+	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame,playersInGame,myGames;
 	private PreparedStatement gameGetter, clientMaxTurnNum, findOpponetPID, oppMaxTurnNum;
 	
 	public void init() {
@@ -118,6 +118,11 @@ public class DBHandler {
 			        "SELECT pid1, pid2 " +
 			        "FROM Game " +
 			        "WHERE gid = ?;");
+			
+			myGames = conn.prepareStatement(
+			        "SELECT gid " +
+			        "FROM Game " +
+			        "WHERE (pid1 = ? OR pid2 = ?) AND inProgress = ?;");
 			
 			gameList=conn.prepareStatement(
 					"SELECT gid, timeStamp, tnum, pid " +
@@ -391,6 +396,28 @@ public class DBHandler {
 		}
 	}
 	
+	public String getOtherPid(String pid, int gid){
+	    String otherPlayer = "";
+	    try {
+            playersInGame.setInt(1, gid);
+        
+            ResultSet prs = playersInGame.executeQuery();
+            while(prs.next()){
+                String pid1 = prs.getString("pid1");
+                String pid2 = prs.getString("pid2");
+                if(!pid.equals(pid1)){
+                    otherPlayer = pid1;
+                }else{
+                    otherPlayer = pid2;
+                }
+            }
+	    } catch (SQLException e) {
+            logger.error("Could not get other player", e);
+        }
+	    
+        return otherPlayer;
+	}
+	
 	public List<GameInfo> getGameList(String pid){
 	    List<GameInfo> result = new ArrayList<>();
 	    
@@ -409,17 +436,7 @@ public class DBHandler {
                 if(!pid.equals(tpid)){
                     otherPlayer = tpid;
                 }else{
-                    playersInGame.setInt(1, gid);
-                    ResultSet prs = playersInGame.executeQuery();
-                    while(prs.next()){
-                        String pid1 = prs.getString("pid1");
-                        String pid2 = prs.getString("pid2");
-                        if(!pid.equals(pid1)){
-                            otherPlayer = pid1;
-                        }else{
-                            otherPlayer = pid2;
-                        }
-                    }
+                    otherPlayer = this.getOtherPid(pid, gid);
                 }
                 
                 boolean canMakeTurn = false;
@@ -446,6 +463,21 @@ public class DBHandler {
         } catch (SQLException e) {
             logger.error("Could not get game list", e);
         }
+	    
+	    if(result.size() != numGames(pid, 1)){
+	        try {
+                myGames.setString(1, pid);
+                myGames.setString(2, pid);
+                myGames.setInt(3, 1);
+                ResultSet rs = myGames.executeQuery();
+                while(rs.next()){
+                    int gid = rs.getInt("gid");
+                    result.add(new GameInfo(gid, this.getOtherPid(pid, gid), 0, false, true));
+                }
+            } catch (SQLException e) {
+                logger.error("Could not get game list", e);
+            }
+	    }
 	    
 	    return result;
 	}
