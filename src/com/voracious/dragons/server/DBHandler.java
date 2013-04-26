@@ -26,7 +26,7 @@ public class DBHandler {
 	private PreparedStatement checkHash;
 	private PreparedStatement registerUser;
 	private PreparedStatement numGames,numWins,turnsPerGame,numTuples,times,latestTurnByMeNum,gameList;
-	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame,playersInGame,myGames;
+	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame,playersInGame,aveTurn,latestTurn,myGames;
 	private PreparedStatement gameGetter, clientMaxTurnNum, findOpponetPID, oppMaxTurnNum;
 	
 	public void init() {
@@ -80,103 +80,122 @@ public class DBHandler {
 	
 	private void prepareStatements(){
 		try {
-			checkHash = conn.prepareStatement("SELECT passhash " +
-					                          "FROM Player " +
-					                          "WHERE pid = ?");
-			
-			registerUser = conn.prepareStatement("INSERT INTO Player VALUES(?, ?)");
-			
-			numGames = conn.prepareStatement(
-					"SELECT count(*) AS answer " +
-					"FROM Game " +
-					"WHERE (pid1 = ? OR pid2 = ?) AND inProgress = ?;");
-			
-			numWins=conn.prepareStatement(
-					"SELECT count(gid) AS answer " +
-					"FROM Winner " +
-					"WHERE pid=? " +
-					"GROUP BY pid;");
-			
-			turnsPerGame=conn.prepareStatement(
-					"SELECT gid, count(*) AS answer " +
-					"FROM Turn " +
-					"WHERE pid=? " +
-					"GROUP BY gid;");
-			
-			times=conn.prepareStatement(
-					"SELECT gid, tnum, timeStamp " +
-					"FROM Turn " +
-					"WHERE pid=? " +
-					"ORDER BY gid ASC, timeStamp ASC;");
-			
-			latestTurnByMeNum=conn.prepareStatement(
-			        "SELECT Max(tnum) AS answer " +
-			        "FROM Turn " +
-			        "WHERE gid=? AND pid=?");
-			
-			playersInGame = conn.prepareStatement(
-			        "SELECT pid1, pid2 " +
-			        "FROM Game " +
-			        "WHERE gid = ?;");
-			
-			myGames = conn.prepareStatement(
-			        "SELECT gid " +
-			        "FROM Game " +
-			        "WHERE (pid1 = ? OR pid2 = ?) AND inProgress = ?;");
-			
-			gameList=conn.prepareStatement(
-					"SELECT gid, timeStamp, tnum, pid " +
-					"FROM Turn " +
-					"WHERE gid IN ( " +
-					"    SELECT gid " +
-					"    FROM Game " +
-					"    WHERE pid1 = ? OR pid2 = ?) " +
-					"GROUP BY gid " +
-					"HAVING timeStamp = Max(timeStamp);");
-			
-			storeTurn=conn.prepareStatement(
-					"INSERT INTO Turn(gid, tnum, pid, turnString) VALUES(?,?,?,?);");
-			
-			storeSpect=conn.prepareStatement(
-					"INSERT INTO Spectator VALUES(?,?);");
-			
-			storeWinner=conn.prepareStatement(
-					"INSERT INTO Winner VALUES(?,?);");
-			
-			//assuming a game inserted will be inprogress
-			storeGame=conn.prepareStatement(
-					"INSERT INTO Game (pid1,pid2,inProgress,gameState) VALUES(?,?,1,'')");
-			
-			gameGetter=conn.prepareStatement(
-					"SELECT gid AS TMP, gameState GSTATE "+
-					"FROM Game "+
-					"WHERE (pid1=? OR pid2=?) AND inProgress=1 "+
-					"GROUP By gid;");
-			
-			clientMaxTurnNum=conn.prepareStatement(
-					"SELECT max(tnum) P1TNUM "+
-					"FROM TURN T "+
-					"WHERE T.pid=? AND T.gid=?;");
-			
-			findOpponetPID=conn.prepareStatement(
-					"SELECT answer as O_PID " +
-					"FROM ( " +
-					"SELECT pid2 as answer " +
-					"FROM Game " +
-					"WHERE pid1=? AND inProgress=1 AND gid=? " +
-							"UNION " +
-					"SELECT pid1 as answer " +
-					"FROM Game " +
-					"WHERE pid2=? AND inProgress=1 AND gid=? " +
-							");");
-			
-			/* TMP doesn't exist, this crashes the server
-			oppMaxTurnNum=conn.prepareStatement(
-					"SELECT max(tnum) P2TNUM " +
-					"FROM TURN T " +
-					"WHERE T.pid=? AND TMP=? " +
-					"GROUP By tnum ORDER By tnum DESC;");*/
-			
+		    checkHash = conn.prepareStatement("SELECT passhash " +
+                    "FROM Player " +
+                    "WHERE pid = ?");
+
+            registerUser = conn.prepareStatement("INSERT INTO Player VALUES(?, ?)");
+            
+            //Is anyone using this?
+            aveTurn=conn.prepareStatement(
+                    "SELECT count(*) AS answer " +
+                    "FROM Turn " +
+                    "WHERE pid=? " +
+                    "GROUP BY gid, tnum;");
+            
+            //Is anyone using this?
+            numTuples=conn.prepareStatement(
+                    "SELECT count(*) AS answer " +
+                    "FROM Turn " +
+                    "WHERE pid=? " +
+                    "GROUP BY gid,tnum;");
+            
+            numGames = conn.prepareStatement(
+                    "SELECT count(*) AS answer " +
+                    "FROM Game " +
+                    "WHERE (pid1 = ? OR pid2 = ?) AND inProgress = ?;");
+            
+            numWins=conn.prepareStatement(
+                    "SELECT count(gid) AS answer " +
+                    "FROM Winner " +
+                    "WHERE pid=? " +
+                    "GROUP BY pid;");
+            
+            turnsPerGame=conn.prepareStatement(
+                    "SELECT gid, count(*) AS answer " +
+                    "FROM Turn " +
+                    "WHERE pid=? " +
+                    "GROUP BY gid;");
+            
+            myGames = conn.prepareStatement(
+                    "SELECT gid " +
+                    "FROM Game " +
+                    "WHERE (pid1 = ? OR pid2 = ?) AND inProgress = ?;");
+            
+            times=conn.prepareStatement(
+                    "SELECT gid, tnum, timeStamp " +
+                    "FROM Turn " +
+                    "WHERE pid=? " +
+                    "ORDER BY gid ASC, timeStamp ASC;");
+                    
+            latestTurnByMeNum=conn.prepareStatement(
+                    "SELECT Max(tnum) AS answer " +
+                    "FROM Turn " +
+                    "WHERE gid=? AND pid=?");
+            
+            latestTurn=conn.prepareStatement(
+                    "SELECT pid as id, MAX(tnum) AS answer " +
+                    "FROM Turn " +
+                    "WHERE gid=? " +
+                    "GROUP BY pid;");
+            
+            playersInGame = conn.prepareStatement(
+                    "SELECT pid1, pid2 " +
+                    "FROM Game " +
+                    "WHERE gid = ?;");
+            
+            gameList=conn.prepareStatement(
+                    "SELECT gid, timeStamp, tnum, pid " +
+                    "FROM Turn " +
+                    "WHERE gid IN ( " +
+                    "    SELECT gid " +
+                    "    FROM Game " +
+                    "    WHERE pid1 = ? OR pid2 = ?) " +
+                    "GROUP BY gid " +
+                    "HAVING timeStamp = Max(timeStamp);");
+            
+            storeTurn=conn.prepareStatement(
+                    "INSERT INTO Turn(gid, tnum, pid, turnString) VALUES(?,?,?,?);");
+            
+            storeSpect=conn.prepareStatement(
+                    "INSERT INTO Spectator VALUES(?,?);");
+            
+            storeWinner=conn.prepareStatement(
+                    "INSERT INTO Winner VALUES(?,?);");
+            
+            //assuming a game inserted will be inprogress
+            storeGame=conn.prepareStatement(
+                     "INSERT INTO Game (pid1,pid2,inProgress,gameState) VALUES(?,?,1,'')");
+            
+            gameGetter=conn.prepareStatement(
+                    "SELECT gid AS TMP, gameState GSTATE "+
+                    "FROM Game "+
+                    "WHERE (pid1=? OR pid2=?) AND inProgress=1 "+
+                    "GROUP By gid;");
+            
+            clientMaxTurnNum=conn.prepareStatement(
+                "SELECT max(tnum) P1TNUM "+
+                "FROM TURN T "+
+                "WHERE T.pid=? AND T.gid=?;");
+            
+            findOpponetPID=conn.prepareStatement(
+                "SELECT answer as O_PID " +
+                "FROM ( " +
+                "SELECT pid2 as answer " +
+                "FROM Game " +
+                "WHERE pid1=? AND inProgress=1 AND gid=? " +
+                  "UNION " +
+                "SELECT pid1 as answer " +
+                "FROM Game " +
+                "WHERE pid2=? AND inProgress=1 AND gid=? " +
+                  ");");
+            
+            /* TMP doesn't exist, this crashes the server
+            oppMaxTurnNum=conn.prepareStatement(
+            "SELECT max(tnum) P2TNUM " +
+            "FROM TURN T " +
+            "WHERE T.pid=? AND TMP=? " +
+            "GROUP By tnum ORDER By tnum DESC;");*/
 		} catch (SQLException e) {
 			logger.error("Error preparing statements", e);
 		}
@@ -212,10 +231,11 @@ public class DBHandler {
 		}
 	}
 	
-	public void createGame(String PID1, String PID2, String GAMESTATE){
+	public void insertGame(String PID1,String PID2,String GAMESTATE){
 		try {
 			storeGame.setString(1, PID1);
 			storeGame.setString(2, PID2);
+			storeGame.setString(3, GAMESTATE);
 			storeGame.executeUpdate();
 		} catch (SQLException e) {
 			logger.error("Could not add to the game table",e);
@@ -249,33 +269,28 @@ public class DBHandler {
 	public boolean insertTurn(int GID,String PID,String TURNSTRING){
 		try{
 			storeTurn.setInt(1,GID);
-			
-			latestTurnByMeNum.setInt(1, GID);
-			ResultSet ret=latestTurnByMeNum.executeQuery();
-			
+	
+			latestTurn.setInt(1, GID);
+			ResultSet ret=latestTurn.executeQuery();
 			if(!ret.next())
 				return false;
-			
-			String p1id = ret.getString("pid");
+			String p1id = ret.getString("id");
 			int p1turnNum = ret.getInt("answer");			
-			
 			if(!ret.next())
 				return false;
-			
-			String p2id = ret.getString("pid");
+			String p2id = ret.getString("id");
 			int p2turnNum = ret.getInt("answer");
-			
 			if(PID==p1id && p1turnNum > p2turnNum)
 				return false;
 			else if(PID==p2id && p2turnNum > p1turnNum)
 				return false;
-			
 			storeTurn.setInt(2, p1turnNum);
-			storeTurn.setString(3, PID);
-			storeTurn.setString(4, TURNSTRING);
+			storeTurn.setString(4, PID);
+			storeTurn.setString(5, TURNSTRING);
 			storeTurn.executeUpdate();
 			return true;
-		}catch(SQLException e){
+		}
+		catch(SQLException e){
 			logger.error("Could not add to the turn table", e);
 			return false;
 		}
@@ -307,94 +322,94 @@ public class DBHandler {
 	}
 
 	public int numGames(String PID, int inPlay){
-		//the int is to know if the games being counted are over or still occurring
-		//0 false
-		//1 true
-		try{
-    		numGames.setString(1, PID);
-    		numGames.setString(2, PID);
-    		numGames.setInt(3, inPlay);
-    		ResultSet ret = numGames.executeQuery();
-    		
-    		if(!ret.next())
-    		    return 0;
-    		
-    		return ret.getInt("answer");
-		}catch(SQLException e){
-			logger.error("Could not count the number of games",e);
-			return -1;
-		}
+	    //the int is to know if the games being counted are over or still occurring
+        //0 false
+        //1 true
+        try{
+            numGames.setString(1, PID);
+            numGames.setString(2, PID);
+            numGames.setInt(3, inPlay);
+            ResultSet ret = numGames.executeQuery();
+            
+            if(!ret.next())
+                return 0;
+            
+            return ret.getInt("answer");
+        }catch(SQLException e){
+            logger.error("Could not count the number of games",e);
+            return -1;
+        }
 	}
 	
-	public int countWins(String PID){
-		try{
-    		numWins.setString(1, PID);
-    		ResultSet ret = numWins.executeQuery();
-    		
-    		if(!ret.next())
-    		    return 0;
-    		
-    		return ret.getInt("answer");
-		}catch(SQLException e){
-			logger.error("Could not count the number of wins", e);
-			return -1;
-		}
-	}
-	
-	public double aveTurns(String PID) {
-		try {
-			turnsPerGame.setString(1, PID);
-			ResultSet ret = turnsPerGame.executeQuery();
-			
-			int totalTurns = 0;
-			int numGames = 0;
-			while(ret.next()){
-			    totalTurns += ret.getInt("answer");
-			    numGames++;
-			}
-			
-			if(numGames == 0)
-			    return 0.0;
-			
-			return totalTurns/numGames;
-		} catch (SQLException e) {
-			logger.error("Could not count the ave number of turns", e);
-			return -1.0;
-		}
-	}
-	
-	public long aveTime(String PID){
-		try {
-			times.setString(1, PID);
-			ResultSet timeRes = times.executeQuery();
-			
-			int turnCounter = 0;
-			long sum = 0;
-			//calculates the total time
-			Timestamp temp=new Timestamp(0);
-			while(timeRes.next()){
-				int tnum = timeRes.getInt("tnum");
-				Timestamp time = timeRes.getTimestamp("timeStamp");
+   public int countWins(String PID){
+        try{
+            numWins.setString(1, PID);
+            ResultSet ret = numWins.executeQuery();
+            
+            if(!ret.next())
+                return 0;
+            
+            return ret.getInt("answer");
+        }catch(SQLException e){
+            logger.error("Could not count the number of wins", e);
+            return -1;
+        }
+    }
+    
+    public double aveTurns(String PID) {
+        try {
+            turnsPerGame.setString(1, PID);
+            ResultSet ret = turnsPerGame.executeQuery();
+            
+            int totalTurns = 0;
+            int numGames = 0;
+            while(ret.next()){
+                totalTurns += ret.getInt("answer");
+                numGames++;
+            }
+            
+            if(numGames == 0)
+                return 0.0;
+            
+            return totalTurns/numGames;
+        } catch (SQLException e) {
+            logger.error("Could not count the ave number of turns", e);
+            return -1.0;
+        }
+    }
+    
+    public long aveTime(String PID){
+        try {
+            times.setString(1, PID);
+            ResultSet timeRes = times.executeQuery();
+            
+            int turnCounter = 0;
+            long sum = 0;
+            //calculates the total time
+            Timestamp temp=new Timestamp(0);
+            while(timeRes.next()){
+                int tnum = timeRes.getInt("tnum");
+                Timestamp time = timeRes.getTimestamp("timeStamp");
 
-				if(tnum == 0) {
-				    temp = time;
-				}else{
-				    sum += time.getTime() - temp.getTime();
-				    temp = time;
-				    
-				    turnCounter++;
-				}
-			}
-			
-			if(turnCounter == 0)
-			    return 0;
-			
-			return sum/turnCounter;
-		} catch (SQLException e) {
-			logger.error("Could not count the ave time between turns", e);
-			return -1;
-		}
-	}
+                if(tnum == 0) {
+                    temp = time;
+                }else{
+                    sum += time.getTime() - temp.getTime();
+                    temp = time;
+                    
+                    turnCounter++;
+                }
+            }
+            
+            if(turnCounter == 0)
+                return 0;
+            
+            return sum/turnCounter;
+        } catch (SQLException e) {
+            logger.error("Could not count the ave time between turns", e);
+            return -1;
+        }
+    }
 	
 	public String getOtherPid(String pid, int gid){
 	    String otherPlayer = "";
@@ -498,7 +513,7 @@ public class DBHandler {
 			}
 			
 		} catch (SQLException e) {
-			//TODO logger error report
+			logger.error(e);
 		}
 		return tmp;
 	}
@@ -528,11 +543,8 @@ public class DBHandler {
 			}
 			
 		} catch (SQLException e) {
-			//TODO logger error report
+			logger.error(e);
 		}
 		return tmp;
 	}
-	
-	
-	
 }
