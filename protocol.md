@@ -21,7 +21,7 @@ Statistics
 Game list
 =========
  1. Client requests list with "GL:{sessionId}" which stands for Game List
- 2. Server sends back either "GLE:{message}" on error or "GLS:{numGameInfos};{GameInfoString1};{GameInfoString2};..."
+ 2. Server sends back either "GLE:{message}" on error or "GLS:{numGameInfos}:;{GameInfoString1};{GameInfoString2};..."
  
 Challenge Request
 =================

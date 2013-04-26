@@ -4,15 +4,18 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import com.voracious.dragons.common.GameInfo;
 
 public class DBHandler {
 	public static final String dbfile = "game_data.sqlite";
@@ -22,8 +25,9 @@ public class DBHandler {
 
 	private PreparedStatement checkHash;
 	private PreparedStatement registerUser;
-	private PreparedStatement numGames,numWins,aveTurn,numTuples,times,latestTurn;
-	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame;
+	private PreparedStatement numGames,numWins,turnsPerGame,numTuples,times,latestTurnByMeNum,gameList;
+	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame,playersInGame,aveTurn,latestTurn;
+	private PreparedStatement gameGetter, clientMaxTurnNum, findOpponetPID, oppMaxTurnNum;
 	
 	public void init() {
 		try {
@@ -114,19 +118,32 @@ public class DBHandler {
 					"SELECT gid AS GID, tNUM as TNUM, timeStamp AS TIMESTAMP " +
 					"FROM Turn " +
 					"WHERE pid=? " +
-					"ORDER BY gid ASC,tNum ASC; ");
+					"ORDER BY gid ASC, timeStamp ASC;");
 			latestTurn=conn.prepareStatement(
 					"SELECT pid as id, MAX(tnum) AS answer " +
 					"FROM Turn " +
 					"WHERE gid=? " +
 					"GROUP BY pid;");
-			//possible to sort the time stamps also, so each games is in order from top to bottom
-			//g0 t0
-			//g0 t1
-			//g1 t0
-			//g2 t0
-			//g2 t1
-			//g2 t2
+			
+			latestTurnByMeNum=conn.prepareStatement(
+			        "SELECT Max(tnum) AS answer " +
+			        "FROM Turn " +
+			        "WHERE gid=? AND pid=?");
+			
+			playersInGame = conn.prepareStatement(
+			        "SELECT pid1, pid2 " +
+			        "FROM Game " +
+			        "WHERE gid = ?;");
+			
+			gameList=conn.prepareStatement(
+					"SELECT gid, timeStamp, tnum, pid " +
+					"FROM Turn " +
+					"WHERE gid IN ( " +
+					"    SELECT gid " +
+					"    FROM Game " +
+					"    WHERE pid1 = ? OR pid2 = ?) " +
+					"GROUP BY gid " +
+					"HAVING timeStamp = Max(timeStamp);");
 			
 			storeTurn=conn.prepareStatement(
 					"INSERT INTO Turn VALUES(?,?,?,?,?);");
@@ -163,7 +180,7 @@ public class DBHandler {
 			
 			query.executeUpdate("CREATE TABLE Turn (gid INTEGER NOT NULL REFERENCES Game(gid)," +
 					            "\n                   tnum INTEGER NOT NULL," +
-					            "\n                   timeStamp DATETIME NOT NULL DEFAULT CURRENT_TIME," +
+					            "\n                   timeStamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					            "\n                   pid VARCHAR(15) NOT NULL REFERENCES Player(pid)," +
 					            "\n                   turnString VARCHAR(60) NOT NULL," +
 					            "\n                   PRIMARY KEY(gid, pid, tnum))");
@@ -210,7 +227,7 @@ public class DBHandler {
 	public boolean insertTurn(int GID,String PID,String TURNSTRING){
 		try{
 			storeTurn.setInt(1,GID);
-			
+	
 			latestTurn.setInt(1, GID);
 			ResultSet ret=latestTurn.executeQuery();
 			if(!ret.next())
@@ -346,5 +363,115 @@ public class DBHandler {
 			logger.error("Could not count the ave time between turns", e);
 			return -1;
 		}
+	}
+	
+	public List<GameInfo> getGameList(String pid){
+	    List<GameInfo> result = new ArrayList<>();
+	    
+	    try {
+            gameList.setString(1, pid);
+            gameList.setString(2, pid);
+            ResultSet rs = gameList.executeQuery();
+            
+            while(rs.next()){
+                int gid = rs.getInt("gid");
+                Timestamp ts = rs.getTimestamp("timeStamp");
+                String tpid = rs.getString("pid");
+                int tnum = rs.getInt("tnum");
+                String otherPlayer = "";
+                
+                if(!pid.equals(tpid)){
+                    otherPlayer = tpid;
+                }else{
+                    playersInGame.setInt(1, gid);
+                    ResultSet prs = playersInGame.executeQuery();
+                    while(prs.next()){
+                        String pid1 = prs.getString("pid1");
+                        String pid2 = prs.getString("pid2");
+                        if(!pid.equals(pid1)){
+                            otherPlayer = pid1;
+                        }else{
+                            otherPlayer = pid2;
+                        }
+                    }
+                }
+                
+                boolean canMakeTurn = false;
+                
+                if(!pid.equals(tpid)){
+                    canMakeTurn = true;
+                }else{
+                    latestTurnByMeNum.setInt(1, gid);
+                    latestTurnByMeNum.setString(2, otherPlayer);
+                    ResultSet lturnrs = latestTurnByMeNum.executeQuery();
+                    
+                    int othersTurnNum = 0xfffffff;
+                    while(lturnrs.next()){
+                        othersTurnNum = lturnrs.getInt("answer");
+                    }
+                    
+                    if(tnum == othersTurnNum){
+                        canMakeTurn = true;
+                    }
+                }
+                
+                result.add(new GameInfo(gid, otherPlayer, ts.getTime(), pid.equals(tpid), canMakeTurn));
+            }
+        } catch (SQLException e) {
+            logger.error("Could not get game list", e);
+        }
+	    
+	    return result;
+	}
+	
+	//public list<GameInfo> 
+	public List getClientPlayerMaxTnums(String PID){
+		List tmp=new ArrayList<Integer>();
+		try {
+			gameGetter.setString(1, PID);
+			ResultSet res=gameGetter.executeQuery();
+			
+			ResultSet turns;
+			while(res.next()){//for each gid
+				clientMaxTurnNum.setString(1, PID);
+				clientMaxTurnNum.setLong(2, res.getInt("TMP"));
+				turns=clientMaxTurnNum.executeQuery();
+				tmp.add(turns.getInt("P1NUM"));
+			}
+			
+		} catch (SQLException e) {
+			//TODO logger error report
+		}
+		return tmp;
+	}
+	
+	public List<Integer> getClientOppMaxTnums(String PID){//pid the client player
+		List<Integer> tmp=new ArrayList<Integer>();
+		try {
+			gameGetter.setString(1, PID);
+			ResultSet res=gameGetter.executeQuery();
+			
+			ResultSet oppPids;
+			ResultSet oppTnums;
+			while(res.next()){//for each gid
+				findOpponetPID.setString(1, PID);
+				findOpponetPID.setLong(2, res.getInt("TMP"));
+				findOpponetPID.setString(3, PID);
+				findOpponetPID.setLong(4, res.getInt("TMP"));
+				oppPids=findOpponetPID.executeQuery();
+				while(oppPids.next()){
+					oppMaxTurnNum.setString(1,oppPids.getString("O_PID"));
+					oppMaxTurnNum.setLong(2, res.getInt("TMP"));
+					oppTnums=oppMaxTurnNum.executeQuery();
+					while(oppTnums.next()){
+						tmp.add(oppTnums.getInt("P2TNUM"));
+					}
+				}
+			}
+			
+		} catch (SQLException e) {
+			//TODO logger error report
+		}
+		return tmp;
 	}
 }
