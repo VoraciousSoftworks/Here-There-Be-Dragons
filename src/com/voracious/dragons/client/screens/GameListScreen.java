@@ -17,6 +17,7 @@ import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.graphics.ui.Button;
 import com.voracious.dragons.client.graphics.ui.Text;
+import com.voracious.dragons.client.net.ClientConnectionManager;
 import com.voracious.dragons.client.utils.InputHandler;
 import com.voracious.dragons.common.GameInfo;
 
@@ -68,42 +69,12 @@ public class GameListScreen extends Screen {
                 logger.debug("Creating new game");
             }
         });
-        
-        games = new ArrayList<>(4*6);
-        
-        games.add(new GameInfo(1, "other_guy", 92, true, true));
-        games.add(new GameInfo(2, "other_gy", 92, false, true));
-        games.add(new GameInfo(4, "other_uy", 92, true, false));
-        games.add(new GameInfo(5, "other_y", 92, false, false));
-        
-        games.add(new GameInfo(1, "other_guy", 92, true, true));
-        games.add(new GameInfo(2, "other_gy", 92, false, true));
-        games.add(new GameInfo(4, "other_uy", 92, true, false));
-        games.add(new GameInfo(5, "other_y", 92, false, false));
-        
-        games.add(new GameInfo(1, "other_guy", 92, true, true));
-        games.add(new GameInfo(2, "other_gy", 92, false, true));
-        games.add(new GameInfo(4, "other_uy", 92, true, false));
-        games.add(new GameInfo(5, "other_y", 92, false, false));
-        
-        games.add(new GameInfo(1, "other_guy", 92, true, true));
-        games.add(new GameInfo(2, "other_gy", 92, false, true));
-        games.add(new GameInfo(4, "other_uy", 92, true, false));
-        games.add(new GameInfo(5, "other_y", 92, false, false));
-        
-        games.add(new GameInfo(1, "other_guy", 92, true, true));
-        games.add(new GameInfo(2, "other_gy", 92, false, true));
-        games.add(new GameInfo(4, "other_uy", 92, true, false));
-        games.add(new GameInfo(5, "other_y", 92, false, false));
-        
-        games.add(new GameInfo(1, "other_guy", 92, true, true));
-        games.add(new GameInfo(2, "other_gy", 92, false, true));
-        games.add(new GameInfo(4, "other_uy", 92, true, false));
-        games.add(new GameInfo(5, "other_y", 92, false, false));
     }
     
     public void start(){
         InputHandler.registerScreen(this);
+        ClientConnectionManager ccm = Game.getClientConnectionManager();
+        ccm.sendMessage("GL:" + ccm.getSessionId());
     }
     
     public void stop(){

@@ -4,16 +4,18 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import com.voracious.dragons.common.GameInfo;
 
 public class DBHandler {
 	public static final String dbfile = "game_data.sqlite";
@@ -23,8 +25,8 @@ public class DBHandler {
 
 	private PreparedStatement checkHash;
 	private PreparedStatement registerUser;
-	private PreparedStatement numGames,numWins,turnsPerGame,numTuples,times,latestTurnNum,latestTurnTime;
-	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame;
+	private PreparedStatement numGames,numWins,turnsPerGame,numTuples,times,latestTurnByMeNum,gameList;
+	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame,playersInGame;
 	private PreparedStatement gameGetter, clientMaxTurnNum, findOpponetPID, oppMaxTurnNum;
 	
 	public void init() {
@@ -107,17 +109,25 @@ public class DBHandler {
 					"WHERE pid=? " +
 					"ORDER BY gid ASC, timeStamp ASC;");
 			
-			latestTurnNum=conn.prepareStatement(
-			        "SELECT pid, Max(tnum) AS answer " +
+			latestTurnByMeNum=conn.prepareStatement(
+			        "SELECT Max(tnum) AS answer " +
 			        "FROM Turn " +
-			        "WHERE gid=? " +
-			        "GROUP BY pid;");
+			        "WHERE gid=? AND pid=?");
 			
-			latestTurnTime=conn.prepareStatement(
-					"SELECT T.gid, Min(timeStamp) AS answer " +
-					"FROM Game G JOIN Turn T ON T.gid = G.gid " +
-					"WHERE inProgress = 1 AND pid1 = ? OR pid2 = ? " +
-					"GROUP BY T.gid;");
+			playersInGame = conn.prepareStatement(
+			        "SELECT pid1, pid2 " +
+			        "FROM Game " +
+			        "WHERE gid = ?;");
+			
+			gameList=conn.prepareStatement(
+					"SELECT gid, timeStamp, tnum, pid " +
+					"FROM Turn " +
+					"WHERE gid IN ( " +
+					"    SELECT gid " +
+					"    FROM Game " +
+					"    WHERE pid1 = ? OR pid2 = ?) " +
+					"GROUP BY gid " +
+					"HAVING timeStamp = Max(timeStamp);");
 			
 			storeTurn=conn.prepareStatement(
 					"INSERT INTO Turn(gid, tnum, pid, turnString) VALUES(?,?,?,?);");
@@ -235,8 +245,8 @@ public class DBHandler {
 		try{
 			storeTurn.setInt(1,GID);
 			
-			latestTurnNum.setInt(1, GID);
-			ResultSet ret=latestTurnNum.executeQuery();
+			latestTurnByMeNum.setInt(1, GID);
+			ResultSet ret=latestTurnByMeNum.executeQuery();
 			
 			if(!ret.next())
 				return false;
@@ -379,6 +389,65 @@ public class DBHandler {
 			logger.error("Could not count the ave time between turns", e);
 			return -1;
 		}
+	}
+	
+	public List<GameInfo> getGameList(String pid){
+	    List<GameInfo> result = new ArrayList<>();
+	    
+	    try {
+            gameList.setString(1, pid);
+            gameList.setString(2, pid);
+            ResultSet rs = gameList.executeQuery();
+            
+            while(rs.next()){
+                int gid = rs.getInt("gid");
+                Timestamp ts = rs.getTimestamp("timeStamp");
+                String tpid = rs.getString("pid");
+                int tnum = rs.getInt("tnum");
+                String otherPlayer = "";
+                
+                if(!pid.equals(tpid)){
+                    otherPlayer = tpid;
+                }else{
+                    playersInGame.setInt(1, gid);
+                    ResultSet prs = playersInGame.executeQuery();
+                    while(prs.next()){
+                        String pid1 = prs.getString("pid1");
+                        String pid2 = prs.getString("pid2");
+                        if(!pid.equals(pid1)){
+                            otherPlayer = pid1;
+                        }else{
+                            otherPlayer = pid2;
+                        }
+                    }
+                }
+                
+                boolean canMakeTurn = false;
+                
+                if(!pid.equals(tpid)){
+                    canMakeTurn = true;
+                }else{
+                    latestTurnByMeNum.setInt(1, gid);
+                    latestTurnByMeNum.setString(2, otherPlayer);
+                    ResultSet lturnrs = latestTurnByMeNum.executeQuery();
+                    
+                    int othersTurnNum = 0xfffffff;
+                    while(lturnrs.next()){
+                        othersTurnNum = lturnrs.getInt("answer");
+                    }
+                    
+                    if(tnum == othersTurnNum){
+                        canMakeTurn = true;
+                    }
+                }
+                
+                result.add(new GameInfo(gid, otherPlayer, ts.getTime(), pid.equals(tpid), canMakeTurn));
+            }
+        } catch (SQLException e) {
+            logger.error("Could not get game list", e);
+        }
+	    
+	    return result;
 	}
 	
 	//public list<GameInfo> 
