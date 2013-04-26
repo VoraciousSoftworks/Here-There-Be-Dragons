@@ -7,6 +7,10 @@ public abstract class Vec2D {
             this.y = y;
         }
         
+        public Double(Double v) {
+            super(v);
+        }
+        
         public double getx(){
             return x;
         }
@@ -22,6 +26,10 @@ public abstract class Vec2D {
             this.y = y;
         }
         
+        public Short(Short v) {
+            super(v);
+        }
+
         public short getx(){
             return (short) x;
         }
