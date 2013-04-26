@@ -56,7 +56,7 @@ public class GameListScreen extends Screen {
         playBtn.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: if(!games.get(selected).wasLastTurnMine()){ ask server for the other guy's turn } ask server for my turn
+                playGame(games.get(selected));
                 logger.debug("Playing game: " + games.get(selected).getGameId());
             }
         });
@@ -69,6 +69,20 @@ public class GameListScreen extends Screen {
                 logger.debug("Creating new game");
             }
         });
+    }
+    
+    public void playGame(GameInfo gi){
+        if(gi.getLastMoveTime() == 0){
+            ((PlayScreen) Game.getScreen(PlayScreen.ID)).init(gi.getGameId());
+        }else{
+            if(!gi.wasLastMoveByMe()){
+                //TODO: ask for the other guys turn
+            }
+            
+            //TODO: ask for my turn
+        }
+        
+        Game.setCurrentScreen(PlayScreen.ID);
     }
     
     public void start(){
@@ -161,7 +175,7 @@ public class GameListScreen extends Screen {
                     }
                 }
             }else if(e.getKeyCode() == KeyEvent.VK_ENTER){
-                
+                playGame(games.get(selected));
             }   
         }
     }
