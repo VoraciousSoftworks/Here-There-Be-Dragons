@@ -113,17 +113,17 @@ public class Turn {
     synchronized
     public void addNode(byte pathId, Vec2D.Short location) {
         if(nodes.containsKey(pathId)){
-            nodes.get(pathId).add(nodes.get(pathId).size()-2,location);
+            nodes.get(pathId).add(nodes.get(pathId).size()-1,location);
         }else{
             List<Vec2D.Short> temp = new LinkedList<Vec2D.Short>();
             //add to the player's castle as a starting point
-            temp.add(this.isPlayer1? PlayScreen.start_node
+            temp.add(!this.isPlayer1? PlayScreen.start_node
             			 :PlayScreen.end_node);
             //add the click's
             temp.add(location);
             
             //add the other players castle
-            temp.add(!this.isPlayer1? PlayScreen.start_node
+            temp.add(this.isPlayer1? PlayScreen.start_node
        			 :PlayScreen.end_node);
             
             nodes.put(pathId, temp);

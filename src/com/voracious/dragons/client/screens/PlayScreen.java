@@ -40,6 +40,7 @@ public class PlayScreen extends Screen {
     private boolean inTowerMode=false;
     
     private Turn myTurn,oppTurn;
+    private short pathNum=0;
     
     Vec2D.Short temp;
     
@@ -131,8 +132,8 @@ public class PlayScreen extends Screen {
     	{
     		List<List<Vec2D.Short>>outer=myTurn.getPaths();
     		Iterator<List<Vec2D.Short>>outIt=outer.iterator();
-    		Vec2D.Short last=null;
     		while(outIt.hasNext()){
+    			Vec2D.Short last=null;
     			List<Vec2D.Short>inner=outIt.next();
     			Iterator<Vec2D.Short>inIt=inner.iterator();
     			while(inIt.hasNext()){
@@ -226,6 +227,9 @@ public class PlayScreen extends Screen {
     		this.inPathMode=false;
     		this.inTowerMode=false;
     	}
+    	else if(e.getKeyCode()==KeyEvent.VK_EQUALS){
+    		this.pathNum++;
+    	}
 	}
     
 
@@ -253,7 +257,7 @@ public class PlayScreen extends Screen {
         			               (short)(InputHandler.getMousePos().y + this.getOffsety()));
         	
         	if(temp.x <= PlayScreen.WIDTH && temp.x >= 0 && temp.y <= PlayScreen.HEIGHT && temp.y >= 0){
-        		myTurn.addNode((byte) 0, temp);
+        		myTurn.addNode((byte) this.pathNum, temp);
         	}
         	
         }
