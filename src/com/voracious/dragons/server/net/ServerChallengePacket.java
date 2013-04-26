@@ -21,8 +21,14 @@ public class ServerChallengePacket implements Packet{
         String playerToChallenge = msg.substring(splitLoc + 1, msg.length());
         
         if(Main.getDB().getPasswordHash(playerToChallenge) != null){
-        	Main.getDB().insertGame(scm.getUserByID(sessionId).getUsername(),playerToChallenge,"");
-        	scm.sendMessage(message.getSender(), "CRS:");
+        	String PID = scm.getUserByID(sessionId).getUsername();
+        	int GID = Main.getDB().insertGame(PID,playerToChallenge);
+        	int boo;
+        	if(Main.getDB().isPlayer1(PID, GID))
+        		boo = 1;
+        	else
+        		boo = 0;
+        	scm.sendMessage(message.getSender(), "CRS:"+ GID + ":" + boo);
         	ServerMessageProcessor.logger.debug("Challenge correctly issued");
         }
         

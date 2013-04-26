@@ -28,7 +28,7 @@ public class DBHandler {
 	private PreparedStatement registerUser;
 	private PreparedStatement numGames,numWins,turnsPerGame,numTuples,times,latestTurnByMeNum,gameList;
 	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame,playersInGame,aveTurn,latestTurn,myGames;
-	private PreparedStatement gameGetter, clientMaxTurnNum, findOpponetPID, oppMaxTurnNum;
+	private PreparedStatement gameGetter, clientMaxTurnNum, findOpponetPID, oppMaxTurnNum,findMaxGameId;
 	
 	public void init() {
 		try {
@@ -191,6 +191,9 @@ public class DBHandler {
                 "WHERE pid2=? AND inProgress=1 AND gid=? " +
                   ");");
             
+            findMaxGameId=conn.prepareStatement(
+            		"SELECT MAX(gid) AS answer FROM Game;");
+            
             /* TMP doesn't exist, this crashes the server
             oppMaxTurnNum=conn.prepareStatement(
             "SELECT max(tnum) P2TNUM " +
@@ -232,14 +235,18 @@ public class DBHandler {
 		}
 	}
 	
-	public void insertGame(String PID1,String PID2,String GAMESTATE){
+	public int insertGame(String PID1,String PID2){
 		try {
 			storeGame.setString(1, PID1);
 			storeGame.setString(2, PID2);
-			storeGame.setString(3, GAMESTATE);
 			storeGame.executeUpdate();
+			
+			ResultSet ret=findMaxGameId.executeQuery();
+			ret.next();
+			return ret.getInt("answer");
 		} catch (SQLException e) {
 			logger.error("Could not add to the game table",e);
+			return -1;
 		}
 	}
 	
