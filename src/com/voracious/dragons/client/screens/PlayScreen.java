@@ -21,6 +21,9 @@ import com.voracious.dragons.common.Vec2D;
 
 public class PlayScreen extends Screen {
 
+	public static final Vec2D.Short start_node = new Vec2D.Short((short)300,(short) 1140);
+	public static final Vec2D.Short end_node = new Vec2D.Short((short)1860, (short)300);
+	
     public static final int ID = 2;
     public static final int WIDTH = 2160;
     public static final int HEIGHT = 1440;
@@ -35,9 +38,9 @@ public class PlayScreen extends Screen {
     private boolean inPathMode=false;
     private boolean inUnitMode=false;
     private boolean inTowerMode=false;
-    private boolean isPlayer1;
     
     private Turn myTurn,oppTurn;
+    private short pathNum=0;
     
     Vec2D.Short temp;
     
@@ -80,17 +83,15 @@ public class PlayScreen extends Screen {
 	}
 	
 	public void init(int gameId, boolean isPlayer1){
-	    myTurn = new Turn(gameId, Game.getClientConnectionManager().getSessionId());
-	    this.isPlayer1 = isPlayer1;
+	    myTurn = new Turn(gameId, Game.getClientConnectionManager().getSessionId(), isPlayer1);
 	}
 	
 	public void init(byte[] turn, boolean isPlayer1){
-	    myTurn = new Turn(turn);
-	    this.isPlayer1 = isPlayer1;
+	    myTurn = new Turn(turn, isPlayer1);
 	}
 	
 	public void onOppTurnRecieved(byte[] turn){
-	    oppTurn = new Turn(turn);
+	    oppTurn = new Turn(turn, false);
 	}
 
     @Override
@@ -131,8 +132,8 @@ public class PlayScreen extends Screen {
     	{
     		List<List<Vec2D.Short>>outer=myTurn.getPaths();
     		Iterator<List<Vec2D.Short>>outIt=outer.iterator();
-    		Vec2D.Short last=null;
     		while(outIt.hasNext()){
+    			Vec2D.Short last=null;
     			List<Vec2D.Short>inner=outIt.next();
     			Iterator<Vec2D.Short>inIt=inner.iterator();
     			while(inIt.hasNext()){
@@ -226,6 +227,9 @@ public class PlayScreen extends Screen {
     		this.inPathMode=false;
     		this.inTowerMode=false;
     	}
+    	else if(e.getKeyCode()==KeyEvent.VK_EQUALS){
+    		this.pathNum++;
+    	}
 	}
     
 
@@ -253,7 +257,7 @@ public class PlayScreen extends Screen {
         			               (short)(InputHandler.getMousePos().y + this.getOffsety()));
         	
         	if(temp.x <= PlayScreen.WIDTH && temp.x >= 0 && temp.y <= PlayScreen.HEIGHT && temp.y >= 0){
-        		myTurn.addNode((byte) 0, temp);
+        		myTurn.addNode((byte) this.pathNum, temp);
         	}
         	
         }

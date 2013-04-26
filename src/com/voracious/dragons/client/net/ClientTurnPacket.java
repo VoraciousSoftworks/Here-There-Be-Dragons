@@ -17,7 +17,7 @@ public class ClientTurnPacket implements Packet{
 	@Override
 	public void process(Message message, ConnectionManager cm) {
 		ClientConnectionManager ccm = (ClientConnectionManager) cm;
-        Turn newTurn = new Turn(message.getBytes());
+        Turn newTurn = new Turn(message.getBytes(), false);
         ((PlayScreen) Game.getScreen(PlayScreen.ID)).onTurnCalled(newTurn);
 	}
 
