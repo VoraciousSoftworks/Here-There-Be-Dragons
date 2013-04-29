@@ -11,6 +11,7 @@ public abstract class Unit extends Entity {
     private List<Vec2D.Short> path;
     private short goingTo;
     private boolean atEnd = false;
+    private int HP=100;
     
     public Unit(String filename, int[] numFrames, int width, int height, List<Vec2D.Short> path) {
         super(filename, numFrames, width, height);
@@ -77,4 +78,18 @@ public abstract class Unit extends Entity {
     }
     
     public abstract byte getUnitId();
+
+	/**
+	 * @return the hP
+	 */
+	public int getHP() {
+		return HP;
+	}
+
+	/**
+	 * @param hP the hP to set
+	 */
+	public void setHP(int hP) {
+		HP = hP;
+	}
 }

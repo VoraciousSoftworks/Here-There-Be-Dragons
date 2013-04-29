@@ -30,8 +30,10 @@ public class GameState implements Drawable {
 
     synchronized
     public void tick() {
-        for (Tower t : towers)
+        for (Tower t : towers){
+        	this.attack_an_Unit(t);
             t.tick();
+        }
         
         for (Unit u : units)
             u.tick();
@@ -55,6 +57,20 @@ public class GameState implements Drawable {
     synchronized
     public void removeUnit(Unit u) {
         units.remove(u);
+    }
+    
+    public void attack_an_Unit(Tower t){
+    	ArrayList<Unit> tmp=new ArrayList<Unit>();
+    	for(Unit u:units){
+    		double xs=t.getX()-u.getX();
+    		double ys=t.getY()-u.getY();
+    		double dist=Math.sqrt((xs*xs)+(ys*ys));
+    		if(dist<=t.getRange()){
+    			tmp.add(u);
+    		}
+    	}
+    	int randLoc=(int) (Math.random()*(tmp.size()));
+    	t.attackUnit(tmp.get(randLoc));
     }
 
 }

@@ -295,6 +295,7 @@ public class PlayScreen extends Screen {
         }
         else if(InputHandler.isDown(InputHandler.VK_MOUSE_1) && this.inTowerMode ){
         	//TODO add buttons to cycle through towers
+        	//TODO -width/2 in the x. -height/2 in the y.	This will center it. 
         	temp = new Vec2D.Short((short) (InputHandler.getMousePos().x + this.getOffsetx()),
         			               (short) (InputHandler.getMousePos().y + this.getOffsety()));
         	
