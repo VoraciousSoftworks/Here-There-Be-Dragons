@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 
@@ -14,6 +15,8 @@ import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.graphics.ui.Text;
 import com.voracious.dragons.client.towers.Castle;
+import com.voracious.dragons.client.towers.Tower;
+import com.voracious.dragons.client.units.Dragon;
 import com.voracious.dragons.client.utils.InputHandler;
 import com.voracious.dragons.common.GameState;
 import com.voracious.dragons.common.Turn;
@@ -195,8 +198,13 @@ public class PlayScreen extends Screen {
             this.translate(3, 0);
         }
         
-        if(isExecutingTurn() && currentTickCount < ticksPerTurn){
-        	gamestate.tick();
+        if(isExecutingTurn()){
+            if(currentTickCount < ticksPerTurn){
+            	gamestate.tick();
+            	currentTickCount++;
+            }else{
+                this.executingTurn = false;
+            }
         }
     }
     
@@ -229,10 +237,34 @@ public class PlayScreen extends Screen {
     	}
     	else if(e.getKeyCode()==KeyEvent.VK_EQUALS){
     		this.pathNum++;
+    	}else if(e.getKeyCode()==KeyEvent.VK_G){
+    	    this.playTurn();
     	}
 	}
     
-
+    public void playTurn(){
+        List<List<Vec2D.Short>> paths = myTurn.getPaths();
+        List<List<Vec2D.Short>> towers = myTurn.getTowers();
+        List<Short> units = myTurn.getUnits();
+        
+        Random rand = new Random();
+        for(Short s : units){
+            //TODO: actually find the unit with the s and make a new one of that instead of dragon
+            gamestate.addUnit(new Dragon(paths.get(rand.nextInt(paths.size()))));
+        }
+        
+        for(List<Vec2D.Short> type : towers){
+            for(Vec2D.Short pos : type){
+                //TODO use the index of type for the tower type to make real towers of that type not this dummy thing
+                Tower temp = new Tower();
+                temp.setPos(pos);
+                gamestate.addTower(temp);
+            }
+        }
+        
+        setExecutingTurn(true);
+    }
+    
 
 	@Override
 	public void keyReleased(KeyEvent e) {
@@ -251,7 +283,7 @@ public class PlayScreen extends Screen {
             InputHandler.setMouseMoveable(false);
         }
         
-        if(InputHandler.isDown(InputHandler.VK_MOUSE_1) &&this.inPathMode){
+        if(InputHandler.isDown(InputHandler.VK_MOUSE_1) && this.inPathMode){
         	//TODO add another button to cycle through the different units
         	temp = new Vec2D.Short((short)(InputHandler.getMousePos().x + this.getOffsetx()),
         			               (short)(InputHandler.getMousePos().y + this.getOffsety()));
@@ -269,6 +301,8 @@ public class PlayScreen extends Screen {
         	if(temp.x <= PlayScreen.WIDTH && temp.x >= 0 && temp.y <= PlayScreen.HEIGHT && temp.y >= 0){
         		myTurn.createTower((byte)0, temp);
         	}
+        }else if(InputHandler.isDown(InputHandler.VK_MOUSE_1) && this.inUnitMode){
+            myTurn.createUnit(Dragon.ID, (short)1);
         }
     }
     
@@ -317,6 +351,7 @@ public class PlayScreen extends Screen {
 
 	public void setExecutingTurn(boolean executingTurn) {
 		this.executingTurn = executingTurn;
+		this.currentTickCount = 0;
 	}
 	
     @Override

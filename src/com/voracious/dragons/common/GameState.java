@@ -19,6 +19,7 @@ public class GameState implements Drawable {
     }
 
     @Override
+    synchronized
     public void draw(Graphics2D g) {
         for (Tower t : towers)
             t.draw(g);
@@ -27,6 +28,7 @@ public class GameState implements Drawable {
             u.draw(g);
     }
 
+    synchronized
     public void tick() {
         for (Tower t : towers)
             t.tick();
@@ -35,18 +37,22 @@ public class GameState implements Drawable {
             u.tick();
     }
 
+    synchronized
     public void addTower(Tower t) {
         towers.add(t);
     }
 
+    synchronized
     public void removeTower(Tower t) {
         towers.remove(t);
     }
 
+    synchronized
     public void addUnit(Unit u) {
         units.add(u);
     }
 
+    synchronized
     public void removeUnit(Unit u) {
         units.remove(u);
     }

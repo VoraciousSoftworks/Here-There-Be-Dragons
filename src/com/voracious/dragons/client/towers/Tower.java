@@ -2,9 +2,10 @@ package com.voracious.dragons.client.towers;
 
 import com.voracious.dragons.client.graphics.Entity;
 
-public abstract class Tower extends Entity {
+//TODO make abstract again
+public class Tower extends Entity {
 	
-	private static final String filename="tower.png";
+	private static final String filename="/tower.png";
 	private static final int[] numFrames={1};
 	private static final int width=16;
 	private static final int height=16;
@@ -16,5 +17,6 @@ public abstract class Tower extends Entity {
     /**
      * @return the id for this tower type, it should be unique
      */
-    public abstract byte getTowerId();
+  //TODO make abstract again
+    public byte getTowerId(){return 1;};
 }

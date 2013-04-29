@@ -96,6 +96,11 @@ public class Entity implements Drawable {
         this.y = y;
     }
     
+    public void setPos(Vec2D v){
+        this.x = v.x;
+        this.y = v.y;
+    }
+    
     public void setPos(double x, double y){
         this.x = x;
         this.y = y;
