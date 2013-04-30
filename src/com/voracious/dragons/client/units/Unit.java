@@ -5,6 +5,7 @@ import java.util.List;
 import com.voracious.dragons.client.graphics.Entity;
 import com.voracious.dragons.client.towers.Castle;
 import com.voracious.dragons.common.Vec2D;
+import com.voracious.dragons.common.Vec2D.Double;
 
 public abstract class Unit extends Entity {
 	
@@ -38,33 +39,28 @@ public abstract class Unit extends Entity {
         
         if(!atEnd){
             Vec2D.Short goingToPos = path.get(goingTo);
-            Vec2D vel = this.getVelocity();
+            Vec2D.Double vel = (Double) this.getVelocity();
             
-            if(vel.x > 0){
-                if(this.getX() > goingToPos.x){
-                    if(vel.y > 0){
-                        if(this.getY() > goingToPos.y){
-                            toNextNode();
-                        }
-                    }else{
-                        if(this.getY() < goingToPos.y){
-                            toNextNode();
-                        }
-                    }
-                }
-            }else{
-                if(this.getX() < goingToPos.x){
-                    if(vel.y > 0){
-                        if(this.getY() > goingToPos.y){
-                            toNextNode();
-                        }
-                    }else{
-                        if(this.getY() < goingToPos.y){
-                            toNextNode();
-                        }
-                    }
-                }
+            if(Math.abs(this.getX()-goingToPos.getx())<=3&&Math.abs(this.getY()-goingToPos.gety())<=3){
+            	toNextNode();
             }
+            else{
+            	if(this.getX()>goingToPos.getx()){
+            		this.setVelocity(new Vec2D.Short((short)-3, (short)(this.getVelocity().y)));
+            	}
+            	else{
+            		this.setVelocity(new Vec2D.Short((short)3, (short)(this.getVelocity().y)));
+            	}
+            	
+            	if(this.getY()>goingToPos.gety()){
+            		this.setVelocity(new Vec2D.Short((short)(this.getVelocity().x),(short)-3));
+            	}
+            	else{
+            		this.setVelocity(new Vec2D.Short((short)(this.getVelocity().x),(short)3));
+            	}
+            	
+            }
+            
         }
     }
     
