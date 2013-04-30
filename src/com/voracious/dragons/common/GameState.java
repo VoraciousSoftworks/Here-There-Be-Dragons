@@ -80,9 +80,9 @@ public class GameState implements Drawable {
         
         for (Unit u : units){
             u.tick();
-            if(u.getAtEnd()){//
+            if(u.getAtEnd()){//hit test needed?
             	this.unit_attack_Castle(u);
-            	//TODO suicide the unit
+    			this.units.remove(u);
             }
         }
     }
@@ -122,7 +122,10 @@ public class GameState implements Drawable {
     		//System.out.print(tmp.get(randLoc).getHP());
     		t.attackUnit(tmp.get(randLoc));
     		//System.out.print(", "+tmp.get(randLoc).getHP()+"\n");
-    		//TODO if tmp(randLoc) hp==0 remove it from the game states lists
+    		if(tmp.get(randLoc).getHP()<=0){
+    			this.units.remove(tmp.get(randLoc));
+    		}
+    			
     	}
     }
     
