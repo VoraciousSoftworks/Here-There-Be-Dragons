@@ -70,7 +70,10 @@ public class GameState implements Drawable {
     		}
     	}
     	int randLoc=(int) (Math.random()*(tmp.size()));
-    	t.attackUnit(tmp.get(randLoc));
+    	if(tmp.size()!=0){
+    		System.out.print(tmp.get(randLoc).getHP());
+    		t.attackUnit(tmp.get(randLoc));
+    		System.out.print(", "+tmp.get(randLoc).getHP()+"\n");
+    	}
     }
-
 }
