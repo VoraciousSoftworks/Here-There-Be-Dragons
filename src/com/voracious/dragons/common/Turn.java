@@ -18,7 +18,7 @@ public class Turn {
     //This should probably be somewhere else eventually, I'm just not sure where yet
     public static final String versionString = "0.01a";
     public static final int sessionLength = 32;
-    public static final byte versionCode = 3;
+    public static final byte versionCode = 4;
     
     //Both of these are gotten from the server at auth time
     private int gameId;
@@ -39,14 +39,12 @@ public class Turn {
         nodes = new TreeMap<>();
     }
     
-    public Turn(String turnData,boolean isP1){
+    public Turn(String turnData){
         parseBytes(Base64.decodeBase64(turnData));
-    	this.isPlayer1=isP1;
     }
     
-    public Turn(byte[] turnData,boolean isP1) {
+    public Turn(byte[] turnData) {
         parseBytes(turnData);
-    	this.isPlayer1=isP1;
     }
     
 	private void parseBytes(byte[] turnData){
@@ -59,6 +57,7 @@ public class Turn {
             byte[] session = new byte[sessionLength];
             turn.get(session);
             sessionId = Base64.encodeBase64String(session);
+            isPlayer1 = (turn.get() == 1);
             
             byte numberOfUnits = turn.get();
             byte numberOfTowers = turn.get();
@@ -138,6 +137,7 @@ public class Turn {
      * byte versionCode
      * int  gameId
      * long sessId
+     * bool isPlayer1
      * 
      * byte numberOfUnits
      * byte numberOfTowers
@@ -165,7 +165,7 @@ public class Turn {
      */
     
     public ByteBuffer toBytes() {
-        int bufferSize = Byte.SIZE + Integer.SIZE + Long.SIZE; //size of header info (everything through numberOfPathNodes)
+        int bufferSize = Byte.SIZE + Integer.SIZE + Long.SIZE + Byte.SIZE; //size of header info (everything through numberOfPathNodes), the bool has to be whole byte
         bufferSize += unitsCreated.size() * (Byte.SIZE/8 + Short.SIZE/8); //Bytes from the unit data
 
         byte numberOfTowers = 0;
@@ -201,6 +201,9 @@ public class Turn {
         
         //put the session id
         buffer.put(Base64.decodeBase64(sessionId));
+        
+        //put the isPlayer1 bool
+        buffer.put(isPlayer1 ? (byte)1 : (byte)0);
         
         //Put the array sizes
         buffer.put((byte) unitsCreated.size());
@@ -290,6 +293,10 @@ public class Turn {
     	List<Short> ret= new LinkedList<Short>(unitsCreated.values());
     	
     	return ret;    	
+    }
+    
+    public boolean isPlayer1(){
+        return isPlayer1;
     }
 
 	public int getGameId() {

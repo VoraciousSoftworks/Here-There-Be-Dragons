@@ -89,12 +89,13 @@ public class PlayScreen extends Screen {
 	    myTurn = new Turn(gameId, Game.getClientConnectionManager().getSessionId(), isPlayer1);
 	}
 	
-	public void init(byte[] turn, boolean isPlayer1){
-	    myTurn = new Turn(turn, isPlayer1);
-	}
-	
-	public void onOppTurnRecieved(byte[] turn){
-	    oppTurn = new Turn(turn, false);
+	public void onTurnReceived(byte[] turn){
+	    Turn temp = new Turn(turn);
+	    if(temp.isPlayer1()){
+	        myTurn = temp;
+	    }else{
+	        oppTurn = temp;
+	    }
 	}
 
     @Override
@@ -359,8 +360,4 @@ public class PlayScreen extends Screen {
     public int getId() {
         return ID;
     }
-	
-	public void onTurnCalled(Turn turn){
-		oppTurn = turn;
-	}
 }

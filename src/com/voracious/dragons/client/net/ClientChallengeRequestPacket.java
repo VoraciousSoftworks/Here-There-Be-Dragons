@@ -1,13 +1,17 @@
 package com.voracious.dragons.client.net;
+
+import org.apache.log4j.Logger;
+
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.screens.PlayScreen;
 import com.voracious.dragons.common.ConnectionManager;
 import com.voracious.dragons.common.Message;
 import com.voracious.dragons.common.Packet;
-import com.voracious.dragons.server.net.ServerConnectionManager;
 
-public class ClientChallengeRequestPacket implements Packet{
+public class ClientChallengeRequestPacket implements Packet {
 
+    Logger logger = Logger.getLogger(ClientChallengeRequestPacket.class);
+    
 	@Override
 	public boolean wasCalled(Message message) {
 		String msg = message.toString();
@@ -19,23 +23,17 @@ public class ClientChallengeRequestPacket implements Packet{
 		ClientConnectionManager ccm = (ClientConnectionManager) cm;
 		String msg = message.toString();
 		if(msg.startsWith("CRS:")){
-			int sep = msg.indexOf(":");
 			String [] msgArr = msg.split(":");
-			boolean player;
-			if(Integer.parseInt(msgArr[2])==1)
-				player=true;
-			else
-				player=false;
+			
+			boolean player = Integer.parseInt(msgArr[2]) == 1;
+			
 			((PlayScreen) Game.getScreen(PlayScreen.ID)).init(Integer.parseInt(msgArr[1]), player);
 			Game.setCurrentScreen(PlayScreen.ID);
-			ccm.sendMessage("CHALLENGE ACCEPTED! You have begun a game with your requested opponent.");
-		}
-		else if(msg.startsWith("CRE:")){
-			int sep = msg.indexOf(":");
-			ccm.sendMessage(msg.substring(sep+1, msg.length()));
-		}
-		else {
-			ccm.sendMessage("An error occured, but it did not return an error. Unknown error occured.");
+			logger.info("Started new game as player " + (player ? "one" : "two"));
+		} else if(msg.startsWith("CRE:")){
+			ccm.sendMessage(msg.substring(msg.indexOf(":") + 1, msg.length()));
+		} else {
+			logger.error("An unknown error occured.");
 		}
 		
 	}

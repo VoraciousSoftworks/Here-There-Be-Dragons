@@ -23,7 +23,7 @@ Existing Game
 =============
  1. Client tells server it is opening gameId with "PG:{gameId}:{sessionId}"
  2. Server sends back "PGS:{gameState}" or "PGE:{message}" errors might happen if client tries to play a game it isn't in
- 3. If it's client's turn, make it and then send it with 07 {turnData}, server sends back "TS" or "TE:{message}" errors might happen if it's not the client's turn or tries to play a turn on a game it doesn't own
+ 3. If it's client's turn, make it and then send it with 07 {turnData}, server sends back "TS" or "TE:{message}" errors might happen if it's not the client's turn or tries to play a turn on a game it doesn't own.
  4. If the other player has made a turn, server sends back 07 {turnData} (with a sessionId full of "0" in the string)
  5. After it is finished simulating, the server sends the client "PGS:{gameState}" the client finishes simulating if it isn't and replaces its gamestate with the official one
  6. goto 4 
