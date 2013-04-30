@@ -13,6 +13,8 @@ public class Tower extends Entity {
 	private static final int width=16;
 	private static final int height=16;
 	private int range=8;
+	private int attack=1;
+	private int hp=25;
 
     public Tower() {
         super(filename, numFrames, width, height);
@@ -38,8 +40,16 @@ public class Tower extends Entity {
 	public  void setRange(int range) {
 		this.range = range;
 	}
+	
+	public void setHP(int newHP){
+		this.hp=newHP;
+	}
+
+	public int getHP(){
+		return this.hp;
+	}
 
 	public void attackUnit(Unit victem){
-    	victem.setHP((victem.getHP())-1);
+    	victem.setHP((victem.getHP())-attack);
     }
 }

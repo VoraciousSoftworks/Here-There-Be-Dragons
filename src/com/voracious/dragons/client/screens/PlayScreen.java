@@ -14,7 +14,6 @@ import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.graphics.ui.Text;
-import com.voracious.dragons.client.towers.Castle;
 import com.voracious.dragons.client.towers.Tower;
 import com.voracious.dragons.client.units.Dragon;
 import com.voracious.dragons.client.utils.InputHandler;
@@ -34,7 +33,6 @@ public class PlayScreen extends Screen {
     public long currentTickCount = 0;
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
-    private Castle p1Cast,p2Cast;
     private GameState gamestate;
     private boolean executingTurn = false;
     private boolean inMenu=false;
@@ -52,15 +50,10 @@ public class PlayScreen extends Screen {
         
         this.setBackground(new Sprite("/backgroundLarge.png"));
         
-        gamestate=new GameState();
+        //TODO this needs to be the person playing's isPlayer1 value instead of true.
+        gamestate=new GameState(true);
         
-        this.setP1Cast(new Castle(true));
-        this.getP1Cast().setX(0);
-        this.getP1Cast().setY(background.getHeight() - Castle.height);
         
-        this.setP2Cast(new Castle(false));
-        this.getP2Cast().setX(background.getWidth() - Castle.width);
-        this.getP2Cast().setY(0);
     }
     
     @Override
@@ -101,34 +94,6 @@ public class PlayScreen extends Screen {
     @Override
     public void render(Graphics2D g) {
     	this.getBackground().draw(g, 0, 0);
-    	
-    	{//draw player one's castle and health bar. @ 90% rrrrrrrrrg
-    		this.getP1Cast().draw(g);
-    		int leftStart= (int)(this.getP1Cast().getX());
-    		int rightStart=(int)(this.getP1Cast().getX()+(this.getP1Cast().getWidth()*(this.getP1Cast().getHPRatio())));
-    		int rightEnd=(int)(this.getP1Cast().getX()+this.getP1Cast().getWidth());
-    		g.setColor(Color.RED);
-    		g.fillRect(leftStart, (int)(this.getP1Cast().getY()+this.getP1Cast().getHeight()),(int)(rightStart-leftStart), 30);
-    		if(rightEnd!=rightStart){
-    			g.setColor(Color.DARK_GRAY);
-    			g.fillRect(rightStart, (int)(this.getP1Cast().getY()+this.getP1Cast().getHeight()), (int)(rightEnd-rightStart), 30);
-    		}
-    	}
-    	
-    	{//draws player two's castle and health bar
-    		this.getP2Cast().draw(g);
-    		int leftStart=(int)(this.getP2Cast().getX());
-    		int rightStart=(int)(this.getP2Cast().getX()+(this.getP2Cast().getWidth()*(this.getP2Cast().getHPRatio())));
-    		int rightEnd=(int)(this.getP2Cast().getX()+this.getP2Cast().getWidth());
-    		g.setColor(Color.RED);
-    		g.fillRect(leftStart, (int)(this.getP2Cast().getY()-30), (int)(rightStart-leftStart), 30);
-    		if(rightEnd!=rightStart){
-    			g.setColor(Color.DARK_GRAY);
-    			g.fillRect(rightStart, (int)(this.getP2Cast().getY()-30), (int) (rightEnd-rightStart), 30);
-    		}
-    	}
-    	
-    	
     	
     	gamestate.draw(g);
     	
@@ -251,7 +216,7 @@ public class PlayScreen extends Screen {
         Random rand = new Random();
         for(Short s : units){
             //TODO: actually find the unit with the s and make a new one of that instead of dragon
-            gamestate.addUnit(new Dragon(paths.get(rand.nextInt(paths.size()))));
+            gamestate.addUnit(new Dragon(paths.get(rand.nextInt(paths.size())),this.myTurn.isPlayer1()));
         }
         
         for(List<Vec2D.Short> type : towers){
@@ -331,21 +296,6 @@ public class PlayScreen extends Screen {
 		PlayScreen.logger = logger;
 	}
 
-	public Castle getP1Cast() {
-		return p1Cast;
-	}
-
-	public void setP1Cast(Castle p1Cast) {
-		this.p1Cast = p1Cast;
-	}
-
-	public Castle getP2Cast() {
-		return p2Cast;
-	}
-
-	public void setP2Cast(Castle p2Cast) {
-		this.p2Cast = p2Cast;
-	}
 
 	public boolean isExecutingTurn() {
 		return executingTurn;

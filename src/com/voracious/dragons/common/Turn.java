@@ -29,10 +29,11 @@ public class Turn {
     private Map<Byte, List<Vec2D.Short>> towersCreated;
     private Map<Byte, List<Vec2D.Short>> nodes;
     
+    
     public Turn(int gameId, String sessionId, boolean isP1) {
     	this.sessionId = sessionId;
     	this.gameId = gameId;
-    	this.isPlayer1=isP1;
+    	this.setPlayer1(isP1);
     	
         unitsCreated = new HashMap<>();
         towersCreated = new TreeMap<>();
@@ -116,13 +117,13 @@ public class Turn {
         }else{
             List<Vec2D.Short> temp = new LinkedList<Vec2D.Short>();
             //add to the player's castle as a starting point
-            temp.add(!this.isPlayer1? PlayScreen.start_node
+            temp.add(!this.isPlayer1()? PlayScreen.start_node
             			 :PlayScreen.end_node);
             //add the click's
             temp.add(location);
             
             //add the other players castle
-            temp.add(this.isPlayer1? PlayScreen.start_node
+            temp.add(this.isPlayer1()? PlayScreen.start_node
        			 :PlayScreen.end_node);
             
             nodes.put(pathId, temp);
@@ -297,6 +298,10 @@ public class Turn {
     
     public boolean isPlayer1(){
         return isPlayer1;
+    }
+    
+    public void setPlayer1(boolean isPlayer1) {
+        this.isPlayer1 = isPlayer1;
     }
 
 	public int getGameId() {
