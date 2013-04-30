@@ -11,6 +11,10 @@ public abstract class Vec2D {
             super(v);
         }
         
+        public Double(Short v) {
+            super(v);
+        }
+
         public double getx(){
             return x;
         }
