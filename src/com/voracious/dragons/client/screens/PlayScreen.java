@@ -50,6 +50,7 @@ public class PlayScreen extends Screen {
         
         this.setBackground(new Sprite("/backgroundLarge.png"));
         
+        //TODO this needs to be the person playing's isPlayer1 value instead of true.
         gamestate=new GameState(true);
         
         
