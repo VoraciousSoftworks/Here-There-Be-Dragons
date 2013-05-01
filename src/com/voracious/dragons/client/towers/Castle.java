@@ -41,7 +41,7 @@ public class Castle extends Entity {
 		double percent=chp/fullhp;
 		//changes the image if needed
 		if(percent<=1.0&&percent>0.7){
-			//nothing, stays at full heatlh
+			//nothing, stays at full health
 		}
 		else if(percent<=0.7&&percent>0.4&&levelofDamage==0){
 			this.nextFrame();
@@ -56,14 +56,14 @@ public class Castle extends Entity {
 		}
 	}
 	
-	public double getCHP(){
+	public double getHP(){
 		return this.chp;
 	}
-	public void setCHP(double hp){
+	public void setHP(double hp){
 		this.chp=hp;
 	}
 	
 	public double getHPRatio(){
-		return this.getCHP()/this.fullhp;
+		return this.getHP()/this.fullhp;
 	}
 }

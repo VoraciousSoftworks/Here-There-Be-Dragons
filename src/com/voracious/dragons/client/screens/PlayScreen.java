@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.log4j.Logger;
 
@@ -49,11 +48,6 @@ public class PlayScreen extends Screen {
         super(HEIGHT, WIDTH);
         
         this.setBackground(new Sprite("/backgroundLarge.png"));
-        
-        //TODO this needs to be the person playing's isPlayer1 value instead of true.
-        gamestate=new GameState(true);
-        
-        
     }
     
     @Override
@@ -209,7 +203,7 @@ public class PlayScreen extends Screen {
 	}
     
     public void playTurn(){
-        List<List<Vec2D.Short>> paths = myTurn.getPaths();
+        /*List<List<Vec2D.Short>> paths = myTurn.getPaths();
         List<List<Vec2D.Short>> towers = myTurn.getTowers();
         List<Short> units = myTurn.getUnits();
         
@@ -222,11 +216,11 @@ public class PlayScreen extends Screen {
         for(List<Vec2D.Short> type : towers){
             for(Vec2D.Short pos : type){
                 //TODO use the index of type for the tower type to make real towers of that type not this dummy thing
-                Tower temp = new Tower();
+                Tower temp = new Tower(true);
                 temp.setPos(pos);
                 gamestate.addTower(temp);
             }
-        }
+        }*/
         
         setExecutingTurn(true);
     }

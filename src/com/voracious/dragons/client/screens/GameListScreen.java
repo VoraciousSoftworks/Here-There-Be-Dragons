@@ -72,6 +72,9 @@ public class GameListScreen extends Screen {
     }
     
     public void playGame(GameInfo gi){
+        ClientConnectionManager ccm = Game.getClientConnectionManager();
+        ccm.sendMessage("PG:" + gi.getGameId() + ":" + ccm.getSessionId());
+        
         if(gi.getLastMoveTime() == 0){
             ((PlayScreen) Game.getScreen(PlayScreen.ID)).init(gi.getGameId(), gi.isPlayer1());
         }else{
@@ -82,6 +85,11 @@ public class GameListScreen extends Screen {
             //TODO: ask for my turn
         }
         
+        
+    }
+    
+    public void onGameStateReceived(byte[] gameState){
+        Game.getScreen(PlayScreen.ID);
         Game.setCurrentScreen(PlayScreen.ID);
     }
     
