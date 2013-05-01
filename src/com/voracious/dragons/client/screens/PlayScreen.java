@@ -212,6 +212,9 @@ public class PlayScreen extends Screen {
     	}else if(e.getKeyCode()==KeyEvent.VK_G){
     	    this.playTurn();
     	}
+    	if(!this.inPathMode&&!this.inTowerMode&&!this.inUnitMode){
+    		this.inMenu=false;
+    	}
 	}
     
     public void playTurn(){
