@@ -17,6 +17,7 @@ import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.graphics.ui.Button;
 import com.voracious.dragons.client.graphics.ui.Text;
+import com.voracious.dragons.client.graphics.ui.UnitMenu;
 import com.voracious.dragons.client.towers.Tower;
 import com.voracious.dragons.client.units.Dragon;
 import com.voracious.dragons.client.utils.InputHandler;
@@ -33,11 +34,11 @@ public class PlayScreen extends Screen {
     public static final int WIDTH = 2160;
     public static final int HEIGHT = 1440;
     public static final long ticksPerTurn = 300;
-    public static final int baseUnitCost = 100;
     public long currentTickCount = 0;
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
     private GameState gamestate;
+    private UnitMenu unitsMenu;
     private boolean isMyTurn = false;
     private boolean executingTurn = false;
     private boolean inMenu=false;
@@ -54,6 +55,7 @@ public class PlayScreen extends Screen {
         super(HEIGHT, WIDTH);
         
         this.setBackground(new Sprite("/backgroundLarge.png"));
+        this.unitsMenu = new UnitMenu();
     }
     
     @Override
@@ -149,8 +151,10 @@ public class PlayScreen extends Screen {
     			t.setText("You are in path mode");
     		else if(inTowerMode)
     			t.setText("You are in tower mode");
-    		else if(inUnitMode)
-    			t.setText("You are in unit mode");
+    		else if(inUnitMode){
+    			//t.setText("You are in unit mode");
+    			unitsMenu.draw(g);
+    		}
     		t.draw(g);
     	}
     }
