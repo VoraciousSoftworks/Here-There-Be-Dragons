@@ -3,6 +3,7 @@ package com.voracious.dragons.client.net;
 import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.Game;
+import com.voracious.dragons.client.screens.GameListScreen;
 import com.voracious.dragons.client.screens.PlayScreen;
 import com.voracious.dragons.common.ConnectionManager;
 import com.voracious.dragons.common.GameState;
@@ -24,13 +25,15 @@ public class ClientChallengeRequestPacket implements Packet {
 		ClientConnectionManager ccm = (ClientConnectionManager) cm;
 		String msg = message.toString();
 		if(msg.startsWith("CRS:")){
-			String [] msgArr = msg.split(":");
+		    msg = msg.substring(4);
+			int index = msg.indexOf(":");
 			
-			((PlayScreen) Game.getScreen(PlayScreen.ID)).init(Integer.parseInt(msgArr[1]), true, true, new GameState(msgArr[2]));
+			((PlayScreen) Game.getScreen(PlayScreen.ID)).init(Integer.parseInt(msg.substring(0, index)), true, true, new GameState(msg.substring(index+1)));
 			Game.setCurrentScreen(PlayScreen.ID);
 			logger.info("Started new game");
 		} else if(msg.startsWith("CRE:")){
 			ccm.sendMessage(msg.substring(msg.indexOf(":") + 1, msg.length()));
+			((GameListScreen) Game.getScreen(GameListScreen.ID)).askForChallenge();
 		} else {
 			logger.error("An unknown error occured.");
 		}

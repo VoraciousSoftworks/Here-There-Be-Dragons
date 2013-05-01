@@ -235,7 +235,7 @@ public class DBHandler {
 		try {
 			storeGame.setString(1, PID1);
 			storeGame.setString(2, PID2);
-			storeGame.setString(2, gameStateString);
+			storeGame.setString(3, gameStateString);
 			storeGame.executeUpdate();
 			
 			ResultSet ret=findMaxGameId.executeQuery();

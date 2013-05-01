@@ -16,7 +16,7 @@ public class ServerChallengePacket implements Packet{
 	@Override
 	public void process(Message message, ConnectionManager cm) {
 		ServerConnectionManager scm = (ServerConnectionManager) cm;
-        String msg = message.toString().substring(2);
+        String msg = message.toString().substring(3);
         int splitLoc = msg.indexOf(":");
         String sessionId = msg.substring(0, splitLoc);
         String playerToChallenge = msg.substring(splitLoc + 1, msg.length());

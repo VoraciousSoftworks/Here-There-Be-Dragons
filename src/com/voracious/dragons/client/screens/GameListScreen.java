@@ -10,6 +10,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import org.apache.log4j.Logger;
 
 import com.voracious.dragons.client.Game;
@@ -69,8 +71,7 @@ public class GameListScreen extends Screen {
         createBtn.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: Make a popup asking for name to challenge; tell server you want to make a new game with $userToChallenge;
-                logger.debug("Creating new game");
+                askForChallenge();
             }
         });
         
@@ -81,6 +82,18 @@ public class GameListScreen extends Screen {
 				Game.setCurrentScreen(MainMenuScreen.ID);
 			}
 		});
+    }
+    
+    public void askForChallenge(){
+        String input =  JOptionPane.showInputDialog("Who do you want to challenge?");
+        
+        //TODO: input validation
+        
+        if(input != null){
+            ClientConnectionManager ccm = Game.getClientConnectionManager();
+            ccm.sendMessage("CR:" + ccm.getSessionId() + ":" + input);
+            logger.info("Creating new game against " + input);
+        }
     }
     
     private void playGame(int gameId){
