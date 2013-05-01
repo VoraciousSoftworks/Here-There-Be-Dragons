@@ -79,7 +79,7 @@ public class GameListScreen extends Screen {
         ccm.sendMessage("PG:" + gameId + ":" + ccm.getSessionId());
     }
     
-    public void onGameStateReceived(byte[] gameState){
+    public void onGameStateReceived(String gameState){
         GameInfo game = games.get(gameToPlay);
         ((PlayScreen) Game.getScreen(PlayScreen.ID)).init(game.getGameId(), game.isPlayer1(), game.canMakeTurn(), new GameState(gameState));
         Game.setCurrentScreen(PlayScreen.ID);

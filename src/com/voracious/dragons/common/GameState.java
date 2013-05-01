@@ -38,7 +38,7 @@ public class GameState implements Drawable {
         this.getP2Cast().setY(0);
     }
 
-    public GameState(byte[] gameState) {
+    public GameState(String gameState) {
         // TODO Auto-generated constructor stub
     }
 

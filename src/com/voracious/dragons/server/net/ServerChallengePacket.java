@@ -1,5 +1,6 @@
 package com.voracious.dragons.server.net;
 import com.voracious.dragons.common.ConnectionManager;
+import com.voracious.dragons.common.GameState;
 import com.voracious.dragons.common.Message;
 import com.voracious.dragons.common.Packet;
 import com.voracious.dragons.server.Main;
@@ -22,20 +23,13 @@ public class ServerChallengePacket implements Packet{
         
         if(Main.getDB().getPasswordHash(playerToChallenge) != null){
         	String PID = scm.getUserByID(sessionId).getUsername();
-        	int GID = Main.getDB().insertGame(PID,playerToChallenge);
-        	int boo;
-        	if(Main.getDB().isPlayer1(PID, GID))
-        		boo = 1;
-        	else
-        		boo = 0;
-        	scm.sendMessage(message.getSender(), "CRS:"+ GID + ":" + boo);
-        	ServerMessageProcessor.logger.debug("Challenge correctly issued");
-        }
-        
-        else
-        {
+        	String gs = new GameState().toString();
+        	int GID = Main.getDB().insertGame(PID, playerToChallenge, gs);
+        	scm.sendMessage(message.getSender(), "CRS:"+ GID + ":" + gs);
+        	ServerMessageProcessor.logger.debug("Game between " + PID + " and " + playerToChallenge + " created.");
+        }else{
         	scm.sendMessage(message.getSender(), "CRE: User not found");
-        	ServerMessageProcessor.logger.debug("Challenge aborted no user.");
+        	ServerMessageProcessor.logger.debug("Challenge request error: " + playerToChallenge + " does not exist");
         }
         
 	}
@@ -44,5 +38,4 @@ public class ServerChallengePacket implements Packet{
 	public boolean isString() {
 		return true;
 	}
-
 }

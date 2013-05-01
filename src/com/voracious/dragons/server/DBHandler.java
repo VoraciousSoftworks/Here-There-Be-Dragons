@@ -166,7 +166,7 @@ public class DBHandler {
             
             //assuming a game inserted will be inprogress
             storeGame=conn.prepareStatement(
-                     "INSERT INTO Game (pid1,pid2,inProgress,gameState) VALUES(?,?,1,'')");
+                     "INSERT INTO Game (pid1,pid2,inProgress,gameState) VALUES(?,?,1,?)");
             
             gameGetter=conn.prepareStatement(
                     "SELECT gid AS TMP, gameState GSTATE "+
@@ -235,10 +235,11 @@ public class DBHandler {
 		}
 	}
 	
-	public int insertGame(String PID1,String PID2){
+	public int insertGame(String PID1, String PID2, String gameStateString){
 		try {
 			storeGame.setString(1, PID1);
 			storeGame.setString(2, PID2);
+			storeGame.setString(2, gameStateString);
 			storeGame.executeUpdate();
 			
 			ResultSet ret=findMaxGameId.executeQuery();

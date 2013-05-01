@@ -16,7 +16,7 @@ Authentication
 New Game
 ========
  1. Client sends "CR:{sessionId}:{playerToChallege}" which stands for Challenge Request
- 2. Server sends back "CRS:{gameID}:{isPlayer1}" or "CRE:{ErrorMessage}" for CR Success and CR Error
+ 2. Server sends back "CRS:{gameState}" or "CRE:{ErrorMessage}" for CR Success and CR Error
  3. goto Existing Game step 3
  
 Existing Game
