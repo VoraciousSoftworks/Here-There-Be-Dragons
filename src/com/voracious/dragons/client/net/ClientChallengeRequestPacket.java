@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.screens.PlayScreen;
 import com.voracious.dragons.common.ConnectionManager;
+import com.voracious.dragons.common.GameState;
 import com.voracious.dragons.common.Message;
 import com.voracious.dragons.common.Packet;
 
@@ -25,11 +26,9 @@ public class ClientChallengeRequestPacket implements Packet {
 		if(msg.startsWith("CRS:")){
 			String [] msgArr = msg.split(":");
 			
-			boolean player = Integer.parseInt(msgArr[2]) == 1;
-			
-			((PlayScreen) Game.getScreen(PlayScreen.ID)).init(Integer.parseInt(msgArr[1]), player);
+			((PlayScreen) Game.getScreen(PlayScreen.ID)).init(Integer.parseInt(msgArr[1]), true, true, new GameState(msgArr[2]));
 			Game.setCurrentScreen(PlayScreen.ID);
-			logger.info("Started new game as player " + (player ? "one" : "two"));
+			logger.info("Started new game");
 		} else if(msg.startsWith("CRE:")){
 			ccm.sendMessage(msg.substring(msg.indexOf(":") + 1, msg.length()));
 		} else {
@@ -42,5 +41,4 @@ public class ClientChallengeRequestPacket implements Packet {
 	public boolean isString() {
 		return true;
 	}
-
 }

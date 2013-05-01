@@ -9,7 +9,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.log4j.Logger;
 
@@ -39,6 +38,7 @@ public class PlayScreen extends Screen {
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
     private GameState gamestate;
+    private boolean isMyTurn = false;
     private boolean executingTurn = false;
     private boolean inMenu=false;
     private boolean inPathMode=false;
@@ -54,16 +54,11 @@ public class PlayScreen extends Screen {
         super(HEIGHT, WIDTH);
         
         this.setBackground(new Sprite("/backgroundLarge.png"));
-        
-        //TODO this needs to be the person playing's isPlayer1 value instead of true.
-        gamestate=new GameState(true);
-        
-        
     }
     
     @Override
 	public void start(){
-        if(myTurn == null){
+        if(myTurn == null || gamestate == null){
             throw new IllegalArgumentException("Play screen started without choosing a game");
         }
         
@@ -81,10 +76,16 @@ public class PlayScreen extends Screen {
         InputHandler.deregisterButton(KeyEvent.VK_S);
         InputHandler.deregisterButton(KeyEvent.VK_D);
         InputHandler.deregisterScreen(this);
+        
+        myTurn = null;
+        oppTurn = null;
+        gamestate = null;
 	}
 	
-	public void init(int gameId, boolean isPlayer1){
+	public void init(int gameId, boolean isPlayer1, boolean canMakeTurn, GameState s){
 	    myTurn = new Turn(gameId, Game.getClientConnectionManager().getSessionId(), isPlayer1);
+	    isMyTurn = canMakeTurn;
+	    gamestate = s;
 	}
 	
 	public void onTurnReceived(byte[] turn){
@@ -214,7 +215,7 @@ public class PlayScreen extends Screen {
 	}
     
     public void playTurn(){
-        List<List<Vec2D.Short>> paths = myTurn.getPaths();
+        /*List<List<Vec2D.Short>> paths = myTurn.getPaths();
         List<List<Vec2D.Short>> towers = myTurn.getTowers();
         List<Short> units = myTurn.getUnits();
         
@@ -227,11 +228,11 @@ public class PlayScreen extends Screen {
         for(List<Vec2D.Short> type : towers){
             for(Vec2D.Short pos : type){
                 //TODO use the index of type for the tower type to make real towers of that type not this dummy thing
-                Tower temp = new Tower();
+                Tower temp = new Tower(true);
                 temp.setPos(pos);
                 gamestate.addTower(temp);
             }
-        }
+        }*/
         
         setExecutingTurn(true);
     }

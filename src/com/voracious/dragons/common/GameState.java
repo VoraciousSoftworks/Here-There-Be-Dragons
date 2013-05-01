@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import com.voracious.dragons.client.graphics.Drawable;
 import com.voracious.dragons.client.screens.PlayScreen;
 import com.voracious.dragons.client.towers.Castle;
@@ -12,32 +14,83 @@ import com.voracious.dragons.client.units.Unit;
 
 public class GameState implements Drawable {
 
+    public static final Vec2D.Short p1CastLoc = new Vec2D.Short((short)0, (short)(PlayScreen.HEIGHT - Castle.height));
+    public static final Vec2D.Short p2CastLoc = new Vec2D.Short((short)(PlayScreen.WIDTH - Castle.width), (short)0);
+    
     private List<Tower> towers;
     private List<Unit> units;
     private Castle p1Cast,p2Cast;
-    private boolean isplayer1;
-    
+    private List<Unit> toRemove;
+    private long seed;
+    private Random rand;
 
-    public GameState(boolean player1) {
+    public GameState() {
         super();
-        isplayer1=player1;
-        towers=new ArrayList<>();
-        units=new ArrayList<>();
+        seed = System.nanoTime();
+        rand = new Random(seed);
+        towers = new ArrayList<>();
+        units = new ArrayList<>();
+        toRemove = new ArrayList<>();
         
-        this.setP1Cast(new Castle(true));
-        this.getP1Cast().setX(0);
-        this.getP1Cast().setY(PlayScreen.HEIGHT - Castle.height);
+        p1Cast = new Castle(true);
+        p1Cast.setPos(p1CastLoc);
         
-        this.setP2Cast(new Castle(false));
-        this.getP2Cast().setX(PlayScreen.WIDTH - Castle.width);
-        this.getP2Cast().setY(0);
+        p2Cast = new Castle(false);
+        p2Cast.setPos(p2CastLoc);
+    }
+
+    public GameState(String gameState) {
+        if(!gameState.startsWith("GS:")) throw new IllegalArgumentException("Invalid gamestate string");
+        String[] gs = gameState.substring(3).split(":");
+        seed = Long.parseLong(gs[0]);
+        
+        p1Cast = new Castle(true);
+        p1Cast.setPos(p1CastLoc);
+        p1Cast.setHP(Double.parseDouble(gs[1]));
+        p1Cast.setMaxHP(Double.parseDouble(gs[2]));
+        
+        p2Cast = new Castle(false);
+        p2Cast.setPos(p2CastLoc);
+        p1Cast.setHP(Double.parseDouble(gs[3]));
+        p1Cast.setMaxHP(Double.parseDouble(gs[4]));
+        
+        String[] unitStrs = gs[5].split(";");
+        units = new ArrayList<>(unitStrs.length);
+        for(int i=1; i<unitStrs.length; i++){
+            units.add(Unit.makeUnit(unitStrs[i]));
+        }
+        
+        String[] towerStrs = gs[6].split(";");
+        towers = new ArrayList<>(towerStrs.length);
+        for(int i=1; i<towerStrs.length; i++){
+            towers.add(Tower.makeTower(towerStrs[i]));
+        }
+    }
+    
+    public String toString(){
+        String result = "GS:";
+        result += seed + ":";
+        result += p1Cast.getHP() + ":" + p1Cast.getMaxHP() + ":";
+        result += p2Cast.getHP() + ":" + p2Cast.getMaxHP() + ":";
+        
+        result += "U";
+        for(Unit u : units){
+            result += ";" + u.toString() + ";";
+        }
+        result += ":T";
+        
+        for(Tower t : towers){
+            result += ";" + t.toString() + ";";
+        }
+        
+        return result;
     }
 
     @Override
     synchronized
     public void draw(Graphics2D g) {
     	
-    	{//draw player one's castle and health bar. @ 90% rrrrrrrrrg
+    	{//draw player one's castle and health bar.
     		this.getP1Cast().draw(g);
     		int leftStart= (int)(this.getP1Cast().getX());
     		int rightStart=(int)(this.getP1Cast().getX()+(this.getP1Cast().getWidth()*(this.getP1Cast().getHPRatio())));
@@ -74,17 +127,23 @@ public class GameState implements Drawable {
     synchronized
     public void tick() {
         for (Tower t : towers){
-        	this.attack_an_Unit(t);
             t.tick();
+            this.attackUnit(t);
         }
-        
+           
         for (Unit u : units){
             u.tick();
-            if(u.getAtEnd()){//hit test needed?
-            	this.unit_attack_Castle(u);
-    			this.units.remove(u);
+            if(u.getAtEnd()){
+            	this.attackCastle(u);
+    			toRemove.add(u);
             }
         }
+        
+        for(Unit u : toRemove){
+            units.remove(u);
+        }
+        
+        toRemove.clear();
     }
 
     synchronized
@@ -107,35 +166,36 @@ public class GameState implements Drawable {
         units.remove(u);
     }
     
-    public void attack_an_Unit(Tower t){
-    	ArrayList<Unit> tmp=new ArrayList<Unit>();
-    	for(Unit u:units){
-    		double xs=t.getX()-u.getX();
-    		double ys=t.getY()-u.getY();
-    		double dist=Math.sqrt((xs*xs)+(ys*ys));
-    		if(dist<=t.getRange()&&this.getISPLAYER1()!=u.getISPLAYER1()){// make sure the units are the opposing player's.
+    private void attackUnit(Tower t){
+    	List<Unit> tmp=new ArrayList<Unit>();
+    	for(Unit u : units){
+    		double xs = t.getX() - u.getX();
+    		double ys = t.getY() - u.getY();
+    		double dist=  Math.sqrt((xs*xs) + (ys*ys));
+    		
+    		if(dist <= t.getRange() && t.isPlayer1() != u.isPlayer1()){// make sure the units are the opposing player's.
     			tmp.add(u);
     		}
     	}
-    	int randLoc=(int) (Math.random()*(tmp.size()));
+    	
     	if(tmp.size()!=0){
-    		//System.out.print(tmp.get(randLoc).getHP());
-    		t.attackUnit(tmp.get(randLoc));
-    		//System.out.print(", "+tmp.get(randLoc).getHP()+"\n");
-    		if(tmp.get(randLoc).getHP()<=0){
-    			this.units.remove(tmp.get(randLoc));
-    		}
-    			
+    	    int randIndex = rand.nextInt(tmp.size());
+    		t.attackUnit(tmp.get(randIndex));
+    		
+    		if(tmp.get(randIndex).getHP() <= 0){
+                toRemove.add(tmp.get(randIndex));
+            }
     	}
     }
     
-    public void unit_attack_Castle(Unit u){
+    private void attackCastle(Unit u){
     	if(u.isPlayer1()){
-    		this.getP2Cast().setCHP(this.getP2Cast().getCHP()-u.getAttack());
-    		System.out.println(this.getP2Cast().getCHP());
+    		this.getP2Cast().takeDamage(u.getAttack()+30);
+    		this.getP2Cast().tick();
+    		System.out.println(this.getP2Cast().getHP());
     	}
     	else{
-    		this.getP1Cast().setCHP(this.getP1Cast().getCHP()-u.getAttack());
+    		this.getP1Cast().takeDamage(u.getAttack());
     	}
     }
     
@@ -143,19 +203,11 @@ public class GameState implements Drawable {
 		return p1Cast;
 	}
 
-	public void setP1Cast(Castle p1Cast) {
-		this.p1Cast = p1Cast;
-	}
-
 	public Castle getP2Cast() {
 		return p2Cast;
 	}
-
-	public void setP2Cast(Castle p2Cast) {
-		this.p2Cast = p2Cast;
-	}
 	
-	public boolean getISPLAYER1(){
-		return this.isplayer1;
+	public long getSeed(){
+	    return seed;
 	}
 }
