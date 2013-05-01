@@ -21,6 +21,7 @@ public class GameState implements Drawable {
     private List<Unit> units;
     private Castle p1Cast,p2Cast;
     private List<Unit> toRemove;
+    private List<Tower> tRemove;
     private long seed;
     private Random rand;
 
@@ -129,6 +130,13 @@ public class GameState implements Drawable {
         for (Tower t : towers){
             t.tick();
             this.attackUnit(t);
+            if(t.getHeight()<=0){
+            	tRemove.add(t);
+            }
+        }
+        
+        for(Tower t: tRemove){
+        	towers.remove(t);
         }
            
         for (Unit u : units){
@@ -181,6 +189,7 @@ public class GameState implements Drawable {
     	if(tmp.size()!=0){
     	    int randIndex = rand.nextInt(tmp.size());
     		t.attackUnit(tmp.get(randIndex));
+    		t.setHP(t.getHP()-1);
     		
     		if(tmp.get(randIndex).getHP() <= 0){
                 toRemove.add(tmp.get(randIndex));
@@ -190,12 +199,14 @@ public class GameState implements Drawable {
     
     private void attackCastle(Unit u){
     	if(u.isPlayer1()){
-    		this.getP2Cast().takeDamage(u.getAttack()+30);
-    		this.getP2Cast().tick();
+    		this.getP2Cast().takeDamage(u.getAttack());
+    		//this.getP2Cast().tick();
     		System.out.println(this.getP2Cast().getHP());
     	}
     	else{
     		this.getP1Cast().takeDamage(u.getAttack());
+    		//this.getP1Cast().tick();
+    		System.out.println(this.getP1Cast().getHP());
     	}
     }
     

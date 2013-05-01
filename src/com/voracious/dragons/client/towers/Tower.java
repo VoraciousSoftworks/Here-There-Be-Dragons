@@ -75,4 +75,12 @@ public class Tower extends Entity {
 	public void attackUnit(Unit victim){
     	victim.setHP((victim.getHP()) - attack);
     }
+	
+	public void takeDamage(int attack){
+		if(attack<0){
+		}
+		else{
+			this.setHP(this.getHP()-attack);
+		}
+	}
 }
