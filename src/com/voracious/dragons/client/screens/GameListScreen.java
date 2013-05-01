@@ -20,6 +20,7 @@ import com.voracious.dragons.client.graphics.ui.Text;
 import com.voracious.dragons.client.net.ClientConnectionManager;
 import com.voracious.dragons.client.utils.InputHandler;
 import com.voracious.dragons.common.GameInfo;
+import com.voracious.dragons.common.GameState;
 
 public class GameListScreen extends Screen {
     public static final int ID = 4;
@@ -36,6 +37,7 @@ public class GameListScreen extends Screen {
     private int selected;
     private int numToDraw;
     private int boxHeight;
+    private int gameToPlay;
     private Sprite background;
     
     private Button playBtn;
@@ -56,7 +58,8 @@ public class GameListScreen extends Screen {
         playBtn.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                playGame(games.get(selected));
+                gameToPlay = selected;
+                playGame(games.get(selected).getGameId());
                 logger.debug("Playing game: " + games.get(selected).getGameId());
             }
         });
@@ -71,25 +74,14 @@ public class GameListScreen extends Screen {
         });
     }
     
-    public void playGame(GameInfo gi){
+    private void playGame(int gameId){
         ClientConnectionManager ccm = Game.getClientConnectionManager();
-        ccm.sendMessage("PG:" + gi.getGameId() + ":" + ccm.getSessionId());
-        
-        if(gi.getLastMoveTime() == 0){
-            ((PlayScreen) Game.getScreen(PlayScreen.ID)).init(gi.getGameId(), gi.isPlayer1());
-        }else{
-            if(!gi.wasLastMoveByMe()){
-                //TODO: ask for the other guys turn
-            }
-            
-            //TODO: ask for my turn
-        }
-        
-        
+        ccm.sendMessage("PG:" + gameId + ":" + ccm.getSessionId());
     }
     
     public void onGameStateReceived(byte[] gameState){
-        Game.getScreen(PlayScreen.ID);
+        GameInfo game = games.get(gameToPlay);
+        ((PlayScreen) Game.getScreen(PlayScreen.ID)).init(game.getGameId(), game.isPlayer1(), game.canMakeTurn(), new GameState(gameState));
         Game.setCurrentScreen(PlayScreen.ID);
     }
     
@@ -183,7 +175,7 @@ public class GameListScreen extends Screen {
                     }
                 }
             }else if(e.getKeyCode() == KeyEvent.VK_ENTER){
-                playGame(games.get(selected));
+                playGame(games.get(selected).getGameId());
             }   
         }
     }

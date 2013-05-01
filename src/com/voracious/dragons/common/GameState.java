@@ -38,11 +38,15 @@ public class GameState implements Drawable {
         this.getP2Cast().setY(0);
     }
 
+    public GameState(byte[] gameState) {
+        // TODO Auto-generated constructor stub
+    }
+
     @Override
     synchronized
     public void draw(Graphics2D g) {
     	
-    	{//draw player one's castle and health bar. @ 90% rrrrrrrrrg
+    	{//draw player one's castle and health bar.
     		this.getP1Cast().draw(g);
     		int leftStart= (int)(this.getP1Cast().getX());
     		int rightStart=(int)(this.getP1Cast().getX()+(this.getP1Cast().getWidth()*(this.getP1Cast().getHPRatio())));

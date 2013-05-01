@@ -33,6 +33,7 @@ public class PlayScreen extends Screen {
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
     private GameState gamestate;
+    private boolean isMyTurn = false;
     private boolean executingTurn = false;
     private boolean inMenu=false;
     private boolean inPathMode=false;
@@ -52,7 +53,7 @@ public class PlayScreen extends Screen {
     
     @Override
 	public void start(){
-        if(myTurn == null){
+        if(myTurn == null || gamestate == null){
             throw new IllegalArgumentException("Play screen started without choosing a game");
         }
         
@@ -70,10 +71,16 @@ public class PlayScreen extends Screen {
         InputHandler.deregisterButton(KeyEvent.VK_S);
         InputHandler.deregisterButton(KeyEvent.VK_D);
         InputHandler.deregisterScreen(this);
+        
+        myTurn = null;
+        oppTurn = null;
+        gamestate = null;
 	}
 	
-	public void init(int gameId, boolean isPlayer1){
+	public void init(int gameId, boolean isPlayer1, boolean canMakeTurn, GameState s){
 	    myTurn = new Turn(gameId, Game.getClientConnectionManager().getSessionId(), isPlayer1);
+	    isMyTurn = canMakeTurn;
+	    gamestate = s;
 	}
 	
 	public void onTurnReceived(byte[] turn){
