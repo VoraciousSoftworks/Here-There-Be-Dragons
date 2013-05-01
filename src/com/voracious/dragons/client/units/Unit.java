@@ -63,7 +63,7 @@ public abstract class Unit extends Entity {
         }
     }
 
-    public void toNextNode() {
+    private void toNextNode() {
         goingTo++;
         if (path.size() > goingTo) {
             Vec2D.Double next = new Vec2D.Double(path.get(goingTo));
@@ -79,56 +79,23 @@ public abstract class Unit extends Entity {
 
     public abstract byte getUnitId();
 
-    /**
-     * @return the hP
-     */
     public int getHP() {
         return HP;
     }
 
-    /**
-     * @param hP
-     *            the hP to set
-     */
     public void setHP(int hP) {
         HP = hP;
     }
 
-    /**
-     * @return the attack
-     */
     public int getAttack() {
         return attack;
-    }
-
-    /**
-     * @param attack
-     *            the attack to set
-     */
-    public void setAttack(int attack) {
-        this.attack = attack;
     }
 
     public boolean getAtEnd() {
         return atEnd;
     }
 
-    /**
-     * @return the isPlayer1
-     */
     public boolean isPlayer1() {
-        return isPlayer1;
-    }
-
-    /**
-     * @param isPlayer1
-     *            the isPlayer1 to set
-     */
-    public void setPlayer1(boolean isPlayer1) {
-        this.isPlayer1 = isPlayer1;
-    }
-
-    public boolean getISPLAYER1() {
         return isPlayer1;
     }
 }

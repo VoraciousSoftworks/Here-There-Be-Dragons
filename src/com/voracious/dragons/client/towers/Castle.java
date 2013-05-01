@@ -60,15 +60,14 @@ public class Castle extends Entity {
 			System.out.println("PERCENT: "+percent+", levelDamage: "+levelofDamage);
 		}
 	}
-
-	public double getCHP(){
+	public double getHP(){
 		return this.chp;
 	}
-	public void setCHP(double hp){
+	public void setHP(double hp){
 		this.chp=hp;
 	}
 
 	public double getHPRatio(){
-		return this.getCHP()/this.fullhp;
+		return this.getHP()/this.fullhp;
 	}
 }
