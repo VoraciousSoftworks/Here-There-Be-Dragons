@@ -28,7 +28,7 @@ public class DBHandler {
 	private PreparedStatement registerUser;
 	private PreparedStatement numGames,numWins,turnsPerGame,numTuples,times,latestTurnByMeNum,gameList;
 	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame,playersInGame,aveTurn,latestTurn,myGames;
-	private PreparedStatement gameGetter, clientMaxTurnNum, findOpponetPID, oppMaxTurnNum,findMaxGameId;
+	private PreparedStatement gameGetter, clientMaxTurnNum, findOpponetPID, oppMaxTurnNum,findMaxGameId, gameState;
 	
 	public void init() {
 		try {
@@ -194,12 +194,8 @@ public class DBHandler {
             findMaxGameId=conn.prepareStatement(
             		"SELECT MAX(gid) AS answer FROM Game;");
             
-            /* TMP doesn't exist, this crashes the server
-            oppMaxTurnNum=conn.prepareStatement(
-            "SELECT max(tnum) P2TNUM " +
-            "FROM TURN T " +
-            "WHERE T.pid=? AND TMP=? " +
-            "GROUP By tnum ORDER By tnum DESC;");*/
+            
+            gameState = conn.prepareStatement("SELECT gameState FROM Game WHERE gid = ?;");
 		} catch (SQLException e) {
 			logger.error("Error preparing statements", e);
 		}
@@ -576,5 +572,30 @@ public class DBHandler {
 			logger.error(e);
 		}
 		return tmp;
+	}
+	
+	public String getGameState(int gid){
+	    try {
+	        gameState.setInt(1, gid);
+            return gameState.executeQuery().getString("gameState");
+        } catch (SQLException e) {
+            logger.error(e);
+            return null;
+        }
+	}
+	
+	public boolean isInGame(String pid, int gid){
+	    try {
+            playersInGame.setInt(1, gid);
+            ResultSet rs = playersInGame.executeQuery();
+            if(rs.next()){
+                return pid.equals(rs.getString("pid1")) || pid.equals(rs.getShort("pid2"));
+            }else{
+                return false;
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+            return false;
+        }
 	}
 }
