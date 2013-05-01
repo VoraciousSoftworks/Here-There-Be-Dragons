@@ -130,7 +130,7 @@ public class GameState implements Drawable {
             t.tick();
             this.attackUnit(t);
         }
-        
+           
         for (Unit u : units){
             u.tick();
             if(u.getAtEnd()){
@@ -190,11 +190,12 @@ public class GameState implements Drawable {
     
     private void attackCastle(Unit u){
     	if(u.isPlayer1()){
-    		this.getP2Cast().setHP(this.getP2Cast().getHP()-u.getAttack());
+    		this.getP2Cast().takeDamage(u.getAttack()+30);
+    		this.getP2Cast().tick();
     		System.out.println(this.getP2Cast().getHP());
     	}
     	else{
-    		this.getP1Cast().setHP(this.getP1Cast().getHP()-u.getAttack());
+    		this.getP1Cast().takeDamage(u.getAttack());
     	}
     }
     
