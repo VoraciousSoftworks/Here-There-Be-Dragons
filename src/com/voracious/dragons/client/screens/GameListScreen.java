@@ -42,6 +42,7 @@ public class GameListScreen extends Screen {
     
     private Button playBtn;
     private Button createBtn;
+    private Button returnButton;
     
     public GameListScreen() {
         super(Game.WIDTH, Game.HEIGHT);
@@ -72,6 +73,14 @@ public class GameListScreen extends Screen {
                 logger.debug("Creating new game");
             }
         });
+        
+        returnButton=new Button("Back", borderPadding*3+playBtn.getWidth()+createBtn.getWidth(), boxHeight + borderPadding*2);
+		returnButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Game.setCurrentScreen(MainMenuScreen.ID);
+			}
+		});
     }
     
     private void playGame(int gameId){
@@ -125,6 +134,7 @@ public class GameListScreen extends Screen {
         
         playBtn.draw(g);
         createBtn.draw(g);
+        returnButton.draw(g);
     }
     
     public void onListRecieved(List<GameInfo> games){
@@ -184,5 +194,6 @@ public class GameListScreen extends Screen {
     public void mouseClicked(MouseEvent e) {
         playBtn.mouseClicked(e.getX(), e.getY());
         createBtn.mouseClicked(e.getX(), e.getY());
+        returnButton.mouseClicked(e.getX(), e.getY());
     }
 }
