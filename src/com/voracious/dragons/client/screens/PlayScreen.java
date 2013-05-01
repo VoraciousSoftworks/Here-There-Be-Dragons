@@ -158,9 +158,14 @@ public class PlayScreen extends Screen {
     		t.draw(g);
     	}
     }
-    
 
-    @Override
+	@Override
+	public void translate(Vec2D t) {
+		// TODO Auto-generated method stub
+		super.translate(t);
+	}
+
+	@Override
     public void tick() {
         if(InputHandler.isDown(KeyEvent.VK_W)){
             this.translate(0, -3);

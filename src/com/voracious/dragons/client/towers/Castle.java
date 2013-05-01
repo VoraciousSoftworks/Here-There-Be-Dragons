@@ -25,7 +25,6 @@ public class Castle extends Entity {
 	public Castle(boolean isRED) {
 		super(isRED ? redCast : blueCast, numFrames, width, height);
 		if(isRED){
-			isRed=isRED;
 			filename=redCast;
 		}
 		else{
