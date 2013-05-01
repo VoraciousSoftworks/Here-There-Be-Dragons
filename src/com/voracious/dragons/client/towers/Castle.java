@@ -16,6 +16,7 @@ public class Castle extends Entity {
 	public static int[] numFrames = {4};
 	public static int width = 300;
 	public static int height = 300;
+    private int levelofDamage=0;
 	private double chp=100;
 	private double fullhp=100;
 	private double def=5;
@@ -31,8 +32,7 @@ public class Castle extends Entity {
 			filename=blueCast;
 		}
 	}
-	
-	private int levelofDamage=0;
+
 	//used to prevent unneeded calls of next frame. 
 	public void takeDamage(double attk){
 		//takes damage
@@ -56,9 +56,18 @@ public class Castle extends Entity {
 		}
 	}
 	
+	public double getMaxHP(){
+	    return fullhp;
+	}
+	
+	public void setMaxHP(double maxHP){
+	    this.fullhp = maxHP;
+	}
+	
 	public double getHP(){
 		return this.chp;
 	}
+	
 	public void setHP(double hp){
 		this.chp=hp;
 	}

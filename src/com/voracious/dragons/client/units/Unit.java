@@ -1,5 +1,6 @@
 package com.voracious.dragons.client.units;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.voracious.dragons.client.graphics.Entity;
@@ -25,6 +26,45 @@ public abstract class Unit extends Entity {
         this.isPlayer1 = whos;
 
         this.toNextNode();
+    }
+    
+    public static Unit makeUnit(String unitStr){
+        String[] us = unitStr.split("|");
+        Unit result = null;
+        
+        String[] nodes = us[8].split("+");
+        List<Vec2D.Short> path = new ArrayList<>(nodes.length); 
+        
+        switch(Integer.parseInt(us[0])){
+        case Dragon.ID:
+            result = new Dragon(path, Integer.parseInt(us[1]) == 1);
+            break;
+        }
+        
+        result.setHP(Integer.parseInt(us[2]));
+        result.setX(Double.parseDouble(us[3]));
+        result.setY(Double.parseDouble(us[4]));
+        result.setVelocity(new Vec2D.Double(Double.parseDouble(us[5]), Double.parseDouble(us[6])));
+        result.goingTo = Short.parseShort(us[7]);
+        
+        return result;
+    }
+    
+    public String toString(){
+        String result = this.getUnitId() + "|";
+        result += (isPlayer1 ? 1 : 0) + "|";
+        result += this.getHP();
+        result += this.getX() + "|";
+        result += this.getY() + "|";
+        Vec2D.Double v = (Vec2D.Double) this.getVelocity();
+        result += v.x + "|" + v.y + "|";
+        result += this.goingTo + "|";
+        
+        for(Vec2D.Short node : path){
+            result += node.x + "+" + node.y + "+";
+        }
+        
+        return result;
     }
 
     @Override

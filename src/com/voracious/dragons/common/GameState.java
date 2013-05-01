@@ -14,6 +14,9 @@ import com.voracious.dragons.client.units.Unit;
 
 public class GameState implements Drawable {
 
+    public static final Vec2D.Short p1CastLoc = new Vec2D.Short((short)0, (short)(PlayScreen.HEIGHT - Castle.height));
+    public static final Vec2D.Short p2CastLoc = new Vec2D.Short((short)(PlayScreen.WIDTH - Castle.width), (short)0);
+    
     private List<Tower> towers;
     private List<Unit> units;
     private Castle p1Cast,p2Cast;
@@ -30,16 +33,57 @@ public class GameState implements Drawable {
         toRemove = new ArrayList<>();
         
         p1Cast = new Castle(true);
-        this.getP1Cast().setX(0);
-        this.getP1Cast().setY(PlayScreen.HEIGHT - Castle.height);
+        p1Cast.setPos(p1CastLoc);
         
         p2Cast = new Castle(false);
-        this.getP2Cast().setX(PlayScreen.WIDTH - Castle.width);
-        this.getP2Cast().setY(0);
+        p2Cast.setPos(p2CastLoc);
     }
 
     public GameState(String gameState) {
-        // TODO Auto-generated constructor stub
+        if(!gameState.startsWith("GS:")) throw new IllegalArgumentException("Invalid gamestate string");
+        String[] gs = gameState.substring(3).split(":");
+        seed = Long.parseLong(gs[0]);
+        
+        p1Cast = new Castle(true);
+        p1Cast.setPos(p1CastLoc);
+        p1Cast.setHP(Double.parseDouble(gs[1]));
+        p1Cast.setMaxHP(Double.parseDouble(gs[2]));
+        
+        p2Cast = new Castle(false);
+        p2Cast.setPos(p2CastLoc);
+        p1Cast.setHP(Double.parseDouble(gs[3]));
+        p1Cast.setMaxHP(Double.parseDouble(gs[4]));
+        
+        String[] unitStrs = gs[5].split(";");
+        units = new ArrayList<>(unitStrs.length);
+        for(int i=1; i<unitStrs.length; i++){
+            units.add(Unit.makeUnit(unitStrs[i]));
+        }
+        
+        String[] towerStrs = gs[6].split(";");
+        towers = new ArrayList<>(towerStrs.length);
+        for(int i=1; i<towerStrs.length; i++){
+            towers.add(Tower.makeTower(towerStrs[i]));
+        }
+    }
+    
+    public String toString(){
+        String result = "GS:";
+        result += seed + ":";
+        result += p1Cast.getHP() + ":" + p1Cast.getMaxHP() + ":";
+        result += p2Cast.getHP() + ":" + p2Cast.getMaxHP() + ":";
+        
+        result += "U";
+        for(Unit u : units){
+            result += ";" + u.toString() + ";";
+        }
+        result += ":T";
+        
+        for(Tower t : towers){
+            result += ";" + t.toString() + ";";
+        }
+        
+        return result;
     }
 
     @Override

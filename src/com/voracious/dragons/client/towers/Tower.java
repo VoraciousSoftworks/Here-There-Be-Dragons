@@ -6,6 +6,7 @@ import com.voracious.dragons.client.units.Unit;
 //TODO make abstract again
 public class Tower extends Entity {
 	
+    private static final int ID = 0;
 	private static final String filename = "/tower.png";
 	private static final int[] numFrames = {1};
 	private static final int width = 16;
@@ -19,6 +20,32 @@ public class Tower extends Entity {
         super(filename, numFrames, width, height);
         this.isPlayer1 = isPlayer1;
     }
+
+    public static Tower makeTower(String towerStr){
+        String[] ts = towerStr.split("|");
+        Tower result = null;
+        switch(Integer.parseInt(ts[0])){
+        case Tower.ID:
+            result = new Tower(Integer.parseInt(ts[1]) == 1);
+            break;
+        }
+        
+        result.setX(Double.parseDouble(ts[2]));
+        result.setY(Double.parseDouble(ts[3]));
+        result.setHP(Integer.parseInt(ts[4]));
+        
+        return result;
+    }
+    
+    public String toString(){
+        String result = this.getTowerId() + "|";
+        result += (isPlayer1 ? 1 : 0) + "|";
+        result += this.getX() + "|";
+        result += this.getY() + "|";
+        result += this.getHP();
+        
+        return result;
+    }
     
     public boolean isPlayer1(){
         return isPlayer1;
@@ -28,7 +55,7 @@ public class Tower extends Entity {
      * @return the id for this tower type, it should be unique
      */
     //TODO make abstract again
-    public byte getTowerId(){return 1;};
+    public byte getTowerId(){return ID;};
     
     /**
 	 * @return the range
