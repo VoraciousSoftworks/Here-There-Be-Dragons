@@ -19,7 +19,7 @@ public class ServerPlayGamePacket implements Packet {
         
         int gid = Integer.parseInt(msg[0]);
         
-        if(Main.getDB().isInGame(scm.getUserByID(msg[2]).getUsername(), gid)){
+        if(Main.getDB().isInGame(scm.getUserByID(msg[1]).getUsername(), gid)){
             scm.sendMessage(message.getSender(), "PGS:" + Main.getDB().getGameState(gid));
         }else{
             scm.sendMessage(message.getSender(), "PGE:Error, you are not in that game");

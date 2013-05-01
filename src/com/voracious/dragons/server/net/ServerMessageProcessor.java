@@ -27,6 +27,8 @@ public class ServerMessageProcessor extends MessageProcessor {
 		stringPackets.add(new RegisterPacket());
 		stringPackets.add(new StatisticsPacket());
 		stringPackets.add(new GameListPacket());
+		stringPackets.add(new ServerChallengePacket());
+		stringPackets.add(new ServerPlayGamePacket());
 		
 		binaryPackets = new ArrayList<>(1);
 		binaryPackets.add(new ServerTurnPacket());
