@@ -296,7 +296,11 @@ public class DBHandler {
         			if((p1id.equals(PID) && p1turnNum > p2turnNum) || (p2id.equals(PID) && p2turnNum > p1turnNum))
         				return false;
     			}else{
-    			    return false;
+    			    if(!p1id.equals(PID)){
+    			        turnNum = 1;
+    			    }else{
+    			        return false;
+    			    }
     			}
 			}
 			
