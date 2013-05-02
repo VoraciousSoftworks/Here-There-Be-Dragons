@@ -1,4 +1,4 @@
-package com.voracious.dragons.client.units;
+package com.voracious.dragons.common.units;
 
 import java.util.List;
 

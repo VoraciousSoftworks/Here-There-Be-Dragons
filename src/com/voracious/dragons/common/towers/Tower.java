@@ -1,7 +1,8 @@
-package com.voracious.dragons.client.towers;
+package com.voracious.dragons.common.towers;
 
 import com.voracious.dragons.client.graphics.Entity;
-import com.voracious.dragons.client.units.Unit;
+import com.voracious.dragons.common.Vec2D;
+import com.voracious.dragons.common.units.Unit;
 
 //TODO make abstract again
 public class Tower extends Entity {
@@ -19,6 +20,19 @@ public class Tower extends Entity {
     public Tower(boolean isPlayer1) {
         super(filename, numFrames, width, height);
         this.isPlayer1 = isPlayer1;
+    }
+    
+    public static Tower makeTower(int id, Vec2D.Short pos, boolean whos){
+        Tower result = null;
+        
+        switch(id){
+        case Tower.ID:
+            result = new Tower(whos);
+            result.setPos(pos);
+            break;
+        }
+        
+        return result;
     }
 
     public static Tower makeTower(String towerStr){

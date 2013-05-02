@@ -2,11 +2,8 @@ package com.voracious.dragons.client.screens;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,15 +12,14 @@ import org.apache.log4j.Logger;
 import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Screen;
 import com.voracious.dragons.client.graphics.Sprite;
-import com.voracious.dragons.client.graphics.ui.Button;
 import com.voracious.dragons.client.graphics.ui.Text;
 import com.voracious.dragons.client.graphics.ui.UnitMenu;
-import com.voracious.dragons.client.towers.Tower;
-import com.voracious.dragons.client.units.Dragon;
 import com.voracious.dragons.client.utils.InputHandler;
 import com.voracious.dragons.common.GameState;
 import com.voracious.dragons.common.Turn;
 import com.voracious.dragons.common.Vec2D;
+import com.voracious.dragons.common.towers.Tower;
+import com.voracious.dragons.common.units.Dragon;
 
 public class PlayScreen extends Screen {
 
@@ -244,29 +240,16 @@ public class PlayScreen extends Screen {
 	}
     
     public void playTurn(){
-        /*List<List<Vec2D.Short>> paths = myTurn.getPaths();
-        List<List<Vec2D.Short>> towers = myTurn.getTowers();
-        List<Short> units = myTurn.getUnits();
+        byte[] tbytes = myTurn.toBytes().array();
+        byte[] message = new byte[tbytes.length + 1];
+        message[0] = 7;
+        System.arraycopy(tbytes, 0, message, 1, tbytes.length);
+        Game.getClientConnectionManager().sendMessage(message);
         
-        Random rand = new Random();
-        for(Short s : units){
-            //TODO: actually find the unit with the s and make a new one of that instead of dragon
-            gamestate.addUnit(new Dragon(paths.get(rand.nextInt(paths.size())),this.myTurn.isPlayer1()));
-        }
-        
-        for(List<Vec2D.Short> type : towers){
-            for(Vec2D.Short pos : type){
-                //TODO use the index of type for the tower type to make real towers of that type not this dummy thing
-                Tower temp = new Tower(true);
-                temp.setPos(pos);
-                gamestate.addTower(temp);
-            }
-        }*/
-        
+        gamestate.simulate(myTurn, oppTurn);
         setExecutingTurn(true);
     }
     
-
 	@Override
 	public void keyReleased(KeyEvent e) {
 	}

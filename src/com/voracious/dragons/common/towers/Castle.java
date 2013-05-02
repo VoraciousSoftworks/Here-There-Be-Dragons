@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.voracious.dragons.client.towers;
+package com.voracious.dragons.common.towers;
 
 import com.voracious.dragons.client.graphics.Entity;
 

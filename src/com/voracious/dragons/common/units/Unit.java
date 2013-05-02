@@ -1,4 +1,4 @@
-package com.voracious.dragons.client.units;
+package com.voracious.dragons.common.units;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,18 @@ public abstract class Unit extends Entity {
         this.isPlayer1 = whos;
 
         this.toNextNode();
+    }
+    
+    public static Unit makeUnit(int id, List<Vec2D.Short> path, boolean whos){
+        Unit result = null;
+        
+        switch(id){
+        case Dragon.ID:
+            result = new Dragon(path, whos);
+            break;
+        }
+        
+        return result;
     }
     
     public static Unit makeUnit(String unitStr){
