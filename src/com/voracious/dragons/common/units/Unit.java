@@ -40,6 +40,12 @@ public abstract class Unit extends Entity {
         case Dragon.ID:
             result = new Dragon(path, whos);
             break;
+        case Swordsman.ID:
+        	result = new Swordsman(path,whos);
+        	break;
+        case BatteringRam.ID:
+        	result = new BatteringRam(path,whos);
+        	break;
         }
         
         return result;
