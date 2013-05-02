@@ -9,6 +9,7 @@ import com.voracious.dragons.client.Game;
 import com.voracious.dragons.client.graphics.Drawable;
 import com.voracious.dragons.client.graphics.Sprite;
 import com.voracious.dragons.client.screens.PlayScreen;
+import com.voracious.dragons.common.units.BatteringRam;
 
 public class UnitMenu implements Drawable{
 	
@@ -34,13 +35,16 @@ public class UnitMenu implements Drawable{
             @Override
             public void actionPerformed(ActionEvent e) {
                 UnitMenu.incrementBaseNum();
-                theScreen.createUnit()
+                theScreen.addUnit(BatteringRam.ID, (short)1);
             }
 		});
 		baseUnitDecr.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                UnitMenu.decrementBaseNum();
+            	if(getBaseNum() > 0){
+            		UnitMenu.decrementBaseNum();
+            		theScreen.addUnit(BatteringRam.ID, (short)-1);
+            	}   
             }
 		});
 		
@@ -80,6 +84,10 @@ public class UnitMenu implements Drawable{
 	public void mouseClicked(int x, int y){
 		baseUnitIncr.mouseClicked(x, y);
 		baseUnitDecr.mouseClicked(x, y);
+	}
+	
+	public int getBaseNum(){
+		return numBaseUnit;
 	}
 
 }
