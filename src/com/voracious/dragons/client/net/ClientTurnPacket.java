@@ -10,13 +10,15 @@ public class ClientTurnPacket implements Packet{
 
 	@Override
 	public boolean wasCalled(Message message) {
-		String msg = message.toString();
-		return msg.getBytes()[0]==7;
+		return message.getBytes()[0]==7;
 	}
 
 	@Override
 	public void process(Message message, ConnectionManager cm) {
-        ((PlayScreen) Game.getScreen(PlayScreen.ID)).onTurnReceived(message.getBytes());
+	    byte[] msg = message.getBytes();
+	    byte[] turndata = new byte[msg.length-1];
+	    System.arraycopy(msg, 1, turndata, 0, turndata.length);
+        ((PlayScreen) Game.getScreen(PlayScreen.ID)).onTurnReceived(turndata);
 	}
 
 	@Override

@@ -32,6 +32,7 @@ public class GameState implements Drawable {
         towers = new ArrayList<>();
         units = new ArrayList<>();
         toRemove = new ArrayList<>();
+        tRemove = new ArrayList<>();
         
         p1Cast = new Castle(true);
         p1Cast.setPos(p1CastLoc);
@@ -66,6 +67,9 @@ public class GameState implements Drawable {
         for(int i=1; i<towerStrs.length; i++){
             towers.add(Tower.makeTower(towerStrs[i]));
         }
+        
+        toRemove = new ArrayList<>();
+        tRemove = new ArrayList<>();
     }
     
     public String toString(){

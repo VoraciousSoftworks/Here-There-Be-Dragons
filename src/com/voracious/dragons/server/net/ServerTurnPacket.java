@@ -31,7 +31,7 @@ public class ServerTurnPacket implements Packet{
 		    String otherPid = Main.getDB().getOtherPid(PID, newTurn.getGameId());
 		    User other = scm.getUserByName(otherPid);
     		if(other != null && other.isPlaying() && other.getCurrentGame() == newTurn.getGameId()){
-    		    newTurn.setSessionId("");
+    		    newTurn.setSessionId("//////////////////////////////////////////8=");
     		    byte[] safeTurn = newTurn.toBytes().array();
     		    byte[] toSend = new byte[safeTurn.length + 1];
     		    toSend[0] = 7;
@@ -40,11 +40,14 @@ public class ServerTurnPacket implements Packet{
     		}
     		
     		Turn othersTurn = Main.getDB().getLatestTurn(newTurn.getGameId(), otherPid);
-    		byte[] safeTurn = othersTurn.toBytes().array();
-            byte[] toSend = new byte[safeTurn.length + 1];
-            toSend[0] = 7;
-            System.arraycopy(safeTurn, 0, toSend, 1, safeTurn.length);
-    		scm.sendMessage(message.getSender(), toSend);
+    		if(othersTurn != null){
+        		othersTurn.setSessionId("//////////////////////////////////////////8=");
+        		byte[] safeTurn = othersTurn.toBytes().array();
+                byte[] toSend = new byte[safeTurn.length + 1];
+                toSend[0] = 7;
+                System.arraycopy(safeTurn, 0, toSend, 1, safeTurn.length);
+        		scm.sendMessage(message.getSender(), toSend);
+    		}
 		}
 	}
 

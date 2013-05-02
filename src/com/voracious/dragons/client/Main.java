@@ -25,6 +25,11 @@ public class Main extends Applet implements WindowListener {
     private static Game game;
 
     public static void main(String[] args) {
+        byte[] bytes = new byte[32];
+        for(int i=0;i<32;i++){
+            bytes[i] = -1;
+        }
+        
         Frame window = new Frame(Game.NAME);
 
         initLog4J();

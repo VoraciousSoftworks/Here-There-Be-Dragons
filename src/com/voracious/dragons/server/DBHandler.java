@@ -255,21 +255,21 @@ public class DBHandler {
     			p1turnNum = ret.getInt("answer");
     			
     			if(p1id.equals(PID))
-    			    turnNum = p1turnNum+1;
+    			    turnNum = ++p1turnNum;
     			
     			if(ret.next()){
         			String p2id = ret.getString("id");
         			p2turnNum = ret.getInt("answer");
         			
         			if(p2id.equals(PID))
-                        turnNum = p2turnNum+1;
+                        turnNum = ++p2turnNum;
         			
-        			if((p1id.equals(PID) && p1turnNum > p2turnNum) || (p2id.equals(PID) && p2turnNum > p1turnNum))
+        			if((p1id.equals(PID) && p1turnNum-1 > p2turnNum) || (p2id.equals(PID) && p2turnNum-1 > p1turnNum))
         				return false;
         			
     			}else{
     			    if(!p1id.equals(PID)){
-    			        turnNum = 1;
+    			        turnNum = p2turnNum = 1;
     			    }else{
     			        return false;
     			    }
@@ -281,7 +281,7 @@ public class DBHandler {
 			storeTurn.setString(4, TURNSTRING);
 			storeTurn.executeUpdate();
 
-			return p1turnNum == p2turnNum;
+			return p1turnNum == p2turnNum && p1turnNum != 0 && p2turnNum != 0;
 		}
 		catch(SQLException e){
 			logger.error("Could not add to the turn table", e);
@@ -543,7 +543,7 @@ public class DBHandler {
         try {
             latestTurnData.setInt(1, gid);
             latestTurnData.setString(2, pid);
-            ResultSet rs = latestTurn.executeQuery();
+            ResultSet rs = latestTurnData.executeQuery();
             if(rs.next())
                 return new Turn(rs.getString("turnString"));
         } catch (SQLException e) {

@@ -29,7 +29,6 @@ public class Turn {
     private Map<Byte, List<Vec2D.Short>> towersCreated;
     private Map<Byte, List<Vec2D.Short>> nodes;
     
-    
     public Turn(int gameId, String sessionId, boolean isP1) {
     	this.sessionId = sessionId;
     	this.gameId = gameId;
@@ -137,7 +136,7 @@ public class Turn {
     /*
      * byte versionCode
      * int  gameId
-     * long sessId
+     * 4*long sessId
      * bool isPlayer1
      * 
      * byte numberOfUnits
@@ -166,7 +165,8 @@ public class Turn {
      */
     
     public ByteBuffer toBytes() {
-        int bufferSize = Byte.SIZE + Integer.SIZE + Long.SIZE + Byte.SIZE; //size of header info (everything through numberOfPathNodes), the bool has to be whole byte
+        int bufferSize = Byte.SIZE/8 + Integer.SIZE/8 + sessionLength + Byte.SIZE/8; //size of header info (everything through numberOfPathNodes), the bool has to be whole byte
+        bufferSize += 3;
         bufferSize += unitsCreated.size() * (Byte.SIZE/8 + Short.SIZE/8); //Bytes from the unit data
 
         byte numberOfTowers = 0;
@@ -188,7 +188,7 @@ public class Turn {
                 numberOfNodes += it.next().size();
             }
             
-            bufferSize += numberOfNodes * (2*(Byte.SIZE/8) + 2*(Short.SIZE/8)); //Bytes form the node data
+            bufferSize += numberOfNodes * ((Byte.SIZE/8) + 2*(Short.SIZE/8)); //Bytes form the node data
         }
         
         ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
