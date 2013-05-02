@@ -87,6 +87,16 @@ public class ServerConnectionManager extends ConnectionManager {
 		}
 	}
 	
+	public User getUserByName(String otherPid) {
+	    for(User u : users.values()){
+            if(u.getUsername().equals(otherPid)){
+                return u;
+            }
+        }
+	    
+	    return null;
+	}
+	
 	public User getUserByID(String sessionId) {
 	    for(User u : users.values()){
 	        if(u.getSessionId().equals(sessionId)){

@@ -4,6 +4,7 @@ import com.voracious.dragons.common.ConnectionManager;
 import com.voracious.dragons.common.Message;
 import com.voracious.dragons.common.Packet;
 import com.voracious.dragons.server.Main;
+import com.voracious.dragons.server.User;
 
 public class ServerPlayGamePacket implements Packet {
 
@@ -19,7 +20,10 @@ public class ServerPlayGamePacket implements Packet {
         
         int gid = Integer.parseInt(msg[0]);
         
-        if(Main.getDB().isInGame(scm.getUserByID(msg[1]).getUsername(), gid)){
+        User user = scm.getUserByID(msg[1]);
+        if(Main.getDB().isInGame(user.getUsername(), gid)){
+            user.setCurrentGame(gid);
+            user.setPlaying(true);
             scm.sendMessage(message.getSender(), "PGS:" + Main.getDB().getGameState(gid));
         }else{
             scm.sendMessage(message.getSender(), "PGE:Error, you are not in that game");

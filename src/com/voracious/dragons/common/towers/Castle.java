@@ -20,7 +20,6 @@ public class Castle extends Entity {
 	private double chp=100;
 	private double fullhp=100;
 	private double def=5;
-	private boolean isRed=false;//true==red, false==blue
 	
 	public Castle(boolean isRED) {
 		super(isRED ? redCast : blueCast, numFrames, width, height);

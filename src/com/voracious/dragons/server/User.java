@@ -7,6 +7,7 @@ public class User {
 	
 	private boolean isAuthenticated;
 	private boolean isPlaying;
+	private int currentGame;
 	private boolean isSpectating;
 	
 	private String username;
@@ -17,6 +18,7 @@ public class User {
 		isAuthenticated = false;
 		isPlaying = false;
 		isSpectating = false;
+		currentGame = 0;
 	}
 
 	public boolean isAuthenticated() {
@@ -33,6 +35,14 @@ public class User {
 
 	public void setPlaying(boolean isPlaying) {
 		this.isPlaying = isPlaying;
+	}
+	
+	public int getCurrentGame() {
+	    return currentGame;
+	}
+	
+	public void setCurrentGame(int gid) {
+	    this.currentGame = gid;
 	}
 
 	public boolean isSpectating() {
