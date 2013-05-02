@@ -150,7 +150,7 @@ public class DBHandler {
                     "WHERE gid IN ( " +
                     "    SELECT gid " +
                     "    FROM Game " +
-                    "    WHERE pid1 = ? OR pid2 = ?) " +
+                    "    WHERE pid1=? OR pid2=?) " +
                     "GROUP BY gid " +
                     "HAVING timeStamp = Max(timeStamp);");
             
@@ -483,11 +483,14 @@ public class DBHandler {
             gameList.setString(2, pid);
             ResultSet rs = gameList.executeQuery();
             
+	        //ResultSet rs = conn.createStatement().executeQuery("SELECT gid, timeStamp, tnum, pid FROM Turn WHERE gid = 1 GROUP BY gid;");
+	        
             while(rs.next()){
                 int gid = rs.getInt("gid");
+                int tnum = rs.getInt("tnum");
                 Timestamp ts = rs.getTimestamp("timeStamp");
                 String tpid = rs.getString("pid");
-                int tnum = rs.getInt("tnum");
+                
                 String otherPlayer = "";
                 
                 if(!pid.equals(tpid)){

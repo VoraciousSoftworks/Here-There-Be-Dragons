@@ -161,7 +161,7 @@ public class GameListScreen extends Screen {
             
             for(GameInfo g : games){
                 gameTexts.add(new Text(g.getOtherPlayer() + " id: " + g.getGameId()));
-                gameTexts.add(new Text((g.canMakeTurn() ? "My turn ": "Their turn " ) + (g.wasLastMoveByMe() ? "me" : g.getOtherPlayer()) + " " + timestampToString(g.getLastMoveTime())));
+                gameTexts.add(new Text(""));//(g.canMakeTurn() ? "My turn ": "Their turn " ) + (g.wasLastMoveByMe() ? "me" : g.getOtherPlayer()) + " " + timestampToString(g.getLastMoveTime())));
             }
             
             this.areTextsSet = true;
