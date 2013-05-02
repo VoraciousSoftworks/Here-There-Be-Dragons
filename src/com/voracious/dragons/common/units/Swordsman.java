@@ -4,16 +4,18 @@ import java.util.List;
 
 import com.voracious.dragons.common.Vec2D;
 
-public class Dragon extends Unit {
+public class Swordsman extends Unit {
 	
-    public static final byte ID = 1;
-	private static final String filename="/circleUnit.png";
+	public static final byte ID = 2;
+	private static final String filename="/squareUnit.png";
 	private static final int [] numFrames={1};
 	private static final int width=32;
 	private static final int height=32;
-
-	public Dragon(List<Vec2D.Short> path,boolean whos) {
-		super(filename, numFrames, width, height, path, whos,250,25,2.0);
+	
+	
+	public Swordsman(List<Vec2D.Short> path, boolean whos) {
+		super(filename, numFrames, width, height, path, whos, 100, 10, 5.0);
+		
 	}
 
 	@Override

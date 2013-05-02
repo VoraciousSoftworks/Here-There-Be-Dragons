@@ -8,21 +8,26 @@ import com.voracious.dragons.common.Vec2D;
 
 public abstract class Unit extends Entity {
 
-    public static double default_velocity = 3.0;
+    public  double speed;
     private List<Vec2D.Short> path;
     private short goingTo;
     private boolean atEnd = false;
-    private int HP = 100;
-    private int attack = 5;
+    private int HP;
+    private int attack;
     private boolean isPlayer1;
 
-    public Unit(String filename, int[] numFrames, int width, int height, List<Vec2D.Short> path, boolean whos) {
+    public Unit(String filename, int[] numFrames, int width, int height, List<Vec2D.Short> path, boolean whos,int hp, int attk,double spd) {
         super(filename, numFrames, width, height);
         this.path = path;
         this.goingTo = 0;
         Vec2D.Short init = path.get(0);
         this.setPos(init);
-
+        
+        speed=spd;
+        
+        this.HP=hp;
+        this.attack=attk;
+        
         this.isPlayer1 = whos;
 
         this.toNextNode();
@@ -35,6 +40,12 @@ public abstract class Unit extends Entity {
         case Dragon.ID:
             result = new Dragon(path, whos);
             break;
+        case Swordsman.ID:
+        	result = new Swordsman(path,whos);
+        	break;
+        case BatteringRam.ID:
+        	result = new BatteringRam(path,whos);
+        	break;
         }
         
         return result;
@@ -121,7 +132,7 @@ public abstract class Unit extends Entity {
             Vec2D.Double next = new Vec2D.Double(path.get(goingTo));
             next.sub(new Vec2D.Double(getX(), getY()));
             next.div(Math.sqrt(next.dot(next)));
-            next.mult(default_velocity);
+            next.mult(this.speed);
             this.setVelocity(next);
         } else {
             atEnd = true;
