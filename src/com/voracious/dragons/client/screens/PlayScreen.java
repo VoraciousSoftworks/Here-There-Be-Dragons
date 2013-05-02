@@ -161,22 +161,39 @@ public class PlayScreen extends Screen {
 
 	@Override
 	public void translate(Vec2D t) {
-		// TODO Auto-generated method stub
 		super.translate(t);
+		if(this.getOffsetx()<0){
+			this.setOffsetx(0);
+		}
+		else if(this.getOffsetx()>WIDTH-Game.WIDTH){
+			this.setOffsetx(WIDTH-Game.WIDTH);
+		}
+		
+		if(this.getOffsety()<-30){
+			this.setOffsety(-30);
+		}
+		else if(this.getOffsety()>HEIGHT-Game.HEIGHT+30){
+			this.setOffsety(HEIGHT-Game.HEIGHT+30);			
+		}
 	}
 
 	@Override
     public void tick() {
+		Vec2D.Short s;
         if(InputHandler.isDown(KeyEvent.VK_W)){
-            this.translate(0, -3);
+        	s=new Vec2D.Short((short)0,(short) -3);
+            this.translate(s);
         }else if(InputHandler.isDown(KeyEvent.VK_S)){
-            this.translate(0, 3);
+        	s=new Vec2D.Short((short)0,(short) 3);
+            this.translate(s);
         }
         
         if(InputHandler.isDown(KeyEvent.VK_A)){
-            this.translate(-3, 0);
+        	s=new Vec2D.Short((short)-3,(short) 0);
+            this.translate(s);
         }else if(InputHandler.isDown(KeyEvent.VK_D)){
-            this.translate(3, 0);
+        	s=new Vec2D.Short((short)3,(short) 0);
+            this.translate(s);
         }
         
         if(isExecutingTurn()){
