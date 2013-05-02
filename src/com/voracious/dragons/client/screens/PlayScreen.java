@@ -18,7 +18,6 @@ import com.voracious.dragons.client.utils.InputHandler;
 import com.voracious.dragons.common.GameState;
 import com.voracious.dragons.common.Turn;
 import com.voracious.dragons.common.Vec2D;
-import com.voracious.dragons.common.towers.Tower;
 import com.voracious.dragons.common.units.Dragon;
 
 public class PlayScreen extends Screen {
@@ -87,12 +86,9 @@ public class PlayScreen extends Screen {
 	}
 	
 	public void onTurnReceived(byte[] turn){
-	    Turn temp = new Turn(turn);
-	    if(temp.isPlayer1()){
-	        myTurn = temp;
-	    }else{
-	        oppTurn = temp;
-	    }
+	    oppTurn = new Turn(turn);
+	    gamestate.simulate(myTurn, oppTurn);
+        setExecutingTurn(true);
 	}
 
     @Override
@@ -245,9 +241,6 @@ public class PlayScreen extends Screen {
         message[0] = 7;
         System.arraycopy(tbytes, 0, message, 1, tbytes.length);
         Game.getClientConnectionManager().sendMessage(message);
-        
-        gamestate.simulate(myTurn, oppTurn);
-        setExecutingTurn(true);
     }
     
 	@Override

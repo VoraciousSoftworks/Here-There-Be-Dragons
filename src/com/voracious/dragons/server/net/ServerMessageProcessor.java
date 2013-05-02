@@ -22,7 +22,7 @@ public class ServerMessageProcessor extends MessageProcessor {
 		super(messageQueue);
 		this.scm = scm;
 		
-		stringPackets = new ArrayList<>(4);
+		stringPackets = new ArrayList<>(6);
 		stringPackets.add(new LoginPacket());
 		stringPackets.add(new RegisterPacket());
 		stringPackets.add(new StatisticsPacket());

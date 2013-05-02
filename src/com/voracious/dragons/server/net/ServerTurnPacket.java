@@ -15,7 +15,10 @@ public class ServerTurnPacket implements Packet{
 	@Override
 	public void process(Message message, ConnectionManager cm) {
 		ServerConnectionManager scm = (ServerConnectionManager) cm;
-		Turn newTurn = new Turn(message.getBytes());
+		byte[] mbytes = message.getBytes();
+		byte[] turn = new byte[mbytes.length-1];
+		System.arraycopy(mbytes, 1, turn, 0, turn.length);
+		Turn newTurn = new Turn(turn);
 		String PID = scm.getUserByID(newTurn.getSessionId()).getUsername();
 		Main.getDB().insertTurn(newTurn.getGameId(), PID, newTurn.toString());
 	}
