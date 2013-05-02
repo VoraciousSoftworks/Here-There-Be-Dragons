@@ -101,6 +101,7 @@ public class Text implements Drawable {
 	}
 
 	public void setColor(Color color) {
+		this.needsRefresh=true;
 		this.color = color;
 	}
 	
