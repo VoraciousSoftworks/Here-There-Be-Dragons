@@ -51,8 +51,7 @@ public abstract class Screen implements Drawable {
      * @param t vector to move along
      */
     public void translate(Vec2D t) {
-        offsetx += t.x;
-        offsety += t.y;
+        translate((int)t.x,(int)t.y);
     }
 
     /**

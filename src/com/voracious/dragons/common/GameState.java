@@ -8,9 +8,9 @@ import java.util.Random;
 
 import com.voracious.dragons.client.graphics.Drawable;
 import com.voracious.dragons.client.screens.PlayScreen;
-import com.voracious.dragons.client.towers.Castle;
-import com.voracious.dragons.client.towers.Tower;
-import com.voracious.dragons.client.units.Unit;
+import com.voracious.dragons.common.towers.Castle;
+import com.voracious.dragons.common.towers.Tower;
+import com.voracious.dragons.common.units.Unit;
 
 public class GameState implements Drawable {
 
@@ -153,6 +153,41 @@ public class GameState implements Drawable {
         
         toRemove.clear();
     }
+    
+    public void simulate(Turn t1, Turn t2){
+        Turn[] turns = new Turn[2];
+        if(t1.isPlayer1()){
+            turns[0] = t1;
+            turns[1] = t2;
+        }else{
+            turns[0] = t2;
+            turns[1] = t1;
+        }
+        
+        for(int t=0; t<turns.length; t++){
+            List<List<Vec2D.Short>> paths = turns[t].getPaths();
+            List<List<Vec2D.Short>> towers = turns[t].getTowers();
+            List<Short> units = turns[t].getUnits();
+            
+            int i = 0;
+            for(Short s : units){
+                addUnit(i, s, paths, turns[t].isPlayer1());
+                i++;
+            }
+            
+            i = 0;
+            for(List<Vec2D.Short> type : towers){
+                for(Vec2D.Short pos : type){
+                    addTower(i, pos, turns[i].isPlayer1());
+                }
+                i++;
+            }
+        }
+    }
+    
+    public void addTower(int id, Vec2D.Short pos, boolean player1){
+        this.addTower(Tower.makeTower(id, pos, player1));
+    }
 
     synchronized
     public void addTower(Tower t) {
@@ -162,6 +197,12 @@ public class GameState implements Drawable {
     synchronized
     public void removeTower(Tower t) {
         towers.remove(t);
+    }
+    
+    public void addUnit(int id, short num, List<List<Vec2D.Short>> paths, boolean whos){
+        for(int i=0; i<num; i++){
+            this.addUnit(Unit.makeUnit(id, paths.get(rand.nextInt(paths.size())), whos));
+        }
     }
 
     synchronized

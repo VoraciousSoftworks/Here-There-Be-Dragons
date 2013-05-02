@@ -24,7 +24,9 @@ public class Message {
 	}
 
 	public byte[] getBytes() {
-		return bytes;
+	    byte[] result = new byte[bytes.length-2];
+	    System.arraycopy(bytes, 1, result, 0, result.length);
+		return result;
 	}
 	
 	public boolean isString(){

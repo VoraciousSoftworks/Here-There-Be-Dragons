@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -277,22 +276,35 @@ public class DBHandler {
 	
 			latestTurn.setInt(1, GID);
 			ResultSet ret=latestTurn.executeQuery();
-			if(!ret.next())
-				return false;
-			String p1id = ret.getString("id");
-			int p1turnNum = ret.getInt("answer");			
-			if(!ret.next())
-				return false;
-			String p2id = ret.getString("id");
-			int p2turnNum = ret.getInt("answer");
-			if(PID==p1id && p1turnNum > p2turnNum)
-				return false;
-			else if(PID==p2id && p2turnNum > p1turnNum)
-				return false;
-			storeTurn.setInt(2, p1turnNum);
-			storeTurn.setString(4, PID);
-			storeTurn.setString(5, TURNSTRING);
+			
+			int turnNum = 1;
+			
+			if(ret.next()){
+    			String p1id = ret.getString("id");
+    			int p1turnNum = ret.getInt("answer");
+    			
+    			if(p1id.equals(PID))
+    			    turnNum = p1turnNum+1;
+    			
+    			if(ret.next()){
+        			String p2id = ret.getString("id");
+        			int p2turnNum = ret.getInt("answer");
+        			
+        			if(p2id.equals(PID))
+                        turnNum = p2turnNum+1;
+        			
+        			if((p1id.equals(PID) && p1turnNum > p2turnNum) || (p2id.equals(PID) && p2turnNum > p1turnNum))
+        				return false;
+    			}else{
+    			    return false;
+    			}
+			}
+			
+			storeTurn.setInt(2, turnNum);
+			storeTurn.setString(3, PID);
+			storeTurn.setString(4, TURNSTRING);
 			storeTurn.executeUpdate();
+
 			return true;
 		}
 		catch(SQLException e){
@@ -589,7 +601,7 @@ public class DBHandler {
             playersInGame.setInt(1, gid);
             ResultSet rs = playersInGame.executeQuery();
             if(rs.next()){
-                return pid.equals(rs.getString("pid1")) || pid.equals(rs.getShort("pid2"));
+                return pid.equals(rs.getString("pid1")) || pid.equals(rs.getString("pid2"));
             }else{
                 return false;
             }

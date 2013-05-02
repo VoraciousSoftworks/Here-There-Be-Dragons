@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.voracious.dragons.client.towers;
+package com.voracious.dragons.common.towers;
 
 import com.voracious.dragons.client.graphics.Entity;
 
@@ -25,7 +25,6 @@ public class Castle extends Entity {
 	public Castle(boolean isRED) {
 		super(isRED ? redCast : blueCast, numFrames, width, height);
 		if(isRED){
-			isRed=isRED;
 			filename=redCast;
 		}
 		else{

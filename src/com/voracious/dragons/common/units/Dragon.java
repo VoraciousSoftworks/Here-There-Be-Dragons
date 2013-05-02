@@ -1,4 +1,4 @@
-package com.voracious.dragons.client.units;
+package com.voracious.dragons.common.units;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class Dragon extends Unit {
 	private static final int height=32;
 
 	public Dragon(List<Vec2D.Short> path,boolean whos) {
-		super(filename, numFrames, width, height, path, whos);
+		super(filename, numFrames, width, height, path, whos,250,25,2.0);
 	}
 
 	@Override
