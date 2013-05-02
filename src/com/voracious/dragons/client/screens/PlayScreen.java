@@ -50,7 +50,7 @@ public class PlayScreen extends Screen {
         super(HEIGHT, WIDTH);
         
         this.setBackground(new Sprite("/backgroundLarge.png"));
-        this.unitsMenu = new UnitMenu();
+        this.unitsMenu = new UnitMenu(this);
     }
     
     @Override
@@ -280,12 +280,18 @@ public class PlayScreen extends Screen {
         		myTurn.createTower((byte)0, temp);
         	}
         }else if(InputHandler.isDown(InputHandler.VK_MOUSE_1) && this.inUnitMode){
-            myTurn.createUnit(Dragon.ID, (short)1);
+            //myTurn.createUnit(Dragon.ID, (short)1);
+        	
         }
     }
     
     
     @Override
+	public void mouseClicked(MouseEvent e) {
+		unitsMenu.mouseClicked(e.getX(), e.getY());
+	}
+
+	@Override
     public void mouseReleased(MouseEvent e){
         if(!InputHandler.isDown(InputHandler.VK_MOUSE_2)){
             InputHandler.setMouseMoveable(true);
@@ -316,6 +322,10 @@ public class PlayScreen extends Screen {
 	public void setExecutingTurn(boolean executingTurn) {
 		this.executingTurn = executingTurn;
 		this.currentTickCount = 0;
+	}
+	
+	public void addUnit(byte unitId, short numUnits){
+		myTurn.createUnit(unitId, numUnits);
 	}
 	
     @Override
