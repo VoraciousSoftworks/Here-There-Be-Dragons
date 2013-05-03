@@ -31,7 +31,7 @@ public class ConnectionManager implements Runnable {
 			logger.error("Could not open new connection", e);
 		}
 		
-		writeBuffer = ByteBuffer.allocateDirect(255);
+		writeBuffer = ByteBuffer.allocateDirect(1024);
 		readBuffer = ByteBuffer.allocateDirect(255);
 		messageQueue = new LinkedBlockingQueue<Message>();
 	}

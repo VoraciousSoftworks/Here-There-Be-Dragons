@@ -15,7 +15,6 @@ public class BatteringRam extends Unit {
 	
 	public BatteringRam(List<Vec2D.Short> path, boolean whos){
 		super(filename, numFrames, width, height, path, whos, 125, 15, 3.0);
-		
 	}
 	
 	

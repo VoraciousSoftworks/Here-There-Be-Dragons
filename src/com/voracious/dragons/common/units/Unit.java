@@ -52,15 +52,25 @@ public abstract class Unit extends Entity {
     }
     
     public static Unit makeUnit(String unitStr){
-        String[] us = unitStr.split("|");
+        String[] us = unitStr.split("~");
         Unit result = null;
         
-        String[] nodes = us[8].split("+");
-        List<Vec2D.Short> path = new ArrayList<>(nodes.length); 
+        String[] nodes = us[8].split("\\+");
+        List<Vec2D.Short> path = new ArrayList<>(nodes.length/2); 
+        
+        for(int i=0; i<nodes.length-1; i+=2){
+            path.add(new Vec2D.Short((short)Double.parseDouble(nodes[i]), (short)Double.parseDouble(nodes[i+1])));
+        }
         
         switch(Integer.parseInt(us[0])){
         case Dragon.ID:
             result = new Dragon(path, Integer.parseInt(us[1]) == 1);
+            break;
+        case Swordsman.ID:
+            result = new Swordsman(path, Integer.parseInt(us[1]) == 1);
+            break;
+        case BatteringRam.ID:
+            result = new BatteringRam(path, Integer.parseInt(us[1]) == 1);
             break;
         }
         
@@ -74,14 +84,14 @@ public abstract class Unit extends Entity {
     }
     
     public String toString(){
-        String result = this.getUnitId() + "|";
-        result += (isPlayer1 ? 1 : 0) + "|";
-        result += this.getHP();
-        result += this.getX() + "|";
-        result += this.getY() + "|";
+        String result = this.getUnitId() + "~";
+        result += (isPlayer1 ? 1 : 0) + "~";
+        result += this.getHP() + "~";
+        result += this.getX() + "~";
+        result += this.getY() + "~";
         Vec2D.Double v = (Vec2D.Double) this.getVelocity();
-        result += v.x + "|" + v.y + "|";
-        result += this.goingTo + "|";
+        result += v.x + "~" + v.y + "~";
+        result += this.goingTo + "~";
         
         for(Vec2D.Short node : path){
             result += node.x + "+" + node.y + "+";

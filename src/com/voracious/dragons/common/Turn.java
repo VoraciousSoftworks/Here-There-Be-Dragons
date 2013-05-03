@@ -83,7 +83,7 @@ public class Turn {
                 byte pathNum = turn.get();
                 short x = turn.getShort();
                 short y = turn.getShort();
-                addNode(pathNum, new Vec2D.Short(x, y));
+                cleanAddNode(pathNum, new Vec2D.Short(x, y));
             }
         }else{
             throw new IllegalArgumentException("Client is using a different version: " + Turn.versionCode);
@@ -106,6 +106,16 @@ public class Turn {
             temp.add(location);
             
             towersCreated.put(towerId, temp);
+        }
+    }
+    
+    synchronized private void cleanAddNode(byte pathId, Vec2D.Short location){
+        if(nodes.containsKey(pathId)){
+            nodes.get(pathId).add(location);
+        }else{
+            List<Vec2D.Short> temp = new LinkedList<Vec2D.Short>();
+            temp.add(location);
+            nodes.put(pathId, temp);
         }
     }
     
