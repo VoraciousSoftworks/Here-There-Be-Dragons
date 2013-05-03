@@ -23,7 +23,7 @@ public class ServerTurnPacket implements Packet{
 		byte[] turn = new byte[mbytes.length-1];
 		System.arraycopy(mbytes, 1, turn, 0, turn.length);
 		final Turn newTurn = new Turn(turn);
-		String PID = scm.getUserByID(newTurn.getSessionId()).getUsername();
+		final String PID = scm.getUserByID(newTurn.getSessionId()).getUsername();
 		if(PID == null)
 		    return;
 		
@@ -31,7 +31,7 @@ public class ServerTurnPacket implements Packet{
 		
 		if(shouldSimulate){
 		    
-		    String otherPid = Main.getDB().getOtherPid(PID, newTurn.getGameId());
+		    final String otherPid = Main.getDB().getOtherPid(PID, newTurn.getGameId());
 		    final User other = scm.getUserByName(otherPid);
     		if(other != null && other.isPlaying() && other.getCurrentGame() == newTurn.getGameId()){
     		    newTurn.setSessionId("//////////////////////////////////////////8=");
@@ -64,7 +64,26 @@ public class ServerTurnPacket implements Packet{
                         if(other != null && other.isPlaying() && other.getCurrentGame() == newTurn.getGameId()){
                             scm.sendMessage(other, "GS:" + gs.toString());
                         }
-                        
+                        if(gs.isOver()){
+                            Main.getDB().updateProgress(newTurn.getGameId());
+                            String winner = "";
+                            boolean win = gs.getP1Cast().getHP() <= 0;
+                            if(newTurn.isPlayer1()){
+                                if(win){
+                                    winner = PID;
+                                }else{
+                                    winner = otherPid;
+                                }
+                            }else{
+                                if(win){
+                                    winner = otherPid;
+                                }else{
+                                    winner = PID;
+                                }
+                            }
+                            
+                            Main.getDB().insertWinner(newTurn.getGameId(), winner);
+                        }
                         Main.getDB().updateGameState(newTurn.getGameId(), gs.toString());
                     }
                 }).start();
