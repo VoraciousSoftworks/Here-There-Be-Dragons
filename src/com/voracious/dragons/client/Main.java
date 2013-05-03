@@ -5,6 +5,8 @@ import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -25,11 +27,6 @@ public class Main extends Applet implements WindowListener {
     private static Game game;
 
     public static void main(String[] args) {
-        byte[] bytes = new byte[32];
-        for(int i=0;i<32;i++){
-            bytes[i] = -1;
-        }
-        
         Frame window = new Frame(Game.NAME);
 
         initLog4J();
@@ -39,7 +36,6 @@ public class Main extends Applet implements WindowListener {
                 logger.setLevel(Level.ALL);
             }
         }
-
         
         window.addWindowListener(new Main());
         

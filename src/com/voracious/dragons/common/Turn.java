@@ -263,7 +263,7 @@ public class Turn {
     
     synchronized
     public List<List<Vec2D.Short>> getPaths(){
-    	List<List<Vec2D.Short>> ret = new ArrayList<List<Vec2D.Short>>(nodes.size());
+    	List<List<Vec2D.Short>> ret = new ArrayList<>(nodes.size());
     	
     	Iterator<Map.Entry<Byte, List<Vec2D.Short>>> it = nodes.entrySet().iterator();
     	while(it.hasNext()){
@@ -290,10 +290,8 @@ public class Turn {
     }
     
     synchronized
-    public List<Short> getUnits(){
-    	List<Short> ret= new LinkedList<Short>(unitsCreated.values());
-    	
-    	return ret;    	
+    public Map<Byte, Short> getUnits(){
+    	return unitsCreated;    	
     }
     
     public boolean isPlayer1(){
