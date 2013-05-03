@@ -64,6 +64,7 @@ public class PlayScreen extends Screen {
         InputHandler.registerButton(KeyEvent.VK_A);
         InputHandler.registerButton(KeyEvent.VK_S);
         InputHandler.registerButton(KeyEvent.VK_D);
+        InputHandler.registerButton(KeyEvent.VK_ESCAPE);
         InputHandler.registerScreen(this);
 	}
 	
@@ -73,6 +74,7 @@ public class PlayScreen extends Screen {
         InputHandler.deregisterButton(KeyEvent.VK_A);
         InputHandler.deregisterButton(KeyEvent.VK_S);
         InputHandler.deregisterButton(KeyEvent.VK_D);
+        InputHandler.deregisterButton(KeyEvent.VK_ESCAPE);
         InputHandler.deregisterScreen(this);
         
         myTurn = null;
@@ -236,6 +238,11 @@ public class PlayScreen extends Screen {
     		this.pathNum++;
     	}else if(e.getKeyCode()==KeyEvent.VK_G){
     	    this.playTurn();
+    	}
+    	else if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
+    		myTurn = null;
+    		gamestate = null;
+    		Game.setCurrentScreen(GameListScreen.ID);
     	}
     	if(!this.inPathMode&&!this.inTowerMode&&!this.inUnitMode){
     		this.inMenu=false;
