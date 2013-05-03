@@ -114,6 +114,7 @@ public class GameListScreen extends Screen {
     }
     
     public void stop(){
+    	reset();
         InputHandler.deregisterScreen(this);
     }
 
@@ -152,6 +153,11 @@ public class GameListScreen extends Screen {
     
     public void onListRecieved(List<GameInfo> games){
         this.games = games;
+    }
+    
+    public void reset(){
+    	this.areTextsSet = false;
+    	this.games = null;
     }
     
     @Override

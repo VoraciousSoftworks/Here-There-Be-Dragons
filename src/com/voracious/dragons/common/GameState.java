@@ -48,7 +48,7 @@ public class GameState implements Drawable {
         if(!gameState.startsWith("GS:")) throw new IllegalArgumentException("Invalid gamestate string");
         String[] gs = gameState.substring(3).split(":");
         seed = Long.parseLong(gs[0]);
-        this.setOver(Integer.parseInt(gs[1]) == 1);
+        this.setOver(Integer.parseInt(gs[1]));
         rand = new Random(seed);
         
         p1Cast = new Castle(true);
@@ -320,7 +320,10 @@ public class GameState implements Drawable {
 	/**
 	 * @param isOver the isOver to set
 	 */
-	public void setOver(boolean isOver) {
-		this.isOver = isOver;
+	public void setOver(int isOver) {
+		if(isOver==0)
+			this.isOver = false;
+		else
+			this.isOver=true;
 	}
 }
