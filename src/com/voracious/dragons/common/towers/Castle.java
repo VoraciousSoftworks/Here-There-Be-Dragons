@@ -16,6 +16,7 @@ public class Castle extends Entity {
 	public static int[] numFrames = {4};
 	public static int width = 300;
 	public static int height = 300;
+	private int resources;
     private int levelofDamage=0;
 	private double chp=100;
 	private double fullhp=100;
@@ -23,6 +24,7 @@ public class Castle extends Entity {
 	
 	public Castle(boolean isRED) {
 		super(isRED ? redCast : blueCast, numFrames, width, height);
+		resources = 2000;
 		if(isRED){
 			filename=redCast;
 		}
@@ -37,25 +39,25 @@ public class Castle extends Entity {
 		if(attk-def<0){
 		}
 		else{
-			double damage=attk-def;
-			chp-=damage;
-			double percent=chp/fullhp;
+			double damage = attk-def;
+			chp -= damage;
+			double percent = chp / fullhp;
 			//changes the image if needed
-			if(percent<=1.0&&percent>0.7){
+			if(percent <= 1.0 && percent > 0.7){
 				//nothing, stays at full heatlh
 			}
-			else if(percent<=0.7&&percent>0.4&&levelofDamage==0){
+			else if(percent <= 0.7 && percent >0.4 && levelofDamage == 0){
 				this.nextFrame();
 				levelofDamage++;
 			}
-			else if(percent<=0.4&&percent>0.1&&levelofDamage==1){
+			else if(percent <= 0.4 && percent > 0.1 && levelofDamage == 1){
 				this.nextFrame();
 				levelofDamage++;
 			}
-			else if(levelofDamage==2){
+			else if(levelofDamage == 2){
 				//rubble
 			}
-			System.out.println("PERCENT: "+percent+", levelDamage: "+levelofDamage);
+			System.out.println("PERCENT: " + percent + ", levelDamage: " + levelofDamage);
 		}
 	}
 	
@@ -72,10 +74,22 @@ public class Castle extends Entity {
 	}
 	
 	public void setHP(double hp){
-		this.chp=hp;
+		this.chp = hp;
+	}
+	
+	public int getResources(){
+		return resources;
+	}
+	
+	public void setResources(int res){
+		resources = res;
+	}
+	
+	public void addResources(int res){
+		resources += res;
 	}
 
 	public double getHPRatio(){
-		return this.getHP()/this.fullhp;
+		return this.getHP() / this.fullhp;
 	}
 }
