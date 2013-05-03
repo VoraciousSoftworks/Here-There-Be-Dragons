@@ -203,7 +203,21 @@ public class GameState implements Drawable {
 
     synchronized
     public void addTower(Tower t) {
-        towers.add(t);
+        if(t.isPlayer1()){
+            p1Cast.addResources(-1*t.getHP());
+            if(p1Cast.getResources() >= 0){
+                towers.add(t);
+            }else{
+                p1Cast.addResources(t.getHP());
+            }
+        }else{
+            p2Cast.addResources(-1*t.getHP());
+            if(p2Cast.getResources() >= 0){
+                towers.add(t);
+            }else{
+                p2Cast.addResources(t.getHP());
+            }
+        }
     }
 
     synchronized
@@ -221,7 +235,21 @@ public class GameState implements Drawable {
 
     synchronized
     public void addUnit(Unit u) {
-        units.add(u);
+        if(u.isPlayer1()){
+            p1Cast.addResources(-1*u.getHP());
+            if(p1Cast.getResources() >= 0){
+                units.add(u);
+            }else{
+                p1Cast.addResources(u.getHP());
+            }
+        }else{
+            p2Cast.addResources(-1*u.getHP());
+            if(p2Cast.getResources() >= 0){
+                units.add(u);
+            }else{
+                p2Cast.addResources(u.getHP());
+            }
+        }
     }
 
     synchronized
