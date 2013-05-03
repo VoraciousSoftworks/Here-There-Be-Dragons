@@ -569,7 +569,7 @@ public class DBHandler {
     
     public void updateProgress(int gid){
     	try{
-    		setGameOver.setInt(0, gid);
+    		setGameOver.setInt(1, gid);
     		setGameOver.executeUpdate();
     	}
     	catch(SQLException e) {
