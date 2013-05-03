@@ -106,7 +106,7 @@ public class DBHandler {
                     "GROUP BY gid;");
             
             myGames = conn.prepareStatement(
-                    "SELECT gid " +
+                    "SELECT gid, pid1, pid2 " +
                     "FROM Game " +
                     "WHERE (pid1 = ? OR pid2 = ?) AND inProgress = ?;");
             
@@ -508,7 +508,8 @@ public class DBHandler {
                 ResultSet rs = myGames.executeQuery();
                 while(rs.next()){
                     int gid = rs.getInt("gid");
-                    result.add(new GameInfo(gid, this.getOtherPid(pid, gid), 0, false, true, isPlayer1(pid, gid)));
+                    String pid1 = rs.getString("pid1");
+                    result.add(new GameInfo(gid, this.getOtherPid(pid, gid), 0, false, true, pid1.equals(pid)));
                 }
             } catch (SQLException e) {
                 logger.error("Could not get game list", e);
