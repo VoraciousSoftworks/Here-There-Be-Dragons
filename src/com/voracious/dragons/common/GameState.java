@@ -25,6 +25,8 @@ public class GameState implements Drawable {
     private List<Tower> tRemove;
     private long seed;
     private Random rand;
+    
+    private boolean isOver=false;
 
     public GameState() {
         super();
@@ -72,6 +74,8 @@ public class GameState implements Drawable {
         
         toRemove = new ArrayList<>();
         tRemove = new ArrayList<>();
+        
+        this.setOver(Boolean.parseBoolean(gs[7]));
     }
     
     public String toString(){
@@ -89,7 +93,7 @@ public class GameState implements Drawable {
         for(Tower t : towers){
             result += ";" + t.toString();
         }
-        
+        result+=":Cont"+isOver();
         return result;
     }
 
@@ -133,31 +137,33 @@ public class GameState implements Drawable {
 
     synchronized
     public void tick() {
-        for (Tower t : towers){
-            t.tick();
-            this.attackUnit(t);
-            if(t.getHeight()<=0){
-            	tRemove.add(t);
-            }
-        }
-        
-        for(Tower t: tRemove){
-        	towers.remove(t);
-        }
-           
-        for (Unit u : units){
-            u.tick();
-            if(u.getAtEnd()){
-            	this.attackCastle(u);
-    			toRemove.add(u);
-            }
-        }
-        
-        for(Unit u : toRemove){
-            units.remove(u);
-        }
-        
-        toRemove.clear();
+    	if(!this.isOver()){
+    		for (Tower t : towers){
+    			t.tick();
+    			this.attackUnit(t);
+    			if(t.getHeight()<=0){
+    				tRemove.add(t);
+    			}
+    		}
+
+    		for(Tower t: tRemove){
+    			towers.remove(t);
+    		}
+
+    		for (Unit u : units){
+    			u.tick();
+    			if(u.getAtEnd()){
+    				this.attackCastle(u);
+    				toRemove.add(u);
+    			}
+    		}
+
+    		for(Unit u : toRemove){
+    			units.remove(u);
+    		}
+
+    		toRemove.clear();
+    	}
     }
     
     public void simulate(Turn t1, Turn t2){
@@ -273,4 +279,18 @@ public class GameState implements Drawable {
         seed = System.nanoTime();
         rand = new Random(seed);
     }
+
+	/**
+	 * @return the isOver
+	 */
+	public boolean isOver() {
+		return isOver;
+	}
+
+	/**
+	 * @param isOver the isOver to set
+	 */
+	public void setOver(boolean isOver) {
+		this.isOver = isOver;
+	}
 }

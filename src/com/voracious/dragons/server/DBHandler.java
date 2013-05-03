@@ -30,6 +30,7 @@ public class DBHandler {
 	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame,playersInGame,latestTurn,myGames;
 	private PreparedStatement findMaxGameId, gameState, updateGameState;
 	
+	private PreparedStatement setGameOver;
 	public void init() {
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -163,6 +164,8 @@ public class DBHandler {
             		"SELECT MAX(gid) AS answer FROM Game;");
             
             updateGameState = conn.prepareStatement("UPDATE Game SET gameState=? WHERE gid=?");
+            
+            this.setGameOver=conn.prepareStatement("UPDATE Game Set inProgress=0 WHERE gid=?;");
             
             gameState = conn.prepareStatement("SELECT gameState FROM Game WHERE gid = ?;");
 		} catch (SQLException e) {
@@ -562,5 +565,15 @@ public class DBHandler {
         } catch (SQLException e) {
             logger.error(e);
         }
+    }
+    
+    public void updateProgress(int gid){
+    	try{
+    		setGameOver.setInt(0, gid);
+    		setGameOver.executeUpdate();
+    	}
+    	catch(SQLException e) {
+            logger.error(e);
+    	}
     }
 }

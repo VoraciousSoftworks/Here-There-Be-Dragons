@@ -88,6 +88,9 @@ public class PlayScreen extends Screen {
 	public void onTurnReceived(byte[] turn){
 	    oppTurn = new Turn(turn);
 	    gamestate.simulate(myTurn, oppTurn);
+	    
+	    myTurn.clear();
+	    oppTurn = null;
         setExecutingTurn(true);
 	}
 

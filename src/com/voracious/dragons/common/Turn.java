@@ -289,6 +289,12 @@ public class Turn {
     	return ret;
     }
     
+    public void clear(){
+        unitsCreated = new HashMap<>();
+        towersCreated = new TreeMap<>();
+        nodes = new TreeMap<>();
+    }
+    
     synchronized
     public Map<Byte, Short> getUnits(){
     	return unitsCreated;    	
