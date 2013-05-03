@@ -27,6 +27,7 @@ public class ClientMessageProcessor extends MessageProcessor {
 		stringPackets.add(new GameListPacket());
 		stringPackets.add(new ClientChallengeRequestPacket());
 		stringPackets.add(new ClientPlayGamePacket());
+		stringPackets.add(new GameStatePacket());
 		
 		binaryPackets = new ArrayList<>(1);
 		binaryPackets.add(new ClientTurnPacket());

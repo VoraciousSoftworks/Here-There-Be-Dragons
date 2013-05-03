@@ -33,6 +33,7 @@ public class PlayScreen extends Screen {
     private static Logger logger = Logger.getLogger(Game.class);
     private Sprite background;
     private GameState gamestate;
+    private GameState tempGS;
     private UnitMenu unitsMenu;
     private boolean isMyTurn = false;
     private boolean executingTurn = false;
@@ -197,10 +198,13 @@ public class PlayScreen extends Screen {
             	currentTickCount++;
             }else{
                 this.executingTurn = false;
+                
+                if(tempGS != null){
+                    gamestate = tempGS;
+                }
             }
         }
     }
-    
     
     @Override
 	public void keyPressed(KeyEvent e) {
@@ -334,5 +338,13 @@ public class PlayScreen extends Screen {
     @Override
     public int getId() {
         return ID;
+    }
+
+    public void onGameStateReceived(String gs) {
+        if(this.isExecutingTurn()){
+            tempGS = new GameState(gs);
+        }else{
+            gamestate = new GameState(gs);
+        }
     }
 }

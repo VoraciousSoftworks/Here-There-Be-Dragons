@@ -36,7 +36,7 @@ public class Tower extends Entity {
     }
 
     public static Tower makeTower(String towerStr){
-        String[] ts = towerStr.split("|");
+        String[] ts = towerStr.split("\\+");
         Tower result = null;
         switch(Integer.parseInt(ts[0])){
         case Tower.ID:
@@ -52,10 +52,10 @@ public class Tower extends Entity {
     }
     
     public String toString(){
-        String result = this.getTowerId() + "|";
-        result += (isPlayer1 ? 1 : 0) + "|";
-        result += this.getX() + "|";
-        result += this.getY() + "|";
+        String result = this.getTowerId() + "+";
+        result += (isPlayer1 ? 1 : 0) + "+";
+        result += this.getX() + "+";
+        result += this.getY() + "+";
         result += this.getHP();
         
         return result;

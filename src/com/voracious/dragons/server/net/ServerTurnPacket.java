@@ -64,6 +64,7 @@ public class ServerTurnPacket implements Packet{
                         if(other != null && other.isPlaying() && other.getCurrentGame() == newTurn.getGameId()){
                             scm.sendMessage(other, "GS:" + gs.toString());
                         }
+                        
                         Main.getDB().updateGameState(newTurn.getGameId(), gs.toString());
                     }
                 }).start();

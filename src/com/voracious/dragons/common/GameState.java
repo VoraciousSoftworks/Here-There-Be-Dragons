@@ -48,7 +48,7 @@ public class GameState implements Drawable {
         if(!gameState.startsWith("GS:")) throw new IllegalArgumentException("Invalid gamestate string");
         String[] gs = gameState.substring(3).split(":");
         seed = Long.parseLong(gs[0]);
-        this.setOver(Boolean.parseBoolean(gs[1]));
+        this.setOver(Integer.parseInt(gs[1]) == 1);
         rand = new Random(seed);
         
         p1Cast = new Castle(true);
@@ -82,7 +82,7 @@ public class GameState implements Drawable {
     public String toString(){
         String result = "GS:";
         result += seed + ":";
-        result+=":Cont"+isOver();
+        result += (isOver ? 1 : 0) + ":";
         result += p1Cast.getHP() + ":" + p1Cast.getMaxHP() + ":" + p1Cast.getResources() + ":";
         result += p2Cast.getHP() + ":" + p2Cast.getMaxHP() + ":" + p2Cast.getResources() + ":";
         
@@ -95,7 +95,7 @@ public class GameState implements Drawable {
         for(Tower t : towers){
             result += ";" + t.toString();
         }
-        result+=":Cont"+isOver();
+
         return result;
     }
 
