@@ -48,25 +48,28 @@ public class GameState implements Drawable {
         if(!gameState.startsWith("GS:")) throw new IllegalArgumentException("Invalid gamestate string");
         String[] gs = gameState.substring(3).split(":");
         seed = Long.parseLong(gs[0]);
+        this.setOver(Boolean.parseBoolean(gs[1]));
         rand = new Random(seed);
         
         p1Cast = new Castle(true);
         p1Cast.setPos(p1CastLoc);
-        p1Cast.setHP(Double.parseDouble(gs[1]));
-        p1Cast.setMaxHP(Double.parseDouble(gs[2]));
+        p1Cast.setHP(Double.parseDouble(gs[2]));
+        p1Cast.setMaxHP(Double.parseDouble(gs[3]));
+        p1Cast.setResources(Integer.parseInt(gs[4]));
         
         p2Cast = new Castle(false);
         p2Cast.setPos(p2CastLoc);
-        p1Cast.setHP(Double.parseDouble(gs[3]));
-        p1Cast.setMaxHP(Double.parseDouble(gs[4]));
+        p2Cast.setHP(Double.parseDouble(gs[5]));
+        p2Cast.setMaxHP(Double.parseDouble(gs[6]));
+        p2Cast.setResources(Integer.parseInt(gs[7]));
         
-        String[] unitStrs = gs[5].split(";");
+        String[] unitStrs = gs[8].split(";");
         units = new ArrayList<>(unitStrs.length);
         for(int i=1; i<unitStrs.length; i++){
             units.add(Unit.makeUnit(unitStrs[i]));
         }
         
-        String[] towerStrs = gs[6].split(";");
+        String[] towerStrs = gs[9].split(";");
         towers = new ArrayList<>(towerStrs.length);
         for(int i=1; i<towerStrs.length; i++){
             towers.add(Tower.makeTower(towerStrs[i]));
@@ -74,15 +77,14 @@ public class GameState implements Drawable {
         
         toRemove = new ArrayList<>();
         tRemove = new ArrayList<>();
-        
-        this.setOver(Boolean.parseBoolean(gs[7]));
     }
     
     public String toString(){
         String result = "GS:";
         result += seed + ":";
-        result += p1Cast.getHP() + ":" + p1Cast.getMaxHP() + ":";
-        result += p2Cast.getHP() + ":" + p2Cast.getMaxHP() + ":";
+        result+=":Cont"+isOver();
+        result += p1Cast.getHP() + ":" + p1Cast.getMaxHP() + ":" + p1Cast.getResources() + ":";
+        result += p2Cast.getHP() + ":" + p2Cast.getMaxHP() + ":" + p2Cast.getResources() + ":";
         
         result += "U";
         for(Unit u : units){
