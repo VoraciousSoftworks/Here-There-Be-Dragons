@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.voracious.dragons.client.graphics.Drawable;
@@ -45,6 +46,7 @@ public class GameState implements Drawable {
         if(!gameState.startsWith("GS:")) throw new IllegalArgumentException("Invalid gamestate string");
         String[] gs = gameState.substring(3).split(":");
         seed = Long.parseLong(gs[0]);
+        rand = new Random(seed);
         
         p1Cast = new Castle(true);
         p1Cast.setPos(p1CastLoc);
@@ -80,12 +82,12 @@ public class GameState implements Drawable {
         
         result += "U";
         for(Unit u : units){
-            result += ";" + u.toString() + ";";
+            result += ";" + u.toString();
         }
         result += ":T";
         
         for(Tower t : towers){
-            result += ";" + t.toString() + ";";
+            result += ";" + t.toString();
         }
         
         return result;
@@ -171,15 +173,13 @@ public class GameState implements Drawable {
         for(int t=0; t<turns.length; t++){
             List<List<Vec2D.Short>> paths = turns[t].getPaths();
             List<List<Vec2D.Short>> towers = turns[t].getTowers();
-            List<Short> units = turns[t].getUnits();
+            Map<Byte, Short> units = turns[t].getUnits();
             
-            int i = 0;
-            for(Short s : units){
-                addUnit(i, s, paths, turns[t].isPlayer1());
-                i++;
+            for(Map.Entry<Byte, Short> e : units.entrySet()){
+                addUnit(e.getKey(), e.getValue(), paths, turns[t].isPlayer1());
             }
             
-            i = 0;
+            int i = 0;
             for(List<Vec2D.Short> type : towers){
                 for(Vec2D.Short pos : type){
                     addTower(i, pos, turns[i].isPlayer1());
@@ -205,7 +205,9 @@ public class GameState implements Drawable {
     
     public void addUnit(int id, short num, List<List<Vec2D.Short>> paths, boolean whos){
         for(int i=0; i<num; i++){
-            this.addUnit(Unit.makeUnit(id, paths.get(rand.nextInt(paths.size())), whos));
+            List<Vec2D.Short> path = paths.get(rand.nextInt(paths.size()));
+            Unit u = Unit.makeUnit(id, path , whos);
+            this.addUnit(u);
         }
     }
 
@@ -266,4 +268,9 @@ public class GameState implements Drawable {
 	public long getSeed(){
 	    return seed;
 	}
+
+    public void updateSeed() {
+        seed = System.nanoTime();
+        rand = new Random(seed);
+    }
 }

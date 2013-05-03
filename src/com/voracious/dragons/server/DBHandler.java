@@ -28,7 +28,7 @@ public class DBHandler {
 	private PreparedStatement registerUser;
 	private PreparedStatement numGames,numWins,turnsPerGame, times,latestTurnByMeNum,gameList, latestTurnData;
 	private PreparedStatement storeTurn,storeSpect,storeWinner,storeGame,playersInGame,latestTurn,myGames;
-	private PreparedStatement findMaxGameId, gameState;
+	private PreparedStatement findMaxGameId, gameState, updateGameState;
 	
 	public void init() {
 		try {
@@ -162,6 +162,7 @@ public class DBHandler {
             findMaxGameId=conn.prepareStatement(
             		"SELECT MAX(gid) AS answer FROM Game;");
             
+            updateGameState = conn.prepareStatement("UPDATE Game SET gameState=? WHERE gid=?");
             
             gameState = conn.prepareStatement("SELECT gameState FROM Game WHERE gid = ?;");
 		} catch (SQLException e) {
@@ -551,5 +552,15 @@ public class DBHandler {
         }
         
         return null;
+    }
+
+    public void updateGameState(int gid, String gamestate) {
+        try {
+            updateGameState.setString(1, gamestate);
+            updateGameState.setInt(2, gid);
+            updateGameState.executeUpdate();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
     }
 }
